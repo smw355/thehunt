@@ -6,6 +6,7 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { validateGameForm, validateTeamForm, validateClueForm, copyToClipboard, downloadJSON, parseJSONFile } from '../utils/gameUtils';
+import PhotoUpload from '../components/PhotoUpload';
 
 // Mock data store
 const initialAppState = {
@@ -58,6 +59,13 @@ function AmazingRaceApp() {
   // Team: Submission
   const [submissionProof, setSubmissionProof] = useState('');
   const [submissionNotes, setSubmissionNotes] = useState('');
+  const [submissionPhotos, setSubmissionPhotos] = useState([]);
+
+  // Admin: Comments for rejections
+  const [adminComments, setAdminComments] = useState({});
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [commentingSubmissionId, setCommentingSubmissionId] = useState(null);
+  const [currentAdminComment, setCurrentAdminComment] = useState('');
 
   // Generate random game code
   const generateGameCode = () => {
@@ -381,8 +389,8 @@ function AmazingRaceApp() {
 
   // Team: Submit Proof
   const submitProof = () => {
-    if (!submissionProof.trim()) {
-      alert('Please provide proof of completion');
+    if (!submissionProof.trim() && submissionPhotos.length === 0) {
+      setErrors(['Please provide proof of completion (photo or text)']);
       return;
     }
 
@@ -401,8 +409,10 @@ function AmazingRaceApp() {
       roadblockPlayer: teamState.roadblockPlayer,
       proof: submissionProof,
       notes: submissionNotes,
+      photos: submissionPhotos,
       timestamp: new Date().toISOString(),
-      status: 'pending'
+      status: 'pending',
+      adminComment: null
     };
 
     setAppState(prev => ({
@@ -412,7 +422,9 @@ function AmazingRaceApp() {
 
     setSubmissionProof('');
     setSubmissionNotes('');
-    alert('Submission sent! Waiting for approval...');
+    setSubmissionPhotos([]);
+    setErrors(['Submission sent! Waiting for approval...']);
+    setTimeout(() => setErrors([]), 3000);
   };
 
   // Admin: Approve Submission
@@ -439,14 +451,38 @@ function AmazingRaceApp() {
     }));
   };
 
-  // Admin: Reject Submission
-  const rejectSubmission = (submissionId) => {
+  // Admin: Reject Submission with Comment
+  const openRejectModal = (submissionId) => {
+    setCommentingSubmissionId(submissionId);
+    setCurrentAdminComment('');
+    setShowCommentModal(true);
+  };
+
+  const rejectSubmissionWithComment = () => {
+    if (!currentAdminComment.trim()) {
+      setErrors(['Please provide a comment explaining why this submission was rejected']);
+      return;
+    }
+
     setAppState(prev => ({
       ...prev,
       submissions: prev.submissions.map(s =>
-        s.id === submissionId ? { ...s, status: 'rejected' } : s
+        s.id === commentingSubmissionId
+          ? { ...s, status: 'rejected', adminComment: currentAdminComment }
+          : s
       )
     }));
+
+    setShowCommentModal(false);
+    setCommentingSubmissionId(null);
+    setCurrentAdminComment('');
+    setErrors([]);
+  };
+
+  const cancelRejectComment = () => {
+    setShowCommentModal(false);
+    setCommentingSubmissionId(null);
+    setCurrentAdminComment('');
   };
 
   // Get current team's clue
@@ -461,9 +497,18 @@ function AmazingRaceApp() {
   // Check if team has pending submission
   const hasPendingSubmission = () => {
     return appState.submissions.some(
-      s => s.teamId === currentTeam?.id && 
-           s.clueIndex === currentTeam?.currentClueIndex && 
+      s => s.teamId === currentTeam?.id &&
+           s.clueIndex === currentTeam?.currentClueIndex &&
            s.status === 'pending'
+    );
+  };
+
+  // Get rejected submissions for current clue with admin feedback
+  const getRejectedSubmissions = () => {
+    return appState.submissions.filter(
+      s => s.teamId === currentTeam?.id &&
+           s.clueIndex === currentTeam?.currentClueIndex &&
+           s.status === 'rejected'
     );
   };
 
@@ -816,11 +861,11 @@ function AmazingRaceApp() {
                 {pendingSubmissions.map(sub => {
                   const clue = appState.clueLibrary.find(c => c.id === sub.clueId);
                   return (
-                    <div key={sub.id} className="bg-white rounded-lg p-4 border-2 border-yellow-400">
-                      <div className="flex justify-between items-start mb-3">
+                    <div key={sub.id} className="bg-white rounded-lg p-6 border-2 border-yellow-400 shadow-lg">
+                      <div className="flex justify-between items-start mb-4">
                         <div>
-                          <h3 className="font-bold text-lg">{sub.teamName}</h3>
-                          <p className="text-sm text-gray-600">Clue: {clue?.title || 'Unknown'}</p>
+                          <h3 className="font-bold text-xl">{sub.teamName}</h3>
+                          <p className="text-sm text-gray-600 mb-1">Clue: {clue?.title || 'Unknown'}</p>
                           {sub.clueType === 'detour' && sub.detourChoice && (
                             <p className="text-sm text-blue-600">Detour Choice: Option {sub.detourChoice}</p>
                           )}
@@ -832,31 +877,110 @@ function AmazingRaceApp() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => approveSubmission(sub.id)}
-                            className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600"
+                            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center gap-2 font-semibold"
                           >
                             <Check className="w-5 h-5" />
+                            Approve
                           </button>
                           <button
-                            onClick={() => rejectSubmission(sub.id)}
-                            className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+                            onClick={() => openRejectModal(sub.id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2 font-semibold"
                           >
                             <X className="w-5 h-5" />
+                            Reject
                           </button>
                         </div>
                       </div>
-                      <div className="bg-gray-100 p-3 rounded">
-                        <p className="font-semibold text-sm mb-1">Proof:</p>
-                        <p className="text-sm mb-2">{sub.proof}</p>
+
+                      {/* Photo Gallery */}
+                      {sub.photos && sub.photos.length > 0 && (
+                        <div className="mb-4">
+                          <p className="font-semibold text-sm mb-3">📸 Photos/Videos ({sub.photos.length}):</p>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            {sub.photos.map((photo, idx) => (
+                              <div key={idx} className="relative group">
+                                {photo.type.startsWith('image/') ? (
+                                  <img
+                                    src={photo.url}
+                                    alt={`Submission ${idx + 1}`}
+                                    className="w-full h-32 object-cover rounded-lg border cursor-pointer hover:shadow-lg transition-shadow"
+                                    onClick={() => window.open(photo.url, '_blank')}
+                                  />
+                                ) : (
+                                  <div className="w-full h-32 bg-gray-200 rounded-lg border flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
+                                       onClick={() => window.open(photo.url, '_blank')}>
+                                    <div className="text-center">
+                                      <Play className="w-8 h-8 mx-auto mb-1 text-gray-600" />
+                                      <span className="text-xs text-gray-600">Video</span>
+                                    </div>
+                                  </div>
+                                )}
+                                <div className="absolute bottom-1 left-1 right-1 bg-black bg-opacity-75 text-white text-xs p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <div className="truncate">{photo.originalName}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Text Proof */}
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        {sub.proof && (
+                          <>
+                            <p className="font-semibold text-sm mb-2">📝 Text Proof:</p>
+                            <p className="text-sm mb-3 bg-white p-3 rounded border">{sub.proof}</p>
+                          </>
+                        )}
                         {sub.notes && (
                           <>
-                            <p className="font-semibold text-sm mb-1">Notes:</p>
-                            <p className="text-sm">{sub.notes}</p>
+                            <p className="font-semibold text-sm mb-2">💭 Additional Notes:</p>
+                            <p className="text-sm bg-white p-3 rounded border">{sub.notes}</p>
                           </>
+                        )}
+                        {!sub.proof && !sub.notes && sub.photos?.length > 0 && (
+                          <p className="text-sm text-gray-600 italic">No text proof provided - photos only</p>
                         )}
                       </div>
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* Admin Comment Modal */}
+          {showCommentModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+                <h3 className="text-xl font-bold mb-4 text-red-600">Reject Submission</h3>
+                <p className="text-gray-600 mb-4">
+                  Please provide a comment explaining why this submission is being rejected. This will help the team understand what they need to fix.
+                </p>
+
+                <textarea
+                  className="w-full px-4 py-3 border-2 rounded-lg mb-4 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                  rows="4"
+                  placeholder="e.g., Photo is too blurry, wrong location, task not completed properly..."
+                  value={currentAdminComment}
+                  onChange={(e) => setCurrentAdminComment(e.target.value)}
+                />
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={rejectSubmissionWithComment}
+                    className="flex-1 bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!currentAdminComment.trim()}
+                  >
+                    Reject with Comment
+                  </button>
+                  <button
+                    onClick={cancelRejectComment}
+                    className="flex-1 bg-gray-500 text-white py-3 rounded-lg font-bold hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -1198,6 +1322,7 @@ function AmazingRaceApp() {
     const currentClue = getCurrentClue();
     const isFinished = currentTeam.currentClueIndex >= appState.game.clueSequence.length;
     const isPending = hasPendingSubmission();
+    const rejectedSubmissions = getRejectedSubmissions();
     const teamState = getCurrentTeamState();
 
     // Update current team data
@@ -1366,6 +1491,83 @@ function AmazingRaceApp() {
                 </div>
               )}
 
+              {/* REJECTED SUBMISSIONS WITH ADMIN FEEDBACK */}
+              {rejectedSubmissions.length > 0 && (
+                <div className="bg-red-50 border-2 border-red-400 rounded-2xl p-6 mb-8 shadow-lg">
+                  <h2 className="text-2xl font-bold mb-4 text-red-600 flex items-center gap-2">
+                    <AlertCircle className="w-6 h-6" />
+                    Previous Submissions Rejected
+                  </h2>
+                  <p className="text-red-700 mb-4">
+                    The game master has reviewed your previous submissions and provided feedback. Please address the issues below and try again.
+                  </p>
+
+                  <div className="space-y-4">
+                    {rejectedSubmissions.map((rejection, idx) => (
+                      <div key={rejection.id} className="bg-white rounded-lg p-4 border border-red-300">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="font-bold text-lg text-red-600">
+                            Attempt #{rejectedSubmissions.length - idx}
+                          </h4>
+                          <span className="text-xs text-gray-500">
+                            {new Date(rejection.timestamp).toLocaleString()}
+                          </span>
+                        </div>
+
+                        {rejection.adminComment && (
+                          <div className="bg-red-100 p-3 rounded-lg mb-3">
+                            <p className="font-semibold text-red-700 mb-1">📝 Game Master Feedback:</p>
+                            <p className="text-red-800">{rejection.adminComment}</p>
+                          </div>
+                        )}
+
+                        <details className="text-sm">
+                          <summary className="cursor-pointer text-gray-600 hover:text-gray-800">
+                            View Your Original Submission
+                          </summary>
+                          <div className="mt-2 p-3 bg-gray-50 rounded border">
+                            {rejection.photos && rejection.photos.length > 0 && (
+                              <div className="mb-2">
+                                <p className="font-semibold mb-1">Photos:</p>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {rejection.photos.map((photo, photoIdx) => (
+                                    <img
+                                      key={photoIdx}
+                                      src={photo.preview || photo.url}
+                                      alt={`Rejected submission ${photoIdx + 1}`}
+                                      className="w-full h-16 object-cover rounded cursor-pointer"
+                                      onClick={() => window.open(photo.url, '_blank')}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {rejection.proof && (
+                              <div className="mb-2">
+                                <p className="font-semibold">Text Proof:</p>
+                                <p>{rejection.proof}</p>
+                              </div>
+                            )}
+                            {rejection.notes && (
+                              <div>
+                                <p className="font-semibold">Notes:</p>
+                                <p>{rejection.notes}</p>
+                              </div>
+                            )}
+                          </div>
+                        </details>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 p-3 bg-yellow-100 rounded-lg">
+                    <p className="text-yellow-800 text-sm">
+                      💡 <strong>Tip:</strong> Read the feedback carefully and make sure to address all the issues mentioned before submitting again.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* SUBMISSION FORM - Show only when ready */}
               {((currentClue.type === 'route-info') ||
                 (currentClue.type === 'detour' && teamState.detourChoice) ||
@@ -1381,34 +1583,51 @@ function AmazingRaceApp() {
                     </div>
                   ) : (
                     <>
+                      {/* Photo Upload Component */}
+                      <PhotoUpload
+                        teamId={currentTeam.id.toString()}
+                        clueId={appState.game.clueSequence[currentTeam.currentClueIndex].toString()}
+                        onPhotosChange={setSubmissionPhotos}
+                        disabled={loading}
+                      />
+
                       <div className="mb-4">
-                        <label className="block font-bold mb-2">Proof (describe or upload photo):</label>
+                        <label className="block font-bold mb-2">Text Description (optional):</label>
                         <textarea
-                          className="w-full px-4 py-3 border-2 rounded-lg"
-                          rows="4"
-                          placeholder="Describe your proof of completion or paste image URL..."
+                          className="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                          rows="3"
+                          placeholder="Describe what you did to complete this challenge..."
                           value={submissionProof}
                           onChange={(e) => setSubmissionProof(e.target.value)}
+                          disabled={loading}
                         />
                       </div>
 
                       <div className="mb-6">
                         <label className="block font-bold mb-2">Additional Notes (optional):</label>
                         <textarea
-                          className="w-full px-4 py-3 border-2 rounded-lg"
+                          className="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                           rows="2"
-                          placeholder="Any additional information..."
+                          placeholder="Any extra details or comments..."
                           value={submissionNotes}
                           onChange={(e) => setSubmissionNotes(e.target.value)}
+                          disabled={loading}
                         />
                       </div>
 
                       <button
                         onClick={submitProof}
-                        className="w-full bg-yellow-500 text-black py-4 rounded-lg text-xl font-bold hover:bg-yellow-600 flex items-center justify-center gap-2"
+                        disabled={loading}
+                        className="w-full bg-yellow-500 text-black py-4 rounded-lg text-xl font-bold hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
                       >
-                        <Camera className="w-6 h-6" />
-                        Submit for Approval
+                        {loading ? (
+                          <LoadingSpinner size="small" message="Submitting..." />
+                        ) : (
+                          <>
+                            <Camera className="w-6 h-6" />
+                            Submit for Approval
+                          </>
+                        )}
                       </button>
                     </>
                   )}
