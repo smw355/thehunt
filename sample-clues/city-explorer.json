@@ -1,0 +1,94 @@
+{
+  "version": "1.0",
+  "exportDate": "2024-01-15T10:00:00.000Z",
+  "description": "Full-day city exploration race using public transportation (5-6 hours)",
+  "clues": [
+    {
+      "type": "route-info",
+      "title": "Transportation Hub Start",
+      "content": [
+        "Your city adventure begins at the main transportation center!",
+        "Find the central train station, bus terminal, or subway hub.",
+        "Purchase day passes for public transportation for your entire team.",
+        "Take a team photo with your transportation passes clearly visible.",
+        "Study the transit map and plan your route for maximum efficiency.",
+        "Your goal is to explore 4 different neighborhoods using only public transit!"
+      ]
+    },
+    {
+      "type": "detour",
+      "title": "High Culture or Street Culture",
+      "detourOptionA": {
+        "title": "High Culture",
+        "description": "Visit a major cultural institution (art museum, history museum, theater, concert hall, etc.). Pay for admission and spend at least 45 minutes exploring. Find your favorite exhibit or piece and take a photo with it. Learn something new and interesting from a docent, guide, or information display. Get a receipt and a brochure/map. Take a sophisticated team photo in the museum lobby or main hall."
+      },
+      "detourOptionB": {
+        "title": "Street Culture",
+        "description": "Explore the street art, buskers, and local culture in a vibrant neighborhood. Find and photograph 3 different pieces of street art or graffiti (get the artists' signatures if possible). Listen to at least 2 different street performers and tip them. Try a food from a street vendor or local hole-in-the-wall restaurant. Take candid photos showing the neighborhood's authentic character and energy."
+      }
+    },
+    {
+      "type": "road-block",
+      "title": "Local Expert Interview",
+      "roadblockQuestion": "Who's the best at talking to strangers and learning new things?",
+      "roadblockTask": "Find a local business owner, longtime resident, or someone who clearly knows the area well. Conduct a 5-minute interview asking: What's the best hidden gem in this neighborhood? What's changed the most in recent years? What do they love most about living/working here? Record the interview on video and get their permission to use it. Learn at least 2 specific recommendations or insider tips about the city."
+    },
+    {
+      "type": "route-info",
+      "title": "Neighborhood Food Adventure",
+      "content": [
+        "Experience the city's culinary diversity!",
+        "Find a neighborhood known for a specific cuisine or food culture.",
+        "Visit an authentic restaurant representing that cuisine.",
+        "Order something adventurous that none of your team has tried before.",
+        "Take photos of the food, the restaurant interior, and your team trying it.",
+        "Rate the experience and ask staff for recommendations of other dishes to try.",
+        "Learn about the cultural significance of the cuisine from staff or other diners."
+      ]
+    },
+    {
+      "type": "detour",
+      "title": "City Heights or Historic Depths",
+      "detourOptionA": {
+        "title": "City Heights",
+        "description": "Find the highest publicly accessible point in the city (observation deck, rooftop, tall building, hill, etc.). Take photos of the city skyline from this vantage point. Identify and photograph at least 5 different landmarks visible from this height. Create a panoramic video slowly showing the 360-degree view. Research and note the elevation or height of your viewpoint."
+      },
+      "detourOptionB": {
+        "title": "Historic Depths",
+        "description": "Find the oldest or most historically significant area of the city. This could be the original downtown, a historic district, or preserved buildings. Take photos with at least 3 different historical markers, plaques, or signs. Learn about a significant historical event that happened in this area. Find a building that's over 100 years old and document its original purpose vs. current use."
+      }
+    },
+    {
+      "type": "road-block",
+      "title": "Public Transportation Master",
+      "roadblockQuestion": "Who's the best navigator and most patient with transit delays?",
+      "roadblockTask": "Using public transportation only, get to the opposite side of the city from where you currently are. You must use at least 2 different types of public transit (bus + train, subway + streetcar, etc.). Document your journey with photos at each transfer point. Get confirmation from a transit worker or fellow passenger that you've successfully reached a neighborhood far from where you started. Calculate and record your total travel time and cost."
+    },
+    {
+      "type": "route-info",
+      "title": "Local Shopping District",
+      "content": [
+        "Discover the city's shopping personality!",
+        "Find a bustling shopping area, market, or commercial district.",
+        "Visit at least 3 different types of stores (clothing, food, books, crafts, etc.).",
+        "Find and purchase one small, locally-made item as a souvenir.",
+        "Take photos in each store with the proprietors if they're willing.",
+        "Ask locals for recommendations of their favorite shops in the area.",
+        "Create a mini 'shopping guide' video for visitors to this district."
+      ]
+    },
+    {
+      "type": "route-info",
+      "title": "City Landmark Finale",
+      "content": [
+        "End your city adventure at the most iconic landmark!",
+        "Navigate to the most famous or recognizable landmark in the city.",
+        "Take the classic tourist photo that everyone takes at this spot.",
+        "Then take a creative, unique photo that shows your team's personality.",
+        "Find someone willing to take a group photo of your entire team.",
+        "Reflect on your day: What was the biggest surprise? Best discovery? Most challenging moment?",
+        "Create a 1-minute 'highlight reel' video of your city adventure using photos and clips from throughout the day."
+      ]
+    }
+  ]
+}

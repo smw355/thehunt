@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "exportDate": "2024-01-15T10:00:00.000Z",
+  "description": "University campus scavenger hunt for students and orientation (3-4 hours)",
+  "clues": [
+    {
+      "type": "route-info",
+      "title": "Campus Orientation Start",
+      "content": [
+        "Welcome to your Campus Adventure Race!",
+        "Begin at the main campus quad or central gathering area.",
+        "Find the oldest building on campus (check cornerstone dates).",
+        "Take a team photo in front of this historic building.",
+        "Research and write down three interesting facts about the building's history.",
+        "Bonus points if you can find a current student who knows the building's original purpose!"
+      ]
+    },
+    {
+      "type": "detour",
+      "title": "Study Smart or Play Hard",
+      "detourOptionA": {
+        "title": "Study Smart",
+        "description": "Visit the main library and complete these academic challenges: 1) Find a book published in your birth year, 2) Locate the oldest book in the collection you can access, 3) Find a thesis or research paper by a current faculty member, 4) Take photos of each discovery with team members holding the books, 5) Get a librarian to sign off on your completed scavenger hunt list."
+      },
+      "detourOptionB": {
+        "title": "Play Hard",
+        "description": "Find the campus recreation center or sports facilities. Complete these physical challenges: 1) Shoot 5 free throws (make at least 2), 2) Do a team plank for 60 seconds, 3) Find the campus pool and take a team photo by the diving board, 4) Locate the campus gym and try one piece of equipment each, 5) Get a rec center staff member to sign off on your completed challenges."
+      }
+    },
+    {
+      "type": "road-block",
+      "title": "Professor Connection",
+      "roadblockQuestion": "Who's brave enough to network with faculty?",
+      "roadblockTask": "Find a professor or faculty member currently on campus (in their office, lab, or around campus). Introduce yourself and your team, ask them about their research or what they teach, and get them to pose for a photo with you. Learn something interesting about their work and get their business card or email. Write a short summary of what you learned from them."
+    },
+    {
+      "type": "route-info",
+      "title": "Campus Cuisine Challenge",
+      "content": [
+        "Explore the campus dining options!",
+        "Visit at least 2 different dining locations on campus.",
+        "Try something new from each location (something none of your team has had before).",
+        "Rate each item on a scale of 1-10 for taste and value.",
+        "Take photos of each food item with the dining location visible in the background.",
+        "Interview one dining staff member about their favorite menu item and why.",
+        "Create a 'Campus Food Review' video (30 seconds max) for future students."
+      ]
+    },
+    {
+      "type": "detour",
+      "title": "School Spirit or Study Spot",
+      "detourOptionA": {
+        "title": "School Spirit",
+        "description": "Show your campus pride! Find 5 different examples of school branding, logos, or mascots around campus. Take creative team photos with each one where you're showing school spirit (cheering, making school hand gestures, wearing school colors, etc.). End by creating a 15-second school spirit cheer video at the most iconic campus landmark."
+      },
+      "detourOptionB": {
+        "title": "Study Spot",
+        "description": "Discover the best study locations on campus. Find 5 different study spaces (library floors, quiet lounges, outdoor areas, labs, cafes, etc.). Rate each location 1-10 for noise level, comfort, and wifi quality. Take photos of your team 'studying' in each location. Create a 'Best Study Spots Guide' with photos and ratings for future students."
+      }
+    },
+    {
+      "type": "road-block",
+      "title": "Campus History Expert",
+      "roadblockQuestion": "Who's the best researcher and storyteller?",
+      "roadblockTask": "Go to the campus admissions office, visitor center, or administrative building. Research and learn about a significant event, tradition, or person in the school's history. Present a 2-minute 'campus tour guide' explanation of this historical element to your team and record it on video. Get verification from an official staff member that your information is accurate."
+    },
+    {
+      "type": "route-info",
+      "title": "Future Student Finale",
+      "content": [
+        "Complete your campus experience like a true student!",
+        "Find the campus bookstore and browse the school merchandise.",
+        "Take a photo wearing or holding official school gear.",
+        "Locate student services (career center, counseling, student life office, etc.).",
+        "Get information about one service that interests your team.",
+        "End at the most Instagram-worthy spot on campus.",
+        "Take a final team photo that captures the campus spirit and your adventure!",
+        "Write one sentence about what surprised you most about this campus."
+      ]
+    }
+  ]
+}
