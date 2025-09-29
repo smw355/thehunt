@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component {
             <AlertCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
             <h1 className="text-2xl font-bold mb-4">Oops! Something went wrong</h1>
             <p className="text-gray-600 mb-6">
-              The Amazing Race app encountered an error. Don't worry, your progress might still be saved!
+              The Race app encountered an error. Don't worry, your progress might still be saved!
             </p>
             <button
               onClick={() => window.location.reload()}

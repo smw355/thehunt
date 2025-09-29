@@ -15,13 +15,12 @@ export function LoadingSpinner({ size = 'medium', message = 'Loading...' }) {
   );
 }
 
-export function FullPageLoader({ message = 'Loading Amazing Race...' }) {
+export function FullPageLoader({ message = 'Loading The Race...' }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">THE AMAZING</h1>
-          <h2 className="text-4xl font-bold text-yellow-500">RACE</h2>
+          <h1 className="text-4xl font-bold text-yellow-500">THE RACE</h1>
         </div>
         <LoadingSpinner size="large" message={message} />
       </div>

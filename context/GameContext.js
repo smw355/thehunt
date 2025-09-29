@@ -13,7 +13,7 @@ const initialAppState = {
 };
 
 export function GameProvider({ children }) {
-  const [appState, setAppState] = useLocalStorage('amazingRaceData', initialAppState);
+  const [appState, setAppState] = useLocalStorage('theRaceData', initialAppState);
   const [view, setView] = useState('login');
   const [currentTeam, setCurrentTeam] = useState(null);
   const [loading, setLoading] = useState(false);

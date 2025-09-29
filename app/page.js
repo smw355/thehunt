@@ -17,7 +17,7 @@ const initialAppState = {
 
 function AmazingRaceApp() {
   const [view, setView] = useState('login'); // 'login', 'admin', 'team'
-  const [appState, setAppState] = useLocalStorage('amazingRaceData', initialAppState);
+  const [appState, setAppState] = useLocalStorage('theRaceData', initialAppState);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const [currentTeam, setCurrentTeam] = useState(null);
@@ -291,7 +291,7 @@ function AmazingRaceApp() {
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `amazing-race-clues-${Date.now()}.json`;
+    link.download = `the-race-clues-${Date.now()}.json`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -511,8 +511,7 @@ function AmazingRaceApp() {
     return (
       <div className="w-full max-w-md bg-yellow-400 rounded-3xl overflow-hidden shadow-2xl">
         <div className="bg-black text-white py-8 px-6 text-center">
-          <p className="text-2xl font-bold tracking-widest">THE AMAZING</p>
-          <p className="text-6xl font-bold tracking-widest text-yellow-400">RACE</p>
+          <p className="text-6xl font-bold tracking-widest text-yellow-400">THE RACE</p>
         </div>
         <div className="p-8">
           <div className={`${badgeColors[clue.type]} text-black text-3xl font-bold text-center py-4 -mx-2 mb-6 rounded-xl`}>
@@ -535,8 +534,7 @@ function AmazingRaceApp() {
       <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2">THE AMAZING</h1>
-            <h2 className="text-5xl font-bold text-yellow-500">RACE</h2>
+            <h1 className="text-5xl font-bold text-yellow-500">THE RACE</h1>
           </div>
 
           {errors.length > 0 && (
