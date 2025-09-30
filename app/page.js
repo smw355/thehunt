@@ -956,7 +956,7 @@ function AmazingRaceApp() {
                     </span>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {appState.game.status === 'setup' && (
                     <>
                       <button
@@ -979,6 +979,66 @@ function AmazingRaceApp() {
                         <Play className="w-5 h-5" /> Start Game
                       </button>
                     </>
+                  )}
+
+                  {appState.game.status === 'active' && (
+                    <>
+                      <button
+                        onClick={async () => {
+                          if (confirm('Pause the game? Teams will see "Game Not Started" until you resume.')) {
+                            const updatedGame = await gameService.update(appState.game.id, { status: 'setup' });
+                            setAppState(prev => ({ ...prev, game: updatedGame }));
+                          }
+                        }}
+                        className="bg-yellow-500 text-black px-6 py-2 rounded-lg hover:bg-yellow-600 flex items-center gap-2"
+                      >
+                        ⏸️ Pause Game
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (confirm('End the game? This will mark it as completed.')) {
+                            const updatedGame = await gameService.update(appState.game.id, { status: 'completed' });
+                            setAppState(prev => ({ ...prev, game: updatedGame }));
+                          }
+                        }}
+                        className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2"
+                      >
+                        🏁 End Game
+                      </button>
+                    </>
+                  )}
+
+                  {(appState.game.status === 'completed' || appState.game.status === 'setup') && (
+                    <button
+                      onClick={async () => {
+                        if (confirm('Reset game and all team progress? This cannot be undone!')) {
+                          // Reset all teams to starting position
+                          const resetPromises = appState.teams.map(team =>
+                            teamService.updateProgress(team.id, 0, [])
+                          );
+                          await Promise.all(resetPromises);
+
+                          // Set game back to setup
+                          const updatedGame = await gameService.update(appState.game.id, { status: 'setup' });
+
+                          // Reload game data
+                          const [teams, submissions] = await Promise.all([
+                            teamService.getByGameId(appState.game.id),
+                            submissionService.getByGameId(appState.game.id)
+                          ]);
+
+                          setAppState(prev => ({
+                            ...prev,
+                            game: updatedGame,
+                            teams,
+                            submissions
+                          }));
+                        }
+                      }}
+                      className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 flex items-center gap-2"
+                    >
+                      🔄 Reset Game
+                    </button>
                   )}
                 </div>
               </div>
@@ -1197,11 +1257,14 @@ function AmazingRaceApp() {
               <div className="space-y-4">
                 {pendingSubmissions.map(sub => {
                   const clue = appState.clueLibrary.find(c => c.id === sub.clueId);
+                  const team = appState.teams.find(t => t.id === sub.teamId);
                   return (
                     <div key={sub.id} className="bg-white rounded-lg p-6 border-2 border-yellow-400 shadow-lg">
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <h3 className="font-bold text-xl">{sub.teamName}</h3>
+                          <h3 className="font-bold text-xl text-blue-600">
+                            {team?.name || 'Unknown Team'}
+                          </h3>
                           <p className="text-sm text-gray-600 mb-1">Clue: {clue?.title || 'Unknown'}</p>
                           {sub.clueType === 'detour' && sub.detourChoice && (
                             <p className="text-sm text-blue-600">Detour Choice: Option {sub.detourChoice}</p>
@@ -1330,7 +1393,6 @@ function AmazingRaceApp() {
                 <button
                   onClick={() => setShowTeamForm(true)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600"
-                  disabled={appState.game.status === 'active'}
                 >
                   <Plus className="w-5 h-5" /> Add Team
                 </button>
@@ -1384,29 +1446,41 @@ function AmazingRaceApp() {
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      {appState.game.status === 'setup' && (
-                        <>
-                          <button
-                            onClick={() => {
-                              setEditingTeamId(team.id);
-                              setTeamForm({
-                                name: team.name,
-                                password: team.password
-                              });
-                              setShowTeamForm(true);
-                            }}
-                            className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
-                          >
-                            <Edit2 className="w-5 h-5" />
-                          </button>
-                          <button
-                            onClick={() => deleteTeam(team.id)}
-                            className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        </>
-                      )}
+                      <button
+                        onClick={() => {
+                          setEditingTeamId(team.id);
+                          setTeamForm({
+                            name: team.name,
+                            password: team.password
+                          });
+                          setShowTeamForm(true);
+                        }}
+                        className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+                        title="Edit Team"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => deleteTeam(team.id)}
+                        className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+                        title="Delete Team"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (confirm(`Reset ${team.name} to the beginning? This will clear their progress.`)) {
+                            await teamService.updateProgress(team.id, 0, []);
+                            // Reload teams to show updated progress
+                            const teams = await teamService.getByGameId(appState.game.id);
+                            setAppState(prev => ({ ...prev, teams }));
+                          }
+                        }}
+                        className="bg-orange-500 text-white p-2 rounded-lg hover:bg-orange-600"
+                        title="Reset Team Progress"
+                      >
+                        🔄
+                      </button>
                     </div>
                   </div>
                 ))}
