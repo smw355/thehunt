@@ -79,6 +79,16 @@ function AmazingRaceApp() {
     return code;
   };
 
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('theRaceSession');
+    setView('login');
+    setCurrentTeam(null);
+    setSelectedDetour(null);
+    setRoadblockPlayer('');
+    setRoadblockRevealed(false);
+  };
+
   // Load data from database
   const loadClueLibrary = async () => {
     try {
@@ -110,11 +120,61 @@ function AmazingRaceApp() {
     }
   };
 
-  // Initial data load
+  // Initial data load and session restoration
   useEffect(() => {
     const initializeData = async () => {
       setLoading(true);
       await loadClueLibrary();
+
+      // Try to restore session
+      const savedSession = localStorage.getItem('theRaceSession');
+      if (savedSession) {
+        try {
+          const session = JSON.parse(savedSession);
+          if (session.view && session.currentTeam && session.gameCode) {
+            // Restore team session
+            const game = await gameService.findByCode(session.gameCode);
+            const teams = await teamService.getByGameId(game.id);
+            const submissions = await submissionService.getByGameId(game.id);
+
+            const team = teams.find(t => t.id === session.currentTeam.id);
+            if (team) {
+              setCurrentTeam(team);
+              setAppState(prev => ({
+                ...prev,
+                game,
+                teams,
+                submissions
+              }));
+              setView(session.view);
+              setGameCode(session.gameCode);
+            }
+          } else if (session.view === 'admin') {
+            // Try to restore admin session
+            setView('admin');
+            // Load games for admin
+            const games = await gameService.getAll();
+            if (games.length > 0) {
+              const latestGame = games[games.length - 1];
+              const [teams, submissions] = await Promise.all([
+                teamService.getByGameId(latestGame.id),
+                submissionService.getByGameId(latestGame.id)
+              ]);
+
+              setAppState(prev => ({
+                ...prev,
+                game: latestGame,
+                teams,
+                submissions
+              }));
+            }
+          }
+        } catch (error) {
+          console.error('Failed to restore session:', error);
+          localStorage.removeItem('theRaceSession');
+        }
+      }
+
       setDataLoaded(true);
       setLoading(false);
     };
@@ -158,6 +218,11 @@ function AmazingRaceApp() {
         }
 
         setView('admin');
+
+        // Save admin session
+        localStorage.setItem('theRaceSession', JSON.stringify({
+          view: 'admin'
+        }));
       } catch (error) {
         console.error('Failed to load admin data:', error);
         setErrors(['Failed to load game data']);
@@ -189,12 +254,24 @@ function AmazingRaceApp() {
 
       if (team) {
         setCurrentTeam(team);
+
+        // Load submissions for this game
+        const submissions = await submissionService.getByGameId(game.id);
+
         setAppState(prev => ({
           ...prev,
           game,
-          teams
+          teams,
+          submissions
         }));
         setView('team');
+
+        // Save session for persistence
+        localStorage.setItem('theRaceSession', JSON.stringify({
+          view: 'team',
+          currentTeam: team,
+          gameCode
+        }));
       } else {
         setErrors(['Invalid team credentials']);
       }
@@ -645,11 +722,27 @@ function AmazingRaceApp() {
 
   // Get current team's clue
   const getCurrentClue = () => {
-    if (!currentTeam || !appState.game) return null;
-    if (currentTeam.currentClueIndex >= appState.game.clueSequence.length) return null;
-    
+    if (!currentTeam || !appState.game) {
+      console.log('getCurrentClue: Missing currentTeam or game', { currentTeam: !!currentTeam, game: !!appState.game });
+      return null;
+    }
+    if (currentTeam.currentClueIndex >= appState.game.clueSequence.length) {
+      console.log('getCurrentClue: Team finished all clues', { currentIndex: currentTeam.currentClueIndex, totalClues: appState.game.clueSequence.length });
+      return null;
+    }
+
     const clueId = appState.game.clueSequence[currentTeam.currentClueIndex];
-    return appState.clueLibrary.find(c => c.id === clueId);
+    const clue = appState.clueLibrary.find(c => c.id === clueId);
+
+    console.log('getCurrentClue:', {
+      currentIndex: currentTeam.currentClueIndex,
+      clueId,
+      clueLibraryLength: appState.clueLibrary.length,
+      clueFound: !!clue,
+      clueSequence: appState.game.clueSequence
+    });
+
+    return clue;
   };
 
   // Check if team has pending submission
@@ -823,7 +916,7 @@ function AmazingRaceApp() {
             <p className="text-yellow-400">Game Master Control Panel</p>
           </div>
           <button
-            onClick={() => setView('login')}
+            onClick={handleLogout}
             className="bg-red-500 px-6 py-2 rounded-lg hover:bg-red-600"
           >
             Logout
@@ -1570,6 +1663,13 @@ function AmazingRaceApp() {
     const rejectedSubmissions = getRejectedSubmissions();
     const teamState = getCurrentTeamState();
 
+    console.log('Team View State:', {
+      gameStatus: appState.game?.status,
+      currentClue: !!currentClue,
+      isFinished,
+      clueLibrarySize: appState.clueLibrary.length
+    });
+
     // Update current team data
     const updatedTeam = appState.teams.find(t => t.id === currentTeam.id);
     if (updatedTeam && updatedTeam.currentClueIndex !== currentTeam.currentClueIndex) {
@@ -1587,10 +1687,7 @@ function AmazingRaceApp() {
             <h2 className="text-3xl font-bold mb-4">Game Not Started</h2>
             <p className="text-gray-600 mb-6">The game master hasn't started the race yet. Please wait!</p>
             <button
-              onClick={() => {
-                setView('login');
-                setCurrentTeam(null);
-              }}
+              onClick={handleLogout}
               className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
             >
               Back to Login
@@ -1611,13 +1708,7 @@ function AmazingRaceApp() {
               </p>
             </div>
             <button
-              onClick={() => {
-                setView('login');
-                setCurrentTeam(null);
-                setSelectedDetour(null);
-                setRoadblockPlayer('');
-                setRoadblockRevealed(false);
-              }}
+              onClick={handleLogout}
               className="bg-red-500 px-6 py-2 rounded-lg hover:bg-red-600"
             >
               Logout
