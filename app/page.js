@@ -2,15 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { Camera, Check, X, Users, Plus, Edit2, Trash2, Eye, Clock, Trophy, AlertCircle, Play, Copy } from 'lucide-react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { validateGameForm, validateTeamForm, validateClueForm, copyToClipboard, downloadJSON, parseJSONFile } from '../utils/gameUtils';
 import PhotoUpload from '../components/PhotoUpload';
+import { gameService, teamService, submissionService, clueService } from '../utils/databaseService';
 
-// Mock data store
+// App state for database integration
 const initialAppState = {
-  game: null, // Single active game
+  game: null, // Current active game
+  teams: [], // Teams for current game
   clueLibrary: [], // Shared clue library
   submissions: [],
   teamStates: {}
@@ -18,7 +19,8 @@ const initialAppState = {
 
 function AmazingRaceApp() {
   const [view, setView] = useState('login'); // 'login', 'admin', 'team'
-  const [appState, setAppState] = useLocalStorage('theRaceData', initialAppState);
+  const [appState, setAppState] = useState(initialAppState);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const [currentTeam, setCurrentTeam] = useState(null);
@@ -77,6 +79,56 @@ function AmazingRaceApp() {
     return code;
   };
 
+  // Load data from database
+  const loadClueLibrary = async () => {
+    try {
+      const clues = await clueService.getAll();
+      setAppState(prev => ({ ...prev, clueLibrary: clues }));
+    } catch (error) {
+      console.error('Failed to load clue library:', error);
+      setErrors(prev => [...prev, 'Failed to load clue library']);
+    }
+  };
+
+  const loadGameData = async () => {
+    try {
+      if (!appState.game) return;
+
+      const [teams, submissions] = await Promise.all([
+        teamService.getByGameId(appState.game.id),
+        submissionService.getByGameId(appState.game.id)
+      ]);
+
+      setAppState(prev => ({
+        ...prev,
+        teams,
+        submissions
+      }));
+    } catch (error) {
+      console.error('Failed to load game data:', error);
+      setErrors(prev => [...prev, 'Failed to load game data']);
+    }
+  };
+
+  // Initial data load
+  useEffect(() => {
+    const initializeData = async () => {
+      setLoading(true);
+      await loadClueLibrary();
+      setDataLoaded(true);
+      setLoading(false);
+    };
+
+    initializeData();
+  }, []);
+
+  // Load game-specific data when game changes
+  useEffect(() => {
+    if (appState.game) {
+      loadGameData();
+    }
+  }, [appState.game]);
+
   // Admin Login
   const handleAdminLogin = async () => {
     setLoading(true);
@@ -96,59 +148,80 @@ function AmazingRaceApp() {
   };
 
   // Team Login
-  const handleTeamLogin = () => {
-    if (!appState.game) {
-      alert('No active game');
-      return;
-    }
-    
-    if (gameCode.toUpperCase() !== appState.game.code) {
-      alert('Invalid game code');
-      return;
-    }
+  const handleTeamLogin = async () => {
+    setLoading(true);
+    setErrors([]);
 
-    const team = appState.game.teams.find(
-      t => t.name === teamLoginName && t.password === teamLoginPassword
-    );
-    
-    if (team) {
-      setCurrentTeam(team);
-      setView('team');
-    } else {
-      alert('Invalid team credentials');
+    try {
+      // Find game by code
+      const game = await gameService.findByCode(gameCode);
+
+      // Get teams for this game
+      const teams = await teamService.getByGameId(game.id);
+
+      // Find matching team
+      const team = teams.find(
+        t => t.name === teamLoginName && t.password === teamLoginPassword
+      );
+
+      if (team) {
+        setCurrentTeam(team);
+        setAppState(prev => ({
+          ...prev,
+          game,
+          teams
+        }));
+        setView('team');
+      } else {
+        setErrors(['Invalid team credentials']);
+      }
+    } catch (error) {
+      console.error('Team login failed:', error);
+      setErrors(['Invalid game code or team credentials']);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Admin: Create/Edit Game
-  const saveGame = () => {
+  const saveGame = async () => {
     const validationErrors = validateGameForm(gameForm);
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    const newGame = {
-      name: gameForm.name,
-      code: gameForm.code.toUpperCase(),
-      clueSequence: gameForm.clueSequence,
-      teams: appState.game?.teams || [],
-      status: 'setup', // setup, active, completed
-      createdAt: Date.now()
-    };
+    setLoading(true);
+    try {
+      const gameData = {
+        name: gameForm.name,
+        code: gameForm.code.toUpperCase(),
+        clueSequence: gameForm.clueSequence
+      };
 
-    setAppState(prev => ({
-      ...prev,
-      game: newGame
-    }));
+      const newGame = await gameService.create(gameData);
 
-    setShowGameForm(false);
-    setGameForm({ name: '', code: '', clueSequence: [] });
+      setAppState(prev => ({
+        ...prev,
+        game: newGame,
+        teams: []
+      }));
+
+      setShowGameForm(false);
+      setGameForm({ name: '', code: '', clueSequence: [] });
+      setErrors([]);
+    } catch (error) {
+      console.error('Failed to create game:', error);
+      setErrors(['Failed to create game']);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Admin: Start Game
   const startGame = () => {
     if (!appState.game) return;
-    if (appState.game.teams.length === 0) {
+    if (appState.teams.length === 0) {
       alert('Add at least one team before starting');
       return;
     }
@@ -162,7 +235,7 @@ function AmazingRaceApp() {
   };
 
   // Admin: Save Team
-  const saveTeam = () => {
+  const saveTeam = async () => {
     if (!teamForm.name || !teamForm.password) {
       alert('Team name and password required');
       return;
@@ -173,38 +246,36 @@ function AmazingRaceApp() {
       return;
     }
 
-    if (editingTeamId) {
-      setAppState(prev => ({
-        ...prev,
-        game: {
-          ...prev.game,
-          teams: prev.game.teams.map(t => 
-            t.id === editingTeamId 
-              ? { ...t, ...teamForm }
-              : t
-          )
-        }
-      }));
-    } else {
-      const newTeam = {
-        id: Date.now(),
-        ...teamForm,
-        currentClueIndex: 0,
-        completedClues: []
-      };
-      
-      setAppState(prev => ({
-        ...prev,
-        game: {
-          ...prev.game,
-          teams: [...prev.game.teams, newTeam]
-        }
-      }));
+    setLoading(true);
+    try {
+      if (editingTeamId) {
+        // TODO: Implement team update API
+        alert('Team editing not yet implemented in database version');
+      } else {
+        const teamData = {
+          gameId: appState.game.id,
+          name: teamForm.name,
+          password: teamForm.password
+        };
+
+        const newTeam = await teamService.create(teamData);
+
+        setAppState(prev => ({
+          ...prev,
+          teams: [...prev.teams, newTeam]
+        }));
+      }
+
+      setShowTeamForm(false);
+      setTeamForm({ name: '', password: '' });
+      setEditingTeamId(null);
+      setErrors([]);
+    } catch (error) {
+      console.error('Failed to save team:', error);
+      setErrors(['Failed to save team']);
+    } finally {
+      setLoading(false);
     }
-    
-    setShowTeamForm(false);
-    setTeamForm({ name: '', password: '' });
-    setEditingTeamId(null);
   };
 
   // Admin: Delete Team
@@ -388,67 +459,88 @@ function AmazingRaceApp() {
   };
 
   // Team: Submit Proof
-  const submitProof = () => {
+  const submitProof = async () => {
     if (!submissionProof.trim() && submissionPhotos.length === 0) {
       setErrors(['Please provide proof of completion (photo or text)']);
       return;
     }
 
-    const currentClue = getCurrentClue();
-    const teamStateKey = `${currentTeam.id}-${currentTeam.currentClueIndex}`;
-    const teamState = appState.teamStates[teamStateKey] || {};
+    setLoading(true);
+    try {
+      const currentClue = getCurrentClue();
+      const teamStateKey = `${currentTeam.id}-${currentTeam.currentClueIndex}`;
+      const teamState = appState.teamStates[teamStateKey] || {};
 
-    const submission = {
-      id: Date.now(),
-      teamId: currentTeam.id,
-      teamName: currentTeam.name,
-      clueIndex: currentTeam.currentClueIndex,
-      clueId: appState.game.clueSequence[currentTeam.currentClueIndex],
-      clueType: currentClue.type,
-      detourChoice: teamState.detourChoice,
-      roadblockPlayer: teamState.roadblockPlayer,
-      proof: submissionProof,
-      notes: submissionNotes,
-      photos: submissionPhotos,
-      timestamp: new Date().toISOString(),
-      status: 'pending',
-      adminComment: null
-    };
+      const submissionData = {
+        teamId: currentTeam.id,
+        gameId: appState.game.id,
+        clueId: appState.game.clueSequence[currentTeam.currentClueIndex],
+        clueIndex: currentTeam.currentClueIndex,
+        clueType: currentClue.type,
+        detourChoice: teamState.detourChoice || null,
+        roadblockPlayer: teamState.roadblockPlayer || null,
+        textProof: submissionProof,
+        notes: submissionNotes,
+        photos: submissionPhotos
+      };
 
-    setAppState(prev => ({
-      ...prev,
-      submissions: [...prev.submissions, submission]
-    }));
+      const newSubmission = await submissionService.create(submissionData);
 
-    setSubmissionProof('');
-    setSubmissionNotes('');
-    setSubmissionPhotos([]);
-    setErrors(['Submission sent! Waiting for approval...']);
-    setTimeout(() => setErrors([]), 3000);
+      setAppState(prev => ({
+        ...prev,
+        submissions: [...prev.submissions, newSubmission]
+      }));
+
+      setSubmissionProof('');
+      setSubmissionNotes('');
+      setSubmissionPhotos([]);
+      setErrors(['Submission sent! Waiting for approval...']);
+      setTimeout(() => setErrors([]), 3000);
+    } catch (error) {
+      console.error('Failed to submit proof:', error);
+      setErrors(['Failed to submit proof. Please try again.']);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Admin: Approve Submission
-  const approveSubmission = (submissionId) => {
-    const submission = appState.submissions.find(s => s.id === submissionId);
-    
-    setAppState(prev => ({
-      ...prev,
-      submissions: prev.submissions.map(s =>
-        s.id === submissionId ? { ...s, status: 'approved' } : s
-      ),
-      game: {
-        ...prev.game,
-        teams: prev.game.teams.map(t =>
+  const approveSubmission = async (submissionId) => {
+    setLoading(true);
+    try {
+      const submission = appState.submissions.find(s => s.id === submissionId);
+      const team = appState.teams.find(t => t.id === submission.teamId);
+
+      // Update submission status
+      await submissionService.updateStatus(submissionId, 'approved');
+
+      // Update team progress
+      const newClueIndex = team.currentClueIndex + 1;
+      const newCompletedClues = [...team.completedClues, submission.clueId];
+      await teamService.updateProgress(team.id, newClueIndex, newCompletedClues);
+
+      // Update local state
+      setAppState(prev => ({
+        ...prev,
+        submissions: prev.submissions.map(s =>
+          s.id === submissionId ? { ...s, status: 'approved' } : s
+        ),
+        teams: prev.teams.map(t =>
           t.id === submission.teamId
             ? {
                 ...t,
-                currentClueIndex: t.currentClueIndex + 1,
-                completedClues: [...t.completedClues, submission.clueId]
+                currentClueIndex: newClueIndex,
+                completedClues: newCompletedClues
               }
             : t
         )
-      }
-    }));
+      }));
+    } catch (error) {
+      console.error('Failed to approve submission:', error);
+      setErrors(['Failed to approve submission']);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Admin: Reject Submission with Comment
@@ -458,25 +550,37 @@ function AmazingRaceApp() {
     setShowCommentModal(true);
   };
 
-  const rejectSubmissionWithComment = () => {
+  const rejectSubmissionWithComment = async () => {
     if (!currentAdminComment.trim()) {
       setErrors(['Please provide a comment explaining why this submission was rejected']);
       return;
     }
 
-    setAppState(prev => ({
-      ...prev,
-      submissions: prev.submissions.map(s =>
-        s.id === commentingSubmissionId
-          ? { ...s, status: 'rejected', adminComment: currentAdminComment }
-          : s
-      )
-    }));
+    setLoading(true);
+    try {
+      // Update submission status with comment
+      await submissionService.updateStatus(commentingSubmissionId, 'rejected', currentAdminComment);
 
-    setShowCommentModal(false);
-    setCommentingSubmissionId(null);
-    setCurrentAdminComment('');
-    setErrors([]);
+      // Update local state
+      setAppState(prev => ({
+        ...prev,
+        submissions: prev.submissions.map(s =>
+          s.id === commentingSubmissionId
+            ? { ...s, status: 'rejected', adminComment: currentAdminComment }
+            : s
+        )
+      }));
+
+      setShowCommentModal(false);
+      setCommentingSubmissionId(null);
+      setCurrentAdminComment('');
+      setErrors([]);
+    } catch (error) {
+      console.error('Failed to reject submission:', error);
+      setErrors(['Failed to reject submission']);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const cancelRejectComment = () => {
@@ -692,7 +796,7 @@ function AmazingRaceApp() {
                   </div>
                   <div className="flex gap-4 text-sm">
                     <span className="bg-white bg-opacity-50 px-3 py-1 rounded">
-                      {appState.game.teams.length} Teams
+                      {appState.teams.length} Teams
                     </span>
                     <span className="bg-white bg-opacity-50 px-3 py-1 rounded">
                       {appState.game.clueSequence.length} Clues
@@ -829,7 +933,7 @@ function AmazingRaceApp() {
               <div className="bg-white rounded-xl p-6 shadow">
                 <div className="flex items-center justify-between mb-2">
                   <Users className="w-8 h-8 text-blue-500" />
-                  <span className="text-3xl font-bold">{appState.game.teams.length}</span>
+                  <span className="text-3xl font-bold">{appState.teams.length}</span>
                 </div>
                 <p className="text-gray-600">Teams in Game</p>
               </div>
@@ -1038,7 +1142,7 @@ function AmazingRaceApp() {
               )}
 
               <div className="space-y-3">
-                {appState.game.teams.map(team => (
+                {appState.teams.map(team => (
                   <div key={team.id} className="border rounded-lg p-4 flex justify-between items-center">
                     <div>
                       <h3 className="font-bold text-lg">{team.name}</h3>
@@ -1073,7 +1177,7 @@ function AmazingRaceApp() {
                     </div>
                   </div>
                 ))}
-                {appState.game.teams.length === 0 && (
+                {appState.teams.length === 0 && (
                   <p className="text-center text-gray-500 py-8">No teams yet. Add your first team!</p>
                 )}
               </div>
@@ -1326,7 +1430,7 @@ function AmazingRaceApp() {
     const teamState = getCurrentTeamState();
 
     // Update current team data
-    const updatedTeam = appState.game?.teams.find(t => t.id === currentTeam.id);
+    const updatedTeam = appState.teams.find(t => t.id === currentTeam.id);
     if (updatedTeam && updatedTeam.currentClueIndex !== currentTeam.currentClueIndex) {
       setCurrentTeam(updatedTeam);
       setSelectedDetour(null);
