@@ -7,9 +7,11 @@ Perfect for corporate team building, educational events, community competitions,
 ## 🚀 **Key Features**
 
 ### 📱 **Mobile-First Experience**
-- **Camera Integration**: Automatic camera access on mobile devices
-- **Photo/Video Uploads**: Up to 10MB files with automatic compression
-- **Offline Support**: Queue uploads when connection is poor
+- **Dual Upload Options**: Take new photos with camera OR select from gallery
+- **Multi-Photo Challenges**: Support for challenges requiring 1-10 specific photos
+- **Real-Time Photo Counter**: Visual progress tracking for photo requirements
+- **Smart Validation**: Exact photo count enforcement with helpful feedback
+- **Auto-Compression**: Up to 10MB files optimized automatically
 - **Touch-Optimized**: Designed for phones and tablets
 
 ### 🎯 **Advanced Admin Tools**
@@ -102,7 +104,8 @@ Basic informational clues that direct teams to locations or give instructions.
     "Make your way to the historic red bridge in downtown.",
     "Once there, find the plaque with the founding date.",
     "Take a photo of your team with the plaque clearly visible."
-  ]
+  ],
+  "requiredPhotos": 1
 }
 ```
 
@@ -119,7 +122,8 @@ Teams choose between two different tasks (just like the TV show).
   "detourOptionB": {
     "title": "Walk It",
     "description": "Walk to the nearest park and find 5 different types of flowers. Take individual photos of each flower type with a team member's hand for scale."
-  }
+  },
+  "requiredPhotos": 2
 }
 ```
 
@@ -130,7 +134,8 @@ One team member must be selected before the task is revealed.
   "type": "road-block",
   "title": "Memory Challenge",
   "roadblockQuestion": "Who has the best memory for details?",
-  "roadblockTask": "Study the storefront window display for 2 minutes, then recreate the exact arrangement using items from your backpack. Take a photo of your recreation next to the original."
+  "roadblockTask": "Study the storefront window display for 2 minutes, then recreate the exact arrangement using items from your backpack. Take a photo of your recreation next to the original.",
+  "requiredPhotos": 2
 }
 ```
 
@@ -152,7 +157,8 @@ Create a file called `my-clues.json` with this structure:
         "Begin your race at Central Station's main entrance.",
         "Look for the information board with departure times.",
         "Take a team photo in front of the board showing the current time."
-      ]
+      ],
+      "requiredPhotos": 1
     },
     {
       "type": "detour",
@@ -164,13 +170,15 @@ Create a file called `my-clues.json` with this structure:
       "detourOptionB": {
         "title": "Slow Food",
         "description": "Find a sit-down restaurant and order an appetizer. Take a photo with the server and a selfie with your food when it arrives."
-      }
+      },
+      "requiredPhotos": 4
     },
     {
       "type": "road-block",
       "title": "Street Performance",
       "roadblockQuestion": "Who's ready to entertain the crowd?",
-      "roadblockTask": "Perform a 2-minute street performance (song, dance, or comedy) and collect at least $5 in donations. Take a photo of the money collected and a video of the performance."
+      "roadblockTask": "Perform a 2-minute street performance (song, dance, or comedy) and collect at least $5 in donations. Take a photo of the money collected and a video of the performance.",
+      "requiredPhotos": 2
     },
     {
       "type": "route-info",
@@ -180,7 +188,8 @@ Create a file called `my-clues.json` with this structure:
         "Find the main flagpole in front of the building.",
         "Take a celebratory team photo with the flag in the background.",
         "Check in with the race official to stop your time!"
-      ]
+      ],
+      "requiredPhotos": 1
     }
   ]
 }
@@ -204,11 +213,41 @@ Create a file called `my-clues.json` with this structure:
 3. **File Downloads**: `the-race-clues-[timestamp].json`
 4. **Share Library**: Send file to other race organizers
 
+### 📸 **Multi-Photo Challenge System**
+
+#### NEW: Required Photos Feature
+Set `requiredPhotos` to any number from `0-10` for precise photo requirements:
+
+- **`requiredPhotos: 0`**: Optional photos (teams can submit text or photos)
+- **`requiredPhotos: 1-10`**: Exact number of photos required (enforced validation)
+
+#### Mobile Photo Experience
+Teams get dual upload options on mobile devices:
+- **🔵 Blue Button**: "Take Photo" - Opens camera for new photos
+- **🟢 Green Button**: "Select from Gallery" - Choose existing photos
+
+#### Real-Time Feedback System
+- **Photo Counter**: Shows "(2/5 required photos)" progress
+- **Visual Indicators**:
+  - 🔴 Red: Need more photos
+  - 🟡 Yellow: Too many photos
+  - 🟢 Green: Perfect count
+- **Smart Validation**: Prevents submission unless exact count met
+
+### 📋 **Quick Reference: Required Photos Field**
+
+| Value | Behavior | Use Case |
+|-------|----------|----------|
+| `requiredPhotos: 0` | Optional photos (default) | Text-based challenges, flexible submission |
+| `requiredPhotos: 1` | Exactly 1 photo required | Simple photo tasks, team selfies |
+| `requiredPhotos: 2-5` | Multiple specific photos | Multi-step challenges, before/after shots |
+| `requiredPhotos: 6-10` | High-count photo collections | Scavenger hunts, artifact collections |
+
 ### 💡 **Clue Writing Best Practices**
 
 #### Route Info Clues
 - **Be Specific**: Include landmark details and clear directions
-- **Photo Requirements**: Always specify what should be in the photo
+- **Photo Requirements**: Use `requiredPhotos` field for exact counts needed
 - **Difficulty Scaling**: Start easy, increase complexity throughout race
 - **Local Knowledge**: Reference well-known local landmarks
 
@@ -226,20 +265,66 @@ Create a file called `my-clues.json` with this structure:
 
 ### 🎯 **Sample Race Scenarios**
 
+#### **🏛️ Museum Collection Hunt** (Perfect for British Museum!)
+```json
+{
+  "clues": [
+    {
+      "type": "route-info",
+      "title": "Ancient Artifacts Collection",
+      "content": [
+        "Find and photograph these 5 famous artifacts in the British Museum:",
+        "1. The Rosetta Stone (Egyptian Gallery)",
+        "2. The Elgin Marbles (Greek Galleries)",
+        "3. The Lewis Chessmen (Medieval Gallery)",
+        "4. Egyptian Mummy Case (Egyptian Gallery)",
+        "5. Roman Amphora (Roman Gallery)",
+        "Each photo must show the artifact's information plaque clearly."
+      ],
+      "requiredPhotos": 5
+    },
+    {
+      "type": "detour",
+      "title": "Ancient vs Modern",
+      "detourOptionA": {
+        "title": "Ancient World",
+        "description": "Find 3 artifacts from 3 different ancient civilizations (Egypt, Greece, Rome). Take photos of each with your team member posing as if they're from that era."
+      },
+      "detourOptionB": {
+        "title": "Modern Discovery",
+        "description": "Find 3 artifacts discovered in the last 200 years. Take photos showing the discovery date on each information plaque."
+      },
+      "requiredPhotos": 3
+    }
+  ]
+}
+```
+
 #### **Corporate Team Building** (2-3 hours)
 ```json
 {
   "clues": [
     {
       "type": "route-info",
-      "title": "Office Scavenger Hunt",
-      "content": ["Find 5 different company logos within a 2-block radius of the office..."]
+      "title": "Office Neighborhood Hunt",
+      "content": [
+        "Find 5 different company logos within a 2-block radius of the office.",
+        "Take a selfie with each logo clearly visible in the background."
+      ],
+      "requiredPhotos": 5
     },
     {
       "type": "detour",
       "title": "Lunch Rush or Coffee Culture",
-      "detourOptionA": {"title": "Lunch Rush", "description": "Order team lunch from 3 different food trucks..."},
-      "detourOptionB": {"title": "Coffee Culture", "description": "Visit 3 coffee shops and rate their lattes..."}
+      "detourOptionA": {
+        "title": "Lunch Rush",
+        "description": "Order team lunch from 3 different food trucks. Take photos of each food item and receipt."
+      },
+      "detourOptionB": {
+        "title": "Coffee Culture",
+        "description": "Visit 3 coffee shops and order different drinks. Take photos of each drink and rate them."
+      },
+      "requiredPhotos": 6
     }
   ]
 }
@@ -253,7 +338,22 @@ Create a file called `my-clues.json` with this structure:
       "type": "road-block",
       "title": "Academic Challenge",
       "roadblockQuestion": "Who's the biggest bookworm?",
-      "roadblockTask": "Find a book in the library published the same year you were born..."
+      "roadblockTask": "Find books in the library from 4 different decades (1980s, 1990s, 2000s, 2010s). Take photos of each book's publication page showing the year.",
+      "requiredPhotos": 4
+    },
+    {
+      "type": "route-info",
+      "title": "Campus Landmarks Tour",
+      "content": [
+        "Visit these 6 iconic campus locations and take a team selfie at each:",
+        "1. Main entrance gate",
+        "2. Clock tower",
+        "3. Student union building",
+        "4. Library steps",
+        "5. Cafeteria entrance",
+        "6. Sports stadium"
+      ],
+      "requiredPhotos": 6
     }
   ]
 }
@@ -265,8 +365,26 @@ Create a file called `my-clues.json` with this structure:
   "clues": [
     {
       "type": "route-info",
-      "title": "Public Transportation Master",
-      "content": ["Using only public transportation, get to the city's highest viewpoint..."]
+      "title": "Transportation Photo Journey",
+      "content": [
+        "Using only public transportation, visit the city's highest viewpoint.",
+        "Document your journey with photos of 3 different transportation modes you used.",
+        "Take a final panoramic photo from the viewpoint showing the city below."
+      ],
+      "requiredPhotos": 4
+    },
+    {
+      "type": "detour",
+      "title": "Street Art Safari or Food Market Hunt",
+      "detourOptionA": {
+        "title": "Street Art Safari",
+        "description": "Find 7 different murals or street art pieces around the arts district. Each photo must include one team member pointing at the artwork."
+      },
+      "detourOptionB": {
+        "title": "Food Market Hunt",
+        "description": "Visit the central market and buy ingredients from 5 different vendors. Take photos of each purchase with the vendor who sold it to you."
+      },
+      "requiredPhotos": 7
     }
   ]
 }
@@ -291,9 +409,10 @@ npm run lint   # Check code quality
 
 ### Tech Stack
 - **Framework**: Next.js 15 (App Router)
-- **Storage**: Vercel Blob (photos/videos) + localStorage (game data)
+- **Database**: PostgreSQL with Drizzle ORM (production-ready)
+- **Storage**: Vercel Blob (photos/videos) + PostgreSQL (game data)
 - **UI**: Tailwind CSS + Lucide Icons
-- **State**: React Hooks with custom localStorage persistence
+- **State**: React Hooks with database persistence
 - **Deployment**: Vercel (recommended) or any Node.js host
 
 ## 📱 **Mobile Optimization Features**
@@ -371,10 +490,15 @@ For issues, feature requests, or questions:
 ## 🏆 **Ready to Race!**
 
 This platform provides everything needed to run professional-quality Amazing Race competitions with:
-- ✅ Mobile photo submission system
-- ✅ Admin feedback and management tools
-- ✅ Comprehensive clue creation system
-- ✅ Real-time team progress tracking
-- ✅ Production-ready deployment on Vercel
+- ✅ **Multi-Photo Challenges**: Require 1-10 specific photos per challenge
+- ✅ **Dual Mobile Upload**: Camera + gallery selection for maximum flexibility
+- ✅ **Smart Photo Validation**: Real-time feedback and exact count enforcement
+- ✅ **Admin Review System**: Beautiful photo galleries with mandatory feedback
+- ✅ **Database Persistence**: Production-ready PostgreSQL integration
+- ✅ **Comprehensive Clue System**: Route Info, Detour, and Roadblock challenges
+- ✅ **Real-time Progress Tracking**: Live team status monitoring
+- ✅ **One-Click Vercel Deployment**: Professional hosting in minutes
+
+**Perfect for museum hunts, scavenger hunts, and photo-based challenges!**
 
 **Start your race today!** 🏁📸🎯

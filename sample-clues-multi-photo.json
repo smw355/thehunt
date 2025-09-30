@@ -1,0 +1,132 @@
+{
+  "version": "2.0",
+  "description": "Multi-Photo Challenge Sample Clues - Showcasing the new requiredPhotos feature",
+  "exportDate": "2025-01-15T10:00:00.000Z",
+  "clues": [
+    {
+      "type": "route-info",
+      "title": "🏛️ British Museum Artifact Hunt",
+      "content": [
+        "Welcome to the British Museum Collection Challenge!",
+        "Find and photograph these 5 famous artifacts:",
+        "1. The Rosetta Stone (Egyptian Gallery)",
+        "2. The Elgin Marbles (Greek Galleries)",
+        "3. The Lewis Chessmen (Medieval Gallery)",
+        "4. Egyptian Mummy Case (Egyptian Gallery)",
+        "5. Roman Amphora (Roman Gallery)",
+        "Each photo must clearly show the artifact's information plaque."
+      ],
+      "requiredPhotos": 5
+    },
+    {
+      "type": "detour",
+      "title": "📱 Social Media Challenge",
+      "detourOptionA": {
+        "title": "Instagram Story",
+        "description": "Create an Instagram story with 6 slides showing your race journey: 1) Team photo at start, 2) First location, 3) Challenge in progress, 4) Food/drink break, 5) Funny moment, 6) Victory celebration."
+      },
+      "detourOptionB": {
+        "title": "TikTok Collection",
+        "description": "Film 4 different TikTok-style videos: 1) Team introduction dance (15s), 2) Challenge tutorial, 3) Behind-the-scenes blooper, 4) Finish line celebration."
+      },
+      "requiredPhotos": 6
+    },
+    {
+      "type": "road-block",
+      "title": "🎨 Street Art Documentation",
+      "roadblockQuestion": "Who has the best eye for art and photography?",
+      "roadblockTask": "Find 7 different pieces of street art or murals in the arts district. Take artistic photos of each piece with creative angles. One team member must appear in each photo interacting with or posed by the artwork.",
+      "requiredPhotos": 7
+    },
+    {
+      "type": "route-info",
+      "title": "🚇 Transportation Photo Journey",
+      "content": [
+        "Travel from Central Station to the Observatory using only public transportation.",
+        "Document your journey with these specific photos:",
+        "1. Team at Central Station entrance",
+        "2. Bus ticket/metro card purchase",
+        "3. Inside the first transport vehicle",
+        "4. Transfer point between transport modes",
+        "5. Second transport vehicle",
+        "6. Observatory entrance arrival",
+        "7. Panoramic city view from the Observatory"
+      ],
+      "requiredPhotos": 7
+    },
+    {
+      "type": "detour",
+      "title": "🍕 Food Quest Challenge",
+      "detourOptionA": {
+        "title": "International Flavors",
+        "description": "Visit 4 different ethnic food venues and order a signature dish from each. Take photos of: 1) Each restaurant's storefront, 2) The dish you ordered, 3) Team member trying the food, 4) Receipt showing order details."
+      },
+      "detourOptionB": {
+        "title": "Sweet Tooth Safari",
+        "description": "Find 8 different dessert shops and take photos of their most popular dessert. Each photo must include the dessert name/price visible in the display case."
+      },
+      "requiredPhotos": 8
+    },
+    {
+      "type": "road-block",
+      "title": "📚 Library Research Challenge",
+      "roadblockQuestion": "Who loves diving into books and research?",
+      "roadblockTask": "Find books published in 6 different decades (1960s through 2010s). Take photos of each book's title page clearly showing the publication year. Books must be from 6 different subject categories.",
+      "requiredPhotos": 6
+    },
+    {
+      "type": "route-info",
+      "title": "🏢 Architecture Appreciation",
+      "content": [
+        "Explore the downtown architectural district.",
+        "Capture these 10 architectural elements:",
+        "1. Art Deco building facade",
+        "2. Gothic Revival church spire",
+        "3. Modern glass skyscraper reflection",
+        "4. Victorian-era building details",
+        "5. Brutalist concrete structure",
+        "6. Classical columns or pillars",
+        "7. Contemporary bridge design",
+        "8. Historic clock tower",
+        "9. Ornate building entrance",
+        "10. Team selfie with city skyline background"
+      ],
+      "requiredPhotos": 10
+    },
+    {
+      "type": "detour",
+      "title": "🌳 Nature vs Urban",
+      "detourOptionA": {
+        "title": "Urban Wildlife Spotting",
+        "description": "Find and photograph 5 different types of urban wildlife (birds, squirrels, insects, etc.). Each photo must show the animal clearly with urban elements visible in the background."
+      },
+      "detourOptionB": {
+        "title": "City Garden Tour",
+        "description": "Visit 3 different parks or gardens and take 2 photos at each: one of the garden's entrance sign and one artistic shot of flowers/plants with a team member."
+      },
+      "requiredPhotos": 6
+    },
+    {
+      "type": "road-block",
+      "title": "🎭 Performance Art Challenge",
+      "roadblockQuestion": "Who's ready to be the star of the show?",
+      "roadblockTask": "Choose a busy public location and perform a 3-minute street performance (music, comedy, magic, etc.). Document with: 1) Performance setup photo, 2) Mid-performance action shot, 3) Audience reaction shot, 4) Final bow with gathered crowd.",
+      "requiredPhotos": 4
+    },
+    {
+      "type": "route-info",
+      "title": "🏁 Grand Finale Photo Finish",
+      "content": [
+        "You've reached the final checkpoint!",
+        "Create your victory photo collection:",
+        "1. Team celebration jump shot",
+        "2. Individual 'winner' poses (each team member)",
+        "3. Group selfie with finish line banner",
+        "4. Photo with race organizer/timekeeper",
+        "5. Team holding up 'We Did It!' signs",
+        "Show your race spirit and celebrate your amazing journey!"
+      ],
+      "requiredPhotos": 5
+    }
+  ]
+}
