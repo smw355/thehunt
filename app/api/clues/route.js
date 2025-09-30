@@ -1,5 +1,6 @@
 import { db } from '@/db/index.js';
 import { clues } from '@/db/schema.js';
+import { eq } from 'drizzle-orm';
 
 // Get all clues from the library
 export async function GET() {
@@ -11,25 +12,53 @@ export async function GET() {
   }
 }
 
-// Import clues from JSON (bulk insert)
+// Create single clue or import clues from JSON (bulk insert)
 export async function POST(request) {
   try {
-    const { clues: clueData, replace = false } = await request.json();
+    const body = await request.json();
 
-    // If replace is true, delete all existing clues first
-    if (replace) {
-      await db.delete(clues);
+    // Check if this is a bulk import (has 'clues' array) or single clue
+    if (body.clues) {
+      // Bulk import
+      const { clues: clueData, replace = false } = body;
+
+      // If replace is true, delete all existing clues first
+      if (replace) {
+        await db.delete(clues);
+      }
+
+      // Insert new clues
+      const insertedClues = await db.insert(clues).values(clueData).returning();
+
+      return Response.json({
+        message: `Successfully imported ${insertedClues.length} clues`,
+        clues: insertedClues
+      });
+    } else {
+      // Single clue creation
+      const clueData = body;
+      const [newClue] = await db.insert(clues).values(clueData).returning();
+
+      return Response.json(newClue);
     }
-
-    // Insert new clues
-    const insertedClues = await db.insert(clues).values(clueData).returning();
-
-    return Response.json({
-      message: `Successfully imported ${insertedClues.length} clues`,
-      clues: insertedClues
-    });
   } catch (error) {
-    return Response.json({ error: 'Failed to import clues' }, { status: 500 });
+    return Response.json({ error: 'Failed to create clue(s)' }, { status: 500 });
+  }
+}
+
+// Update a single clue
+export async function PATCH(request) {
+  try {
+    const { id, ...updateData } = await request.json();
+
+    const [updatedClue] = await db.update(clues)
+      .set(updateData)
+      .where(eq(clues.id, id))
+      .returning();
+
+    return Response.json(updatedClue);
+  } catch (error) {
+    return Response.json({ error: 'Failed to update clue' }, { status: 500 });
   }
 }
 

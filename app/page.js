@@ -436,7 +436,7 @@ function AmazingRaceApp() {
   };
 
   // Admin: Save Clue to Library
-  const saveClue = () => {
+  const saveClue = async () => {
     if (!clueForm.title) {
       alert('Clue title required');
       return;
@@ -457,28 +457,39 @@ function AmazingRaceApp() {
       content: clueForm.content.filter(c => c.trim() !== '')
     };
 
-    if (editingClueId) {
-      setAppState(prev => ({
-        ...prev,
-        clueLibrary: prev.clueLibrary.map(c => 
-          c.id === editingClueId ? { ...c, ...clueData } : c
-        )
-      }));
-    } else {
-      const newClue = {
-        id: Date.now(),
-        ...clueData
-      };
-      setAppState(prev => ({
-        ...prev,
-        clueLibrary: [...prev.clueLibrary, newClue]
-      }));
+    setLoading(true);
+    try {
+      if (editingClueId) {
+        // Update existing clue in database
+        const updatedClue = await clueService.update(editingClueId, clueData);
+
+        setAppState(prev => ({
+          ...prev,
+          clueLibrary: prev.clueLibrary.map(c =>
+            c.id === editingClueId ? updatedClue : c
+          )
+        }));
+      } else {
+        // Create new clue in database
+        const newClue = await clueService.create(clueData);
+
+        setAppState(prev => ({
+          ...prev,
+          clueLibrary: [...prev.clueLibrary, newClue]
+        }));
+      }
+    } catch (error) {
+      console.error('Error saving clue:', error);
+      alert('Failed to save clue. Please try again.');
+      return;
+    } finally {
+      setLoading(false);
     }
-    
+
     setShowClueForm(false);
-    setClueForm({ 
-      type: 'route-info', 
-      title: '', 
+    setClueForm({
+      type: 'route-info',
+      title: '',
       content: ['', '', ''],
       detourOptionA: { title: '', description: '' },
       detourOptionB: { title: '', description: '' },

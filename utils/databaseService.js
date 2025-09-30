@@ -107,6 +107,26 @@ export const clueService = {
     return response.json();
   },
 
+  async create(clueData) {
+    const response = await fetch('/api/clues', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(clueData)
+    });
+    if (!response.ok) throw new Error('Failed to create clue');
+    return response.json();
+  },
+
+  async update(id, updateData) {
+    const response = await fetch('/api/clues', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ...updateData })
+    });
+    if (!response.ok) throw new Error('Failed to update clue');
+    return response.json();
+  },
+
   async import(clueData, replace = false) {
     const response = await fetch('/api/clues', {
       method: 'POST',
