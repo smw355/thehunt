@@ -291,6 +291,21 @@ function AmazingRaceApp() {
       return;
     }
 
+    // Validate that all selected clues exist in the library
+    const invalidClues = gameForm.clueSequence.filter(clueId =>
+      !appState.clueLibrary.find(c => c.id === clueId)
+    );
+
+    if (invalidClues.length > 0) {
+      setErrors(['Some selected clues are no longer available. Please refresh and try again.']);
+      return;
+    }
+
+    if (gameForm.clueSequence.length === 0) {
+      setErrors(['Please select at least one clue for the game.']);
+      return;
+    }
+
     setLoading(true);
     try {
       const gameData = {
@@ -722,27 +737,11 @@ function AmazingRaceApp() {
 
   // Get current team's clue
   const getCurrentClue = () => {
-    if (!currentTeam || !appState.game) {
-      console.log('getCurrentClue: Missing currentTeam or game', { currentTeam: !!currentTeam, game: !!appState.game });
-      return null;
-    }
-    if (currentTeam.currentClueIndex >= appState.game.clueSequence.length) {
-      console.log('getCurrentClue: Team finished all clues', { currentIndex: currentTeam.currentClueIndex, totalClues: appState.game.clueSequence.length });
-      return null;
-    }
+    if (!currentTeam || !appState.game) return null;
+    if (currentTeam.currentClueIndex >= appState.game.clueSequence.length) return null;
 
     const clueId = appState.game.clueSequence[currentTeam.currentClueIndex];
-    const clue = appState.clueLibrary.find(c => c.id === clueId);
-
-    console.log('getCurrentClue:', {
-      currentIndex: currentTeam.currentClueIndex,
-      clueId,
-      clueLibraryLength: appState.clueLibrary.length,
-      clueFound: !!clue,
-      clueSequence: appState.game.clueSequence
-    });
-
-    return clue;
+    return appState.clueLibrary.find(c => c.id === clueId);
   };
 
   // Check if team has pending submission
@@ -1663,12 +1662,6 @@ function AmazingRaceApp() {
     const rejectedSubmissions = getRejectedSubmissions();
     const teamState = getCurrentTeamState();
 
-    console.log('Team View State:', {
-      gameStatus: appState.game?.status,
-      currentClue: !!currentClue,
-      isFinished,
-      clueLibrarySize: appState.clueLibrary.length
-    });
 
     // Update current team data
     const updatedTeam = appState.teams.find(t => t.id === currentTeam.id);
