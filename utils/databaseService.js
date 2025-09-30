@@ -21,6 +21,16 @@ export const gameService = {
     });
     if (!response.ok) throw new Error('Failed to create game');
     return response.json();
+  },
+
+  async update(id, updateData) {
+    const response = await fetch('/api/games', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ...updateData })
+    });
+    if (!response.ok) throw new Error('Failed to update game');
+    return response.json();
   }
 };
 

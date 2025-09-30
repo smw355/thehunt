@@ -42,3 +42,25 @@ export async function POST(request) {
     return Response.json({ error: 'Failed to create game' }, { status: 500 });
   }
 }
+
+// Update game (e.g., change status)
+export async function PATCH(request) {
+  try {
+    const { id, status, name, clueSequence } = await request.json();
+
+    const updateData = {};
+    if (status) updateData.status = status;
+    if (name) updateData.name = name;
+    if (clueSequence) updateData.clueSequence = clueSequence;
+    updateData.updatedAt = new Date();
+
+    const [updatedGame] = await db.update(games)
+      .set(updateData)
+      .where(eq(games.id, id))
+      .returning();
+
+    return Response.json(updatedGame);
+  } catch (error) {
+    return Response.json({ error: 'Failed to update game' }, { status: 500 });
+  }
+}

@@ -136,15 +136,38 @@ function AmazingRaceApp() {
 
     const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
 
-    // Simulate a brief loading delay for better UX
-    setTimeout(() => {
-      if (adminPassword === correctPassword) {
+    if (adminPassword === correctPassword) {
+      try {
+        // Load all games to see if there are any existing ones
+        const games = await gameService.getAll();
+
+        // If there's a game, load the most recent one
+        if (games.length > 0) {
+          const latestGame = games[games.length - 1];
+          const [teams, submissions] = await Promise.all([
+            teamService.getByGameId(latestGame.id),
+            submissionService.getByGameId(latestGame.id)
+          ]);
+
+          setAppState(prev => ({
+            ...prev,
+            game: latestGame,
+            teams,
+            submissions
+          }));
+        }
+
         setView('admin');
-      } else {
-        setErrors(['Invalid admin password']);
+      } catch (error) {
+        console.error('Failed to load admin data:', error);
+        setErrors(['Failed to load game data']);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-    }, 500);
+    } else {
+      setErrors(['Invalid admin password']);
+    }
+    setLoading(false);
   };
 
   // Team Login
@@ -219,18 +242,28 @@ function AmazingRaceApp() {
   };
 
   // Admin: Start Game
-  const startGame = () => {
+  const startGame = async () => {
     if (!appState.game) return;
     if (appState.teams.length === 0) {
       alert('Add at least one team before starting');
       return;
     }
-    
+
     if (confirm('Start the game? Teams will be able to begin racing!')) {
-      setAppState(prev => ({
-        ...prev,
-        game: { ...prev.game, status: 'active' }
-      }));
+      setLoading(true);
+      try {
+        const updatedGame = await gameService.update(appState.game.id, { status: 'active' });
+
+        setAppState(prev => ({
+          ...prev,
+          game: updatedGame
+        }));
+      } catch (error) {
+        console.error('Failed to start game:', error);
+        setErrors(['Failed to start game']);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -376,15 +409,16 @@ function AmazingRaceApp() {
   };
 
   // Admin: Import Clues
-  const importClues = (event) => {
+  const importClues = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
+        setLoading(true);
         const importedData = JSON.parse(e.target.result);
-        
+
         if (!importedData.clues || !Array.isArray(importedData.clues)) {
           alert('Invalid file format: missing clues array');
           return;
@@ -408,20 +442,40 @@ function AmazingRaceApp() {
           `Click Cancel to ADD to existing clues.`
         );
 
-        const cluesWithIds = validClues.map(clue => ({
-          ...clue,
-          id: Date.now() + Math.random()
-        }));
+        // Prepare clues for database (remove the temporary IDs)
+        const cluesForDatabase = validClues.map(clue => {
+          const dbClue = {
+            type: clue.type,
+            title: clue.title
+          };
 
-        setAppState(prev => ({
-          ...prev,
-          clueLibrary: shouldReplace ? cluesWithIds : [...prev.clueLibrary, ...cluesWithIds]
-        }));
+          // Handle different clue types
+          if (clue.type === 'route-info') {
+            dbClue.content = JSON.stringify(clue.content);
+          } else if (clue.type === 'detour') {
+            dbClue.detourOptionA = JSON.stringify(clue.detourOptionA);
+            dbClue.detourOptionB = JSON.stringify(clue.detourOptionB);
+          } else if (clue.type === 'road-block') {
+            dbClue.roadblockQuestion = clue.roadblockQuestion;
+            dbClue.roadblockTask = clue.roadblockTask;
+          }
+
+          return dbClue;
+        });
+
+        // Import to database
+        await clueService.import(cluesForDatabase, shouldReplace);
+
+        // Refresh clue library from database
+        await loadClueLibrary();
 
         alert(`Successfully imported ${validClues.length} clues!`);
         event.target.value = '';
       } catch (error) {
-        alert('Error parsing file: ' + error.message);
+        console.error('Import error:', error);
+        alert('Error importing clues: ' + error.message);
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -888,24 +942,111 @@ function AmazingRaceApp() {
                 </button>
               </div>
 
-              <label className="block text-sm font-bold mb-2">Select Clues (in order):</label>
-              <select
-                multiple
-                className="w-full px-4 py-2 border rounded-lg mb-2"
-                size="8"
-                value={gameForm.clueSequence}
-                onChange={(e) => {
-                  const selected = Array.from(e.target.selectedOptions, option => parseInt(option.value));
-                  setGameForm({ ...gameForm, clueSequence: selected });
-                }}
-              >
-                {appState.clueLibrary.map(clue => (
-                  <option key={clue.id} value={clue.id}>
-                    [{clue.type.toUpperCase().replace('-', ' ')}] {clue.title}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-gray-600 mb-4">Hold Ctrl/Cmd to select multiple. Order matters!</p>
+              <label className="block text-sm font-bold mb-2">Select Clues for Game:</label>
+
+              {/* Available Clues */}
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold mb-2 text-gray-700">Available Clues (click to add):</h4>
+                <div className="border rounded-lg p-2 max-h-40 overflow-y-auto bg-gray-50">
+                  {appState.clueLibrary.filter(clue => !gameForm.clueSequence.includes(clue.id)).map(clue => (
+                    <div
+                      key={clue.id}
+                      onClick={() => {
+                        setGameForm({
+                          ...gameForm,
+                          clueSequence: [...gameForm.clueSequence, clue.id]
+                        });
+                      }}
+                      className="p-2 mb-2 bg-white rounded border cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{clue.title}</span>
+                        <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+                          {clue.type.toUpperCase().replace('-', ' ')}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  {appState.clueLibrary.filter(clue => !gameForm.clueSequence.includes(clue.id)).length === 0 && (
+                    <div className="text-gray-500 text-center py-4">All clues have been added to the game</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Selected Clues */}
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold mb-2 text-gray-700">Game Clues (in race order):</h4>
+                <div className="border rounded-lg p-2 min-h-20 bg-yellow-50">
+                  {gameForm.clueSequence.map((clueId, index) => {
+                    const clue = appState.clueLibrary.find(c => c.id === clueId);
+                    if (!clue) return null;
+                    return (
+                      <div
+                        key={`${clueId}-${index}`}
+                        className="p-2 mb-2 bg-white rounded border shadow-sm"
+                      >
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <span className="bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold">
+                              #{index + 1}
+                            </span>
+                            <span className="font-medium">{clue.title}</span>
+                            <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+                              {clue.type.toUpperCase().replace('-', ' ')}
+                            </span>
+                          </div>
+                          <div className="flex gap-1">
+                            {/* Move Up */}
+                            {index > 0 && (
+                              <button
+                                onClick={() => {
+                                  const newSequence = [...gameForm.clueSequence];
+                                  [newSequence[index], newSequence[index - 1]] = [newSequence[index - 1], newSequence[index]];
+                                  setGameForm({ ...gameForm, clueSequence: newSequence });
+                                }}
+                                className="text-blue-600 hover:text-blue-800 px-2 py-1 text-xs"
+                                title="Move Up"
+                              >
+                                ↑
+                              </button>
+                            )}
+                            {/* Move Down */}
+                            {index < gameForm.clueSequence.length - 1 && (
+                              <button
+                                onClick={() => {
+                                  const newSequence = [...gameForm.clueSequence];
+                                  [newSequence[index], newSequence[index + 1]] = [newSequence[index + 1], newSequence[index]];
+                                  setGameForm({ ...gameForm, clueSequence: newSequence });
+                                }}
+                                className="text-blue-600 hover:text-blue-800 px-2 py-1 text-xs"
+                                title="Move Down"
+                              >
+                                ↓
+                              </button>
+                            )}
+                            {/* Remove */}
+                            <button
+                              onClick={() => {
+                                setGameForm({
+                                  ...gameForm,
+                                  clueSequence: gameForm.clueSequence.filter((_, i) => i !== index)
+                                });
+                              }}
+                              className="text-red-600 hover:text-red-800 px-2 py-1 text-xs"
+                              title="Remove"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {gameForm.clueSequence.length === 0 && (
+                    <div className="text-gray-500 text-center py-4">No clues selected. Click clues above to add them.</div>
+                  )}
+                </div>
+              </div>
 
               <div className="flex gap-2">
                 <button
