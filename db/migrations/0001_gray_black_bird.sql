@@ -1,0 +1,1 @@
+ALTER TABLE "clues" ADD COLUMN "required_photos" integer DEFAULT 0;

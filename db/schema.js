@@ -32,6 +32,7 @@ export const clues = pgTable('clues', {
   detourOptionB: jsonb('detour_option_b'), // {title, description}
   roadblockQuestion: text('roadblock_question'),
   roadblockTask: text('roadblock_task'),
+  requiredPhotos: integer('required_photos').default(0), // Number of photos required for completion
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

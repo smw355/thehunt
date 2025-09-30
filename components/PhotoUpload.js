@@ -5,7 +5,7 @@ import { Camera, X, Upload, AlertCircle } from 'lucide-react';
 import { LoadingSpinner } from './LoadingSpinner';
 import { compressImage, createImagePreview, validateFile, uploadFile, formatFileSize } from '../utils/imageUtils';
 
-export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled = false }) {
+export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled = false, requiredPhotos = 0, clueTitle = '' }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
@@ -74,35 +74,87 @@ export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled =
 
   return (
     <div className="mb-4">
-      <label className="block font-bold mb-2">Photo/Video Proof:</label>
+      <label className="block font-bold mb-2">
+        Photo/Video Proof:
+        {requiredPhotos > 0 && (
+          <span className="ml-2 text-sm font-normal text-red-600">
+            ({uploadedFiles.length}/{requiredPhotos} required photos)
+          </span>
+        )}
+      </label>
 
-      {/* Upload Button */}
-      <div className="relative">
+      {/* Photo Requirements Info */}
+      {requiredPhotos > 0 && (
+        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800">
+            📸 <strong>This challenge requires exactly {requiredPhotos} photo{requiredPhotos > 1 ? 's' : ''}.</strong>
+            {clueTitle && ` For "${clueTitle}"`}
+          </p>
+          <p className="text-xs text-blue-600 mt-1">
+            You can take new photos or select existing ones from your gallery.
+          </p>
+        </div>
+      )}
+
+      {/* Upload Buttons */}
+      <div className="space-y-2">
+        {/* Take Photo Button (Mobile) */}
+        {isMobile && (
+          <>
+            <input
+              type="file"
+              accept="image/*,video/*"
+              capture="environment" // Use back camera on mobile
+              multiple
+              className="hidden"
+              id="photo-capture"
+              onChange={handleFileSelect}
+              disabled={disabled || uploading}
+            />
+            <label
+              htmlFor="photo-capture"
+              className={`w-full py-3 rounded-lg text-lg font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+                disabled || uploading
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+            >
+              {uploading ? (
+                <LoadingSpinner size="small" message="Uploading..." />
+              ) : (
+                <>
+                  <Camera className="w-5 h-5" />
+                  Take Photo / Record Video
+                </>
+              )}
+            </label>
+          </>
+        )}
+
+        {/* Select from Gallery Button */}
         <input
           type="file"
           accept="image/*,video/*"
-          capture={isMobile ? 'environment' : undefined} // Use back camera on mobile
           multiple
           className="hidden"
           id="photo-upload"
           onChange={handleFileSelect}
           disabled={disabled || uploading}
         />
-
         <label
           htmlFor="photo-upload"
-          className={`w-full py-4 rounded-lg text-xl font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+          className={`w-full py-3 rounded-lg text-lg font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
             disabled || uploading
               ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-500 hover:bg-blue-600 text-white'
+              : isMobile ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'
           }`}
         >
           {uploading ? (
             <LoadingSpinner size="small" message="Uploading..." />
           ) : (
             <>
-              <Camera className="w-6 h-6" />
-              {isMobile ? 'Take Photo / Record Video' : 'Upload Photo / Video'}
+              <Upload className="w-5 h-5" />
+              {isMobile ? 'Select from Gallery' : 'Upload Photo / Video'}
             </>
           )}
         </label>
@@ -158,7 +210,26 @@ export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled =
       {/* Upload Tips for Mobile */}
       {isMobile && (
         <div className="text-sm text-gray-600 mt-2">
-          💡 Tip: The camera will open automatically. Take clear photos showing your completed challenge!
+          💡 <strong>Blue button:</strong> Opens camera to take new photos<br />
+          💡 <strong>Green button:</strong> Select existing photos from your gallery
+        </div>
+      )}
+
+      {/* Requirements Status */}
+      {requiredPhotos > 0 && uploadedFiles.length > 0 && (
+        <div className={`text-sm mt-2 p-2 rounded ${
+          uploadedFiles.length === requiredPhotos
+            ? 'bg-green-100 text-green-700 border border-green-200'
+            : uploadedFiles.length > requiredPhotos
+            ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+            : 'bg-red-100 text-red-700 border border-red-200'
+        }`}>
+          {uploadedFiles.length === requiredPhotos
+            ? '✅ Perfect! You have the required number of photos.'
+            : uploadedFiles.length > requiredPhotos
+            ? `⚠️ You have ${uploadedFiles.length - requiredPhotos} extra photo${uploadedFiles.length - requiredPhotos > 1 ? 's' : ''}. Consider removing some.`
+            : `📸 You need ${requiredPhotos - uploadedFiles.length} more photo${requiredPhotos - uploadedFiles.length > 1 ? 's' : ''}.`
+          }
         </div>
       )}
     </div>

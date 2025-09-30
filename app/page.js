@@ -39,14 +39,15 @@ function AmazingRaceApp() {
   const [editingTeamId, setEditingTeamId] = useState(null);
 
   // Admin: Add/Edit Clue
-  const [clueForm, setClueForm] = useState({ 
-    type: 'route-info', 
-    title: '', 
+  const [clueForm, setClueForm] = useState({
+    type: 'route-info',
+    title: '',
     content: ['', '', ''],
     detourOptionA: { title: '', description: '' },
     detourOptionB: { title: '', description: '' },
     roadblockQuestion: '',
-    roadblockTask: ''
+    roadblockTask: '',
+    requiredPhotos: 0
   });
   const [showClueForm, setShowClueForm] = useState(false);
   const [editingClueId, setEditingClueId] = useState(null);
@@ -494,7 +495,8 @@ function AmazingRaceApp() {
       detourOptionA: { title: '', description: '' },
       detourOptionB: { title: '', description: '' },
       roadblockQuestion: '',
-      roadblockTask: ''
+      roadblockTask: '',
+      requiredPhotos: 0
     });
     setEditingClueId(null);
   };
@@ -636,9 +638,25 @@ function AmazingRaceApp() {
 
   // Team: Submit Proof
   const submitProof = async () => {
-    if (!submissionProof.trim() && submissionPhotos.length === 0) {
-      setErrors(['Please provide proof of completion (photo or text)']);
-      return;
+    const currentClue = getCurrentClue();
+    const requiredPhotos = currentClue.clue?.requiredPhotos || 0;
+
+    // Validation for required photos
+    if (requiredPhotos > 0) {
+      if (submissionPhotos.length < requiredPhotos) {
+        setErrors([`This challenge requires exactly ${requiredPhotos} photo${requiredPhotos > 1 ? 's' : ''}. You have uploaded ${submissionPhotos.length}.`]);
+        return;
+      }
+      if (submissionPhotos.length > requiredPhotos) {
+        setErrors([`This challenge requires exactly ${requiredPhotos} photo${requiredPhotos > 1 ? 's' : ''}. Please remove ${submissionPhotos.length - requiredPhotos} photo${submissionPhotos.length - requiredPhotos > 1 ? 's' : ''}.`]);
+        return;
+      }
+    } else {
+      // No photo requirements - original validation
+      if (!submissionProof.trim() && submissionPhotos.length === 0) {
+        setErrors(['Please provide proof of completion (photo or text)']);
+        return;
+      }
     }
 
     setLoading(true);
@@ -1678,6 +1696,26 @@ function AmazingRaceApp() {
                   </>
                 )}
 
+                {/* Photo Requirements - applies to all clue types */}
+                <label className="block text-sm font-bold mb-2">Required Photos:</label>
+                <div className="mb-4">
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    placeholder="Number of photos teams must submit"
+                    className="w-full px-4 py-2 border rounded-lg"
+                    value={clueForm.requiredPhotos}
+                    onChange={(e) => setClueForm({ ...clueForm, requiredPhotos: parseInt(e.target.value) || 0 })}
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    {clueForm.requiredPhotos === 0 ?
+                      "Teams can submit text proof or photos (optional)" :
+                      `Teams must submit exactly ${clueForm.requiredPhotos} photo${clueForm.requiredPhotos > 1 ? 's' : ''} to complete this challenge`
+                    }
+                  </p>
+                </div>
+
                 <div className="flex gap-2">
                   <button
                     onClick={saveClue}
@@ -1689,14 +1727,15 @@ function AmazingRaceApp() {
                     onClick={() => {
                       setShowClueForm(false);
                       setEditingClueId(null);
-                      setClueForm({ 
-                        type: 'route-info', 
-                        title: '', 
+                      setClueForm({
+                        type: 'route-info',
+                        title: '',
                         content: ['', '', ''],
                         detourOptionA: { title: '', description: '' },
                         detourOptionB: { title: '', description: '' },
                         roadblockQuestion: '',
-                        roadblockTask: ''
+                        roadblockTask: '',
+                        requiredPhotos: 0
                       });
                     }}
                     className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
@@ -2022,6 +2061,8 @@ function AmazingRaceApp() {
                         clueId={appState.game.clueSequence[currentTeam.currentClueIndex].toString()}
                         onPhotosChange={setSubmissionPhotos}
                         disabled={loading}
+                        requiredPhotos={getCurrentClue().clue?.requiredPhotos || 0}
+                        clueTitle={getCurrentClue().clue?.title || ''}
                       />
 
                       <div className="mb-4">
