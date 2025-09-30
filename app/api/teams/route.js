@@ -38,16 +38,19 @@ export async function POST(request) {
   }
 }
 
-// Update team progress
+// Update team (name/password or progress)
 export async function PATCH(request) {
   try {
-    const { id, currentClueIndex, completedClues } = await request.json();
+    const { id, name, password, currentClueIndex, completedClues } = await request.json();
+
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (password !== undefined) updateData.password = password;
+    if (currentClueIndex !== undefined) updateData.currentClueIndex = currentClueIndex;
+    if (completedClues !== undefined) updateData.completedClues = completedClues;
 
     const [updatedTeam] = await db.update(teams)
-      .set({
-        currentClueIndex,
-        completedClues
-      })
+      .set(updateData)
       .where(eq(teams.id, id))
       .returning();
 

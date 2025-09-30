@@ -59,6 +59,16 @@ export const teamService = {
     });
     if (!response.ok) throw new Error('Failed to update team progress');
     return response.json();
+  },
+
+  async update(id, updateData) {
+    const response = await fetch('/api/teams', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ...updateData })
+    });
+    if (!response.ok) throw new Error('Failed to update team');
+    return response.json();
   }
 };
 

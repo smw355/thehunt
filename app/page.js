@@ -314,20 +314,27 @@ function AmazingRaceApp() {
         clueSequence: gameForm.clueSequence
       };
 
-      const newGame = await gameService.create(gameData);
+      let updatedGame;
+      if (appState.game && appState.game.id) {
+        // Update existing game
+        updatedGame = await gameService.update(appState.game.id, gameData);
+      } else {
+        // Create new game
+        updatedGame = await gameService.create(gameData);
+      }
 
       setAppState(prev => ({
         ...prev,
-        game: newGame,
-        teams: []
+        game: updatedGame,
+        teams: appState.game ? prev.teams : [] // Keep existing teams if editing
       }));
 
       setShowGameForm(false);
       setGameForm({ name: '', code: '', clueSequence: [] });
       setErrors([]);
     } catch (error) {
-      console.error('Failed to create game:', error);
-      setErrors(['Failed to create game']);
+      console.error('Failed to save game:', error);
+      setErrors(['Failed to save game']);
     } finally {
       setLoading(false);
     }
@@ -374,8 +381,20 @@ function AmazingRaceApp() {
     setLoading(true);
     try {
       if (editingTeamId) {
-        // TODO: Implement team update API
-        alert('Team editing not yet implemented in database version');
+        // Update existing team
+        const updateData = {
+          name: teamForm.name,
+          password: teamForm.password
+        };
+
+        const updatedTeam = await teamService.update(editingTeamId, updateData);
+
+        setAppState(prev => ({
+          ...prev,
+          teams: prev.teams.map(team =>
+            team.id === editingTeamId ? updatedTeam : team
+          )
+        }));
       } else {
         const teamData = {
           gameId: appState.game.id,
