@@ -502,12 +502,22 @@ function AmazingRaceApp() {
   };
 
   // Admin: Delete Clue
-  const deleteClue = (clueId) => {
+  const deleteClue = async (clueId) => {
     if (confirm('Delete this clue?')) {
-      setAppState(prev => ({
-        ...prev,
-        clueLibrary: prev.clueLibrary.filter(c => c.id !== clueId)
-      }));
+      setLoading(true);
+      try {
+        await clueService.delete(clueId);
+
+        setAppState(prev => ({
+          ...prev,
+          clueLibrary: prev.clueLibrary.filter(c => c.id !== clueId)
+        }));
+      } catch (error) {
+        console.error('Error deleting clue:', error);
+        alert('Failed to delete clue. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

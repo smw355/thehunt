@@ -137,6 +137,12 @@ export const clueService = {
     return response.json();
   },
 
+  async delete(id) {
+    const response = await fetch(`/api/clues/${id}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error('Failed to delete clue');
+    return response.json();
+  },
+
   async deleteAll() {
     const response = await fetch('/api/clues', { method: 'DELETE' });
     if (!response.ok) throw new Error('Failed to delete clues');
