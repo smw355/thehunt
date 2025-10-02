@@ -1978,7 +1978,6 @@ function AmazingRaceApp() {
                          onClick={() => chooseDetour('A')}>
                       <h3 className="text-2xl font-bold mb-4 text-blue-600">Option A</h3>
                       <h4 className="text-xl font-bold mb-3">{currentClue.detourOptionA.title}</h4>
-                      <p className="text-gray-700">{currentClue.detourOptionA.description}</p>
                       <button className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600">
                         Choose Option A
                       </button>
@@ -1988,7 +1987,6 @@ function AmazingRaceApp() {
                          onClick={() => chooseDetour('B')}>
                       <h3 className="text-2xl font-bold mb-4 text-green-600">Option B</h3>
                       <h4 className="text-xl font-bold mb-3">{currentClue.detourOptionB.title}</h4>
-                      <p className="text-gray-700">{currentClue.detourOptionB.description}</p>
                       <button className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600">
                         Choose Option B
                       </button>
