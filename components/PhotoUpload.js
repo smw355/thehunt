@@ -113,7 +113,7 @@ export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled =
             />
             <label
               htmlFor="photo-capture"
-              className={`w-full py-3 rounded-lg text-lg font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+              className={`w-full py-2 sm:py-3 rounded-lg text-base sm:text-lg font-bold flex items-center justify-center gap-1 sm:gap-2 cursor-pointer transition-colors ${
                 disabled || uploading
                   ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-blue-500 hover:bg-blue-600 text-white'
@@ -123,8 +123,8 @@ export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled =
                 <LoadingSpinner size="small" message="Uploading..." />
               ) : (
                 <>
-                  <Camera className="w-5 h-5" />
-                  Take Photo / Record Video
+                  <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="hidden sm:inline">Take Photo / Record Video</span><span className="sm:hidden">Take Photo</span>
                 </>
               )}
             </label>
@@ -143,7 +143,7 @@ export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled =
         />
         <label
           htmlFor="photo-upload"
-          className={`w-full py-3 rounded-lg text-lg font-bold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
+          className={`w-full py-2 sm:py-3 rounded-lg text-base sm:text-lg font-bold flex items-center justify-center gap-1 sm:gap-2 cursor-pointer transition-colors ${
             disabled || uploading
               ? 'bg-gray-400 cursor-not-allowed'
               : isMobile ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'
@@ -153,8 +153,8 @@ export default function PhotoUpload({ teamId, clueId, onPhotosChange, disabled =
             <LoadingSpinner size="small" message="Uploading..." />
           ) : (
             <>
-              <Upload className="w-5 h-5" />
-              {isMobile ? 'Select from Gallery' : 'Upload Photo / Video'}
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">{isMobile ? 'Select from Gallery' : 'Upload Photo / Video'}</span><span className="sm:hidden">{isMobile ? 'Gallery' : 'Upload'}</span>
             </>
           )}
         </label>

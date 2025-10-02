@@ -964,7 +964,7 @@ function AmazingRaceApp() {
           </div>
           <button
             onClick={handleLogout}
-            className="bg-red-500 px-6 py-2 rounded-lg hover:bg-red-600"
+            className="bg-red-500 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-600"
           >
             Logout
           </button>
@@ -1016,15 +1016,15 @@ function AmazingRaceApp() {
                           });
                           setShowGameForm(true);
                         }}
-                        className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100"
+                        className="bg-white text-black px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-100"
                       >
                         Edit Game
                       </button>
                       <button
                         onClick={startGame}
-                        className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 flex items-center gap-2 font-bold"
+                        className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600 flex items-center gap-1 sm:gap-2 font-bold"
                       >
-                        <Play className="w-5 h-5" /> Start Game
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Start Game</span><span className="sm:hidden">Start</span>
                       </button>
                     </>
                   )}
@@ -1038,9 +1038,9 @@ function AmazingRaceApp() {
                             setAppState(prev => ({ ...prev, game: updatedGame }));
                           }
                         }}
-                        className="bg-yellow-500 text-black px-6 py-2 rounded-lg hover:bg-yellow-600 flex items-center gap-2"
+                        className="bg-yellow-500 text-black px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-yellow-600 flex items-center gap-1 sm:gap-2"
                       >
-                        ⏸️ Pause Game
+                        ⏸️ <span className="hidden sm:inline">Pause Game</span><span className="sm:hidden">Pause</span>
                       </button>
                       <button
                         onClick={async () => {
@@ -1049,13 +1049,24 @@ function AmazingRaceApp() {
                             setAppState(prev => ({ ...prev, game: updatedGame }));
                           }
                         }}
-                        className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 flex items-center gap-2"
+                        className="bg-red-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-600 flex items-center gap-1 sm:gap-2"
                       >
-                        🏁 End Game
+                        🏁 <span className="hidden sm:inline">End Game</span><span className="sm:hidden">End</span>
                       </button>
                     </>
                   )}
 
+                  {appState.game.status === 'completed' && (
+                    <button
+                      onClick={() => {
+                        setGameForm({ name: '', code: generateGameCode(), clueSequence: [] });
+                        setShowGameForm(true);
+                      }}
+                      className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600 flex items-center gap-1 sm:gap-2 font-bold"
+                    >
+                      <Plus className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Start New Game</span><span className="sm:hidden">New Game</span>
+                    </button>
+                  )}
                   {(appState.game.status === 'completed' || appState.game.status === 'setup') && (
                     <button
                       onClick={async () => {
@@ -1083,9 +1094,9 @@ function AmazingRaceApp() {
                           }));
                         }
                       }}
-                      className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 flex items-center gap-2"
+                      className="bg-orange-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-orange-600 flex items-center gap-1 sm:gap-2"
                     >
-                      🔄 Reset Game
+                      🔄 <span className="hidden sm:inline">Reset Game</span><span className="sm:hidden">Reset</span>
                     </button>
                   )}
                 </div>
@@ -1101,7 +1112,7 @@ function AmazingRaceApp() {
                   setGameForm({ name: '', code: generateGameCode(), clueSequence: [] });
                   setShowGameForm(true);
                 }}
-                className="bg-yellow-500 text-black px-8 py-3 rounded-lg font-bold hover:bg-yellow-600"
+                className="bg-yellow-500 text-black px-4 sm:px-8 py-2 sm:py-3 text-base sm:text-lg rounded-lg font-bold hover:bg-yellow-600"
               >
                 Create New Game
               </button>
@@ -1251,7 +1262,7 @@ function AmazingRaceApp() {
               <div className="flex gap-2">
                 <button
                   onClick={saveGame}
-                  className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
+                  className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600"
                 >
                   Save Game
                 </button>
@@ -1260,7 +1271,7 @@ function AmazingRaceApp() {
                     setShowGameForm(false);
                     setGameForm({ name: '', code: '', clueSequence: [] });
                   }}
-                  className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+                  className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
                 >
                   Cancel
                 </button>
@@ -1466,7 +1477,7 @@ function AmazingRaceApp() {
                   <div className="flex gap-2">
                     <button
                       onClick={saveTeam}
-                      className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
+                      className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600"
                     >
                       Save
                     </button>
@@ -1476,7 +1487,7 @@ function AmazingRaceApp() {
                         setEditingTeamId(null);
                         setTeamForm({ name: '', password: '' });
                       }}
-                      className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+                      className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
                     >
                       Cancel
                     </button>
@@ -1719,7 +1730,7 @@ function AmazingRaceApp() {
                 <div className="flex gap-2">
                   <button
                     onClick={saveClue}
-                    className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
+                    className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600"
                   >
                     Save Clue
                   </button>
@@ -1738,7 +1749,7 @@ function AmazingRaceApp() {
                         requiredPhotos: 0
                       });
                     }}
-                    className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+                    className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
                   >
                     Cancel
                   </button>
@@ -1824,7 +1835,7 @@ function AmazingRaceApp() {
             <p className="text-gray-600 mb-6">The game master hasn't started the race yet. Please wait!</p>
             <button
               onClick={handleLogout}
-              className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+              className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
             >
               Back to Login
             </button>
@@ -1845,7 +1856,7 @@ function AmazingRaceApp() {
             </div>
             <button
               onClick={handleLogout}
-              className="bg-red-500 px-6 py-2 rounded-lg hover:bg-red-600"
+              className="bg-red-500 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-600"
             >
               Logout
             </button>
