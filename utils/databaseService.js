@@ -31,6 +31,15 @@ export const gameService = {
     });
     if (!response.ok) throw new Error('Failed to update game');
     return response.json();
+  },
+
+  async delete(id) {
+    const response = await fetch(`/api/games?id=${id}`, { method: 'DELETE' });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to delete game');
+    }
+    return response.json();
   }
 };
 
@@ -139,7 +148,10 @@ export const clueService = {
 
   async delete(id) {
     const response = await fetch(`/api/clues/${id}`, { method: 'DELETE' });
-    if (!response.ok) throw new Error('Failed to delete clue');
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to delete clue');
+    }
     return response.json();
   },
 

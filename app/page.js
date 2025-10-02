@@ -514,7 +514,45 @@ function AmazingRaceApp() {
         }));
       } catch (error) {
         console.error('Error deleting clue:', error);
-        alert('Failed to delete clue. Please try again.');
+
+        // Handle specific error cases
+        if (error.message.includes('submissions')) {
+          alert('Cannot delete this clue because teams have submitted photos for it. Please reject or approve all submissions for this clue first, then try deleting again.');
+        } else if (error.message.includes('not found')) {
+          alert('Clue not found. It may have already been deleted.');
+        } else {
+          alert('Failed to delete clue. Please try again.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  // Admin: Delete Game (cascades to delete all teams and submissions)
+  const deleteGame = async (gameId) => {
+    if (confirm('⚠️ DELETE ENTIRE GAME?\n\nThis will permanently delete:\n• The game\n• All teams\n• All submissions\n\nThis cannot be undone. Are you sure?')) {
+      setLoading(true);
+      try {
+        await gameService.delete(gameId);
+
+        // Clear the current game from state since it's deleted
+        setAppState(prev => ({
+          ...prev,
+          game: null,
+          teams: [],
+          submissions: []
+        }));
+
+        alert('Game deleted successfully! All related data has been removed.');
+      } catch (error) {
+        console.error('Error deleting game:', error);
+
+        if (error.message.includes('not found')) {
+          alert('Game not found. It may have already been deleted.');
+        } else {
+          alert('Failed to delete game. Please try again.');
+        }
       } finally {
         setLoading(false);
       }
@@ -1067,15 +1105,23 @@ function AmazingRaceApp() {
                   )}
 
                   {appState.game.status === 'completed' && (
-                    <button
-                      onClick={() => {
-                        setGameForm({ name: '', code: generateGameCode(), clueSequence: [] });
-                        setShowGameForm(true);
-                      }}
-                      className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600 flex items-center gap-1 sm:gap-2 font-bold"
-                    >
-                      <Plus className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Start New Game</span><span className="sm:hidden">New Game</span>
-                    </button>
+                    <>
+                      <button
+                        onClick={() => {
+                          setGameForm({ name: '', code: generateGameCode(), clueSequence: [] });
+                          setShowGameForm(true);
+                        }}
+                        className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600 flex items-center gap-1 sm:gap-2 font-bold"
+                      >
+                        <Plus className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Start New Game</span><span className="sm:hidden">New Game</span>
+                      </button>
+                      <button
+                        onClick={() => deleteGame(appState.game.id)}
+                        className="bg-red-600 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-700 flex items-center gap-1 sm:gap-2"
+                      >
+                        <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Delete Game</span><span className="sm:hidden">Delete</span>
+                      </button>
+                    </>
                   )}
                   {(appState.game.status === 'completed' || appState.game.status === 'setup') && (
                     <button
