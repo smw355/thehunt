@@ -190,6 +190,18 @@ function AmazingRaceApp() {
     }
   }, [appState.game]);
 
+  // Auto-refresh data every 10 seconds for real-time updates
+  useEffect(() => {
+    if (!appState.game) return;
+
+    const interval = setInterval(() => {
+      loadGameData();
+    }, 10000); // 10 seconds
+
+    // Clear interval on cleanup
+    return () => clearInterval(interval);
+  }, [appState.game]);
+
   // Admin Login
   const handleAdminLogin = async () => {
     setLoading(true);
@@ -1441,10 +1453,10 @@ function AmazingRaceApp() {
 
                       {/* Text Proof */}
                       <div className="bg-gray-50 p-4 rounded-lg">
-                        {sub.proof && (
+                        {sub.textProof && (
                           <>
                             <p className="font-semibold text-sm mb-2">📝 Text Proof:</p>
-                            <p className="text-sm mb-3 bg-white p-3 rounded border">{sub.proof}</p>
+                            <p className="text-sm mb-3 bg-white p-3 rounded border">{sub.textProof}</p>
                           </>
                         )}
                         {sub.notes && (
@@ -1453,7 +1465,7 @@ function AmazingRaceApp() {
                             <p className="text-sm bg-white p-3 rounded border">{sub.notes}</p>
                           </>
                         )}
-                        {!sub.proof && !sub.notes && sub.photos?.length > 0 && (
+                        {!sub.textProof && !sub.notes && sub.photos?.length > 0 && (
                           <p className="text-sm text-gray-600 italic">No text proof provided - photos only</p>
                         )}
                       </div>
@@ -1596,6 +1608,29 @@ function AmazingRaceApp() {
                       >
                         🔄
                       </button>
+                      {team.currentClueIndex < appState.game.clueSequence.length && (
+                        <button
+                          onClick={async () => {
+                            const currentClueIndex = team.currentClueIndex;
+                            const nextClueIndex = currentClueIndex + 1;
+                            const clueId = appState.game.clueSequence[currentClueIndex];
+
+                            if (confirm(`Mark current clue as completed for ${team.name}? This will advance them to the next clue.`)) {
+                              // Mark current clue as completed and advance to next
+                              const newCompletedClues = [...(team.completedClues || []), clueId];
+                              await teamService.updateProgress(team.id, nextClueIndex, newCompletedClues);
+
+                              // Reload teams to show updated progress
+                              const teams = await teamService.getByGameId(appState.game.id);
+                              setAppState(prev => ({ ...prev, teams }));
+                            }
+                          }}
+                          className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600"
+                          title="Mark Current Clue as Complete"
+                        >
+                          <Check className="w-5 h-5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
