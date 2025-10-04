@@ -13,6 +13,7 @@
     "@vercel/postgres": "^0.10.0",
     "drizzle-kit": "^0.31.5",
     "drizzle-orm": "^0.44.5",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.544.0",
     "next": "15.5.4",
     "react": "19.1.0",

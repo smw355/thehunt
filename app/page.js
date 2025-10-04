@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Camera, Check, X, Users, Plus, Edit2, Trash2, Eye, Clock, Trophy, AlertCircle, Play, Copy } from 'lucide-react';
+import { Camera, Check, X, Users, Plus, Edit2, Trash2, Eye, Clock, Trophy, AlertCircle, Play, Copy, Download } from 'lucide-react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { validateGameForm, validateTeamForm, validateClueForm, copyToClipboard, downloadJSON, parseJSONFile } from '../utils/gameUtils';
@@ -843,6 +843,42 @@ function AmazingRaceApp() {
     setCurrentAdminComment('');
   };
 
+  // Admin: Download Game Photos
+  const downloadGamePhotos = async () => {
+    if (!appState.game) {
+      setErrors(['No active game selected']);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/download-photos?gameId=${appState.game.id}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to download photos');
+      }
+
+      // Create download link
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${appState.game.name}-photos-${new Date().toISOString().split('T')[0]}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      setErrors([]);
+    } catch (error) {
+      console.error('Failed to download photos:', error);
+      setErrors(['Failed to download photos: ' + error.message]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Get current team's clue
   const getCurrentClue = () => {
     if (!currentTeam || !appState.game) return null;
@@ -1022,12 +1058,23 @@ function AmazingRaceApp() {
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-yellow-400">Game Master Control Panel</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-600"
-          >
-            Logout
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={downloadGamePhotos}
+              disabled={loading || !appState.game}
+              className="bg-blue-500 px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-2 disabled:bg-gray-500"
+              title="Download all photos from this game"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Download Photos</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-600"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         <div className="p-8">
@@ -1126,6 +1173,13 @@ function AmazingRaceApp() {
                         className="bg-green-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-green-600 flex items-center gap-1 sm:gap-2 font-bold"
                       >
                         <Plus className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Start New Game</span><span className="sm:hidden">New Game</span>
+                      </button>
+                      <button
+                        onClick={downloadGamePhotos}
+                        disabled={loading}
+                        className="bg-blue-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-1 sm:gap-2 disabled:bg-gray-500"
+                      >
+                        <Download className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Download Photos</span><span className="sm:hidden">Photos</span>
                       </button>
                       <button
                         onClick={() => deleteGame(appState.game.id)}
