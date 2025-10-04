@@ -1436,21 +1436,21 @@ function AmazingRaceApp() {
                   <Users className="w-8 h-8 text-blue-500" />
                   <span className="text-3xl font-bold text-blue-500 dark:text-blue-400">{appState.teams.length}</span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300">Teams in Game</p>
+                <p className="text-gray-700 dark:text-gray-200">Teams in Game</p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
                 <div className="flex items-center justify-between mb-2">
                   <Clock className="w-8 h-8 text-blue-500" />
                   <span className="text-3xl font-bold text-blue-500 dark:text-blue-400">{pendingSubmissions.length}</span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300">Pending Approvals</p>
+                <p className="text-gray-700 dark:text-gray-200">Pending Approvals</p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
                 <div className="flex items-center justify-between mb-2">
                   <Trophy className="w-8 h-8 text-green-500" />
                   <span className="text-3xl font-bold text-green-500 dark:text-green-400">{appState.clueLibrary.length}</span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300">Clues in Library</p>
+                <p className="text-gray-700 dark:text-gray-200">Clues in Library</p>
               </div>
             </div>
           )}
