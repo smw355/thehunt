@@ -965,9 +965,9 @@ function AmazingRaceApp() {
   // Render Clue Card
   const renderClueCard = (clue, detourChoice = null) => {
     const badgeColors = {
-      'route-info': 'bg-cyan-400',
-      'detour': 'bg-secondary',
-      'road-block': 'bg-red-400'
+      'route-info': 'bg-accent-cyan text-black',
+      'detour': 'bg-accent-yellow text-black',
+      'road-block': 'bg-accent-red text-white'
     };
 
     const badgeText = {
@@ -986,12 +986,12 @@ function AmazingRaceApp() {
     }
 
     return (
-      <div className="w-full max-w-md bg-secondary rounded-3xl overflow-hidden shadow-2xl">
+      <div className="w-full max-w-md bg-accent-yellow rounded-3xl overflow-hidden shadow-2xl">
         <div className="bg-black text-white py-8 px-6 text-center">
           <p className="text-6xl font-bold tracking-widest text-primary">THE HUNT</p>
         </div>
         <div className="p-8">
-          <div className={`${badgeColors[clue.type]} text-black text-3xl font-bold dark:text-white text-center py-4 -mx-2 mb-6 rounded-xl`}>
+          <div className={`${badgeColors[clue.type]} text-3xl font-bold text-center py-4 -mx-2 mb-6 rounded-xl`}>
             {badgeText[clue.type]}
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 min-h-[400px]">
@@ -2007,9 +2007,9 @@ function AmazingRaceApp() {
                 <div key={clue.id} className="border rounded-lg p-4 flex justify-between items-center">
                   <div>
                     <span className={`inline-block px-3 py-1 rounded text-xs font-bold mr-2 ${
-                      clue.type === 'route-info' ? 'bg-cyan-400' :
-                      clue.type === 'detour' ? 'bg-secondary' :
-                      'bg-red-400'
+                      clue.type === 'route-info' ? 'bg-accent-cyan text-black' :
+                      clue.type === 'detour' ? 'bg-accent-yellow text-black' :
+                      'bg-accent-red text-white'
                     }`}>
                       {clue.type.toUpperCase().replace('-', ' ')}
                     </span>
@@ -2090,7 +2090,7 @@ function AmazingRaceApp() {
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-yellow-600 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark p-4">
         <div className="max-w-4xl mx-auto">
           <div className="bg-black text-white rounded-2xl p-6 mb-8 flex justify-between items-center">
             <div>
@@ -2120,7 +2120,7 @@ function AmazingRaceApp() {
               {currentClue.type === 'detour' && !teamState.detourChoice && (
                 <div className="bg-white rounded-2xl p-8 shadow-2xl mb-8">
                   <div className="text-center mb-8">
-                    <div className="bg-secondary text-black text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
+                    <div className="bg-accent-yellow text-black text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
                       DETOUR
                     </div>
                     <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
@@ -2166,7 +2166,7 @@ function AmazingRaceApp() {
                     <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
                     
                     <div className="bg-blue-50 dark:bg-gray-800 border-2 border-primary rounded-xl p-8 mb-8">
-                      <AlertCircle className="w-16 h-16 mx-auto mb-4 text-yellow-600" />
+                      <AlertCircle className="w-16 h-16 mx-auto mb-4 text-accent-orange" />
                       <p className="text-2xl font-bold dark:text-white mb-4">{currentClue.roadblockQuestion}</p>
                       <p className="text-gray-600 dark:text-gray-300">Only ONE team member can complete this task.</p>
                     </div>
@@ -2286,8 +2286,8 @@ function AmazingRaceApp() {
                     ))}
                   </div>
 
-                  <div className="mt-4 p-3 bg-yellow-100 rounded-lg">
-                    <p className="text-yellow-800 text-sm">
+                  <div className="mt-4 p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                    <p className="text-blue-800 dark:text-blue-200 text-sm">
                       💡 <strong>Tip:</strong> Read the feedback carefully and make sure to address all the issues mentioned before submitting again.
                     </p>
                   </div>
@@ -2303,7 +2303,7 @@ function AmazingRaceApp() {
                   
                   {isPending ? (
                     <div className="bg-blue-50 dark:bg-gray-800 border-2 border-primary rounded-xl p-6 text-center">
-                      <Clock className="w-16 h-16 mx-auto mb-4 text-yellow-600" />
+                      <Clock className="w-16 h-16 mx-auto mb-4 text-primary" />
                       <p className="text-xl font-bold dark:text-white mb-2">Submission Pending</p>
                       <p className="text-gray-600 dark:text-gray-300">Waiting for game master approval...</p>
                     </div>

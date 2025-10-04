@@ -23,6 +23,9 @@ module.exports = {
         accent: {
           green: 'var(--accent-green)',
           cyan: 'var(--accent-cyan)',
+          yellow: 'var(--accent-yellow)',
+          red: 'var(--accent-red)',
+          orange: 'var(--accent-orange)',
         },
       },
     },

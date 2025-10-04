@@ -13,6 +13,9 @@
   --secondary-light: #6b46c1;
   --accent-green: #00FFA5;
   --accent-cyan: #00FFFF;
+  --accent-yellow: #FFC107;
+  --accent-red: #FF1744;
+  --accent-orange: #FF6F3F;
   --success-bg: #dcfce7;
   --success-border: #bbf7d0;
   --success-text: #166534;
@@ -45,6 +48,9 @@
     --secondary-light: #8b5cf6;
     --accent-green: #00FFA5;
     --accent-cyan: #00FFFF;
+    --accent-yellow: #FFC107;
+    --accent-red: #FF1744;
+    --accent-orange: #FF6F3F;
     --success-bg: #064e3b;
     --success-border: #065f46;
     --success-text: #6ee7b7;
