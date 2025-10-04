@@ -32,8 +32,10 @@ export async function GET(request) {
 
     // If no photos found
     if (submissionsWithPhotos.length === 0) {
-      return Response.json({ error: 'No photos found' }, { status: 404 });
+      return Response.json({ error: 'No photos found for this game' }, { status: 404 });
     }
+
+    console.log(`Found ${submissionsWithPhotos.length} submissions with photos for game ${gameId}`);
 
     // Create a ZIP file
     const zip = new JSZip();
@@ -50,21 +52,39 @@ export async function GET(request) {
       // Create folder structure: TeamName/ClueTitle-Date/
       const folderName = `${teamName}/${clueTitle}-${submissionDate}`;
 
+      console.log(`Processing submission from ${teamName} for ${clueTitle} with ${submission.photos.length} photos`);
+
       // Process each photo in the submission
       for (let i = 0; i < submission.photos.length; i++) {
         const photo = submission.photos[i];
 
+        console.log(`  Processing photo ${i + 1}/${submission.photos.length}: ${photo.url}`);
+
         try {
           // Fetch the photo from the URL
           const response = await fetch(photo.url);
-          if (!response.ok) continue;
+          if (!response.ok) {
+            console.log(`  Failed to fetch photo (status ${response.status}): ${photo.url}`);
+            continue;
+          }
 
           const photoBuffer = await response.arrayBuffer();
-          const fileName = photo.originalName || `photo-${i + 1}.jpg`;
 
-          // Add to ZIP
+          // Create unique filename to avoid conflicts
+          let fileName;
+          if (photo.originalName) {
+            const nameParts = photo.originalName.split('.');
+            const extension = nameParts.pop();
+            const baseName = nameParts.join('.');
+            fileName = `${baseName}-${i + 1}.${extension}`;
+          } else {
+            fileName = `photo-${i + 1}.jpg`;
+          }
+
+          // Add to ZIP with unique filename
           zip.file(`${folderName}/${fileName}`, photoBuffer);
           photoCount++;
+          console.log(`  Successfully added photo: ${fileName}`);
         } catch (error) {
           console.error(`Failed to download photo ${photo.url}:`, error);
           // Continue with other photos even if one fails
@@ -75,6 +95,8 @@ export async function GET(request) {
     if (photoCount === 0) {
       return Response.json({ error: 'No photos could be downloaded' }, { status: 404 });
     }
+
+    console.log(`Total photos added to ZIP: ${photoCount}`);
 
     // Generate ZIP buffer
     const zipBuffer = await zip.generateAsync({ type: 'arraybuffer' });
