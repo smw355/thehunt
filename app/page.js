@@ -967,13 +967,13 @@ function AmazingRaceApp() {
     const badgeColors = {
       'route-info': 'bg-cyan-400 text-black',
       'detour': 'bg-purple-700 text-white',
-      'road-block': 'bg-red-500 text-white'
+      'road-block': 'bg-orange-500 text-white'
     };
 
     const badgeText = {
-      'route-info': 'ROUTE INFO',
-      'detour': 'DETOUR',
-      'road-block': 'ROAD BLOCK'
+      'route-info': 'WAYPOINT',
+      'detour': 'FORK',
+      'road-block': 'SOLO'
     };
 
     let displayContent = clue.content;
@@ -1839,9 +1839,9 @@ function AmazingRaceApp() {
                   value={clueForm.type}
                   onChange={(e) => setClueForm({ ...clueForm, type: e.target.value })}
                 >
-                  <option value="route-info">Route Info</option>
-                  <option value="detour">Detour</option>
-                  <option value="road-block">Road Block</option>
+                  <option value="route-info">Waypoint</option>
+                  <option value="detour">Fork</option>
+                  <option value="road-block">Solo</option>
                 </select>
 
                 <label className="block text-sm font-bold mb-2 dark:text-white">Title:</label>
@@ -2121,7 +2121,7 @@ function AmazingRaceApp() {
                 <div className="bg-white rounded-2xl p-8 shadow-2xl mb-8">
                   <div className="text-center mb-8">
                     <div className="bg-purple-700 text-white text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
-                      DETOUR
+                      FORK
                     </div>
                     <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
                     <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">Choose one of the following tasks to complete:</p>
@@ -2160,8 +2160,8 @@ function AmazingRaceApp() {
               {currentClue.type === 'road-block' && !roadblockRevealed && !teamState.roadblockPlayer && (
                 <div className="bg-white rounded-2xl p-8 shadow-2xl mb-8">
                   <div className="text-center mb-8">
-                    <div className="bg-red-400 text-black text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
-                      ROAD BLOCK
+                    <div className="bg-orange-500 text-white text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
+                      SOLO
                     </div>
                     <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
                     
