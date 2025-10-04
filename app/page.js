@@ -1110,9 +1110,9 @@ function AmazingRaceApp() {
             <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mb-8 shadow-lg text-white">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-3xl font-bold dark:text-white mb-2">{appState.game.name}</h2>
+                  <h2 className="text-3xl font-bold mb-2">{appState.game.name}</h2>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="bg-black text-primary px-4 py-2 rounded-lg font-mono text-2xl font-bold dark:text-white">
+                    <div className="bg-black text-accent-cyan px-4 py-2 rounded-lg font-mono text-2xl font-bold">
                       {appState.game.code}
                     </div>
                     <button
@@ -1204,7 +1204,7 @@ function AmazingRaceApp() {
                       <button
                         onClick={downloadGamePhotos}
                         disabled={loading}
-                        className="bg-blue-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-1 sm:gap-2 disabled:bg-gray-50 dark:bg-gray-7000"
+                        className="bg-blue-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-1 sm:gap-2 disabled:bg-gray-400 disabled:text-gray-200 dark:bg-gray-700"
                       >
                         <Download className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Download Photos</span><span className="sm:hidden">Photos</span>
                       </button>
@@ -1275,7 +1275,7 @@ function AmazingRaceApp() {
                 {appState.game ? 'Edit Game' : 'Create New Game'}
               </h3>
               
-              <label className="block text-sm font-bold mb-2">Game Name:</label>
+              <label className="block text-sm font-bold mb-2 dark:text-white">Game Name:</label>
               <input
                 type="text"
                 placeholder="e.g., London Adventure"
@@ -1284,7 +1284,7 @@ function AmazingRaceApp() {
                 onChange={(e) => setGameForm({ ...gameForm, name: e.target.value })}
               />
 
-              <label className="block text-sm font-bold mb-2">Game Code (6 characters):</label>
+              <label className="block text-sm font-bold mb-2 dark:text-white">Game Code (6 characters):</label>
               <div className="flex gap-2 mb-4">
                 <input
                   type="text"
@@ -1296,17 +1296,17 @@ function AmazingRaceApp() {
                 />
                 <button
                   onClick={() => setGameForm({ ...gameForm, code: generateGameCode() })}
-                  className="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300"
+                  className="bg-gray-200 dark:bg-gray-600 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 dark:text-white"
                 >
                   Generate
                 </button>
               </div>
 
-              <label className="block text-sm font-bold mb-2">Select Clues for Game:</label>
+              <label className="block text-sm font-bold mb-2 dark:text-white">Select Clues for Game:</label>
 
               {/* Available Clues */}
               <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 text-gray-700">Available Clues (click to add):</h4>
+                <h4 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">Available Clues (click to add):</h4>
                 <div className="border rounded-lg p-2 max-h-40 overflow-y-auto bg-gray-50 dark:bg-gray-700">
                   {appState.clueLibrary.filter(clue => !gameForm.clueSequence.includes(clue.id)).map(clue => (
                     <div
@@ -1335,7 +1335,7 @@ function AmazingRaceApp() {
 
               {/* Selected Clues */}
               <div className="mb-4">
-                <h4 className="text-sm font-semibold mb-2 text-gray-700">Game Clues (in race order):</h4>
+                <h4 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">Game Clues (in race order):</h4>
                 <div className="border rounded-lg p-2 min-h-20 bg-blue-50 dark:bg-gray-800">
                   {gameForm.clueSequence.map((clueId, index) => {
                     const clue = appState.clueLibrary.find(c => c.id === clueId);
@@ -1420,7 +1420,7 @@ function AmazingRaceApp() {
                     setShowGameForm(false);
                     setGameForm({ name: '', code: '', clueSequence: [] });
                   }}
-                  className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+                  className="bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg"
                 >
                   Cancel
                 </button>
@@ -1584,7 +1584,7 @@ function AmazingRaceApp() {
                   </button>
                   <button
                     onClick={cancelRejectComment}
-                    className="flex-1 bg-gray-50 dark:bg-gray-7000 text-white py-3 rounded-lg font-bold hover:bg-gray-600"
+                    className="flex-1 bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600"
                   >
                     Cancel
                   </button>
@@ -1657,7 +1657,7 @@ function AmazingRaceApp() {
                   <button
                     onClick={closeDeleteGameModal}
                     disabled={loading}
-                    className="flex-1 bg-gray-50 dark:bg-gray-7000 text-white py-3 rounded-lg font-bold hover:bg-gray-600 disabled:opacity-50"
+                    className="flex-1 bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 py-3 rounded-lg font-bold hover:bg-gray-600 disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -1709,7 +1709,7 @@ function AmazingRaceApp() {
                         setEditingTeamId(null);
                         setTeamForm({ name: '', password: '' });
                       }}
-                      className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+                      className="bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg"
                     >
                       Cancel
                     </button>
@@ -1833,7 +1833,7 @@ function AmazingRaceApp() {
               <div className="mb-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-primary max-h-[600px] overflow-y-auto">
                 <h3 className="text-xl font-bold dark:text-white mb-4">{editingClueId ? 'Edit' : 'Add'} Clue</h3>
                 
-                <label className="block text-sm font-bold mb-2">Card Type:</label>
+                <label className="block text-sm font-bold mb-2 dark:text-white">Card Type:</label>
                 <select
                   className="w-full px-4 py-2 border rounded-lg mb-4"
                   value={clueForm.type}
@@ -1844,7 +1844,7 @@ function AmazingRaceApp() {
                   <option value="road-block">Road Block</option>
                 </select>
 
-                <label className="block text-sm font-bold mb-2">Title:</label>
+                <label className="block text-sm font-bold mb-2 dark:text-white">Title:</label>
                 <input
                   type="text"
                   placeholder="Challenge Title"
@@ -1855,7 +1855,7 @@ function AmazingRaceApp() {
 
                 {clueForm.type === 'route-info' && (
                   <>
-                    <label className="block text-sm font-bold mb-2">Content (paragraphs):</label>
+                    <label className="block text-sm font-bold mb-2 dark:text-white">Content (paragraphs):</label>
                     {clueForm.content.map((para, idx) => (
                       <textarea
                         key={idx}
@@ -1933,7 +1933,7 @@ function AmazingRaceApp() {
 
                 {clueForm.type === 'road-block' && (
                   <>
-                    <label className="block text-sm font-bold mb-2">Roadblock Question (cryptic):</label>
+                    <label className="block text-sm font-bold mb-2 dark:text-white">Roadblock Question (cryptic):</label>
                     <input
                       type="text"
                       placeholder="e.g., Who's ready to get their hands dirty?"
@@ -1941,7 +1941,7 @@ function AmazingRaceApp() {
                       value={clueForm.roadblockQuestion}
                       onChange={(e) => setClueForm({ ...clueForm, roadblockQuestion: e.target.value })}
                     />
-                    <label className="block text-sm font-bold mb-2">Roadblock Task (revealed after player selection):</label>
+                    <label className="block text-sm font-bold mb-2 dark:text-white">Roadblock Task (revealed after player selection):</label>
                     <textarea
                       placeholder="e.g., One team member must eat 6 escargots"
                       className="w-full px-4 py-2 border rounded-lg mb-4"
@@ -1953,7 +1953,7 @@ function AmazingRaceApp() {
                 )}
 
                 {/* Photo Requirements - applies to all clue types */}
-                <label className="block text-sm font-bold mb-2">Required Photos:</label>
+                <label className="block text-sm font-bold mb-2 dark:text-white">Required Photos:</label>
                 <div className="mb-4">
                   <input
                     type="number"
@@ -1994,7 +1994,7 @@ function AmazingRaceApp() {
                         requiredPhotos: 0
                       });
                     }}
-                    className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+                    className="bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg"
                   >
                     Cancel
                   </button>
@@ -2080,7 +2080,7 @@ function AmazingRaceApp() {
             <p className="text-gray-600 dark:text-gray-300 mb-6">The game master hasn't started the race yet. Please wait!</p>
             <button
               onClick={handleLogout}
-              className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+              className="bg-gray-500 dark:bg-gray-600 text-white hover:bg-gray-600 dark:hover:bg-gray-700 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg"
             >
               Back to Login
             </button>
