@@ -70,6 +70,11 @@ function AmazingRaceApp() {
   const [commentingSubmissionId, setCommentingSubmissionId] = useState(null);
   const [currentAdminComment, setCurrentAdminComment] = useState('');
 
+  // Admin: Delete game modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingGameId, setDeletingGameId] = useState(null);
+  const [downloadBeforeDelete, setDownloadBeforeDelete] = useState(true);
+
   // Generate random game code
   const generateGameCode = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -541,33 +546,66 @@ function AmazingRaceApp() {
     }
   };
 
-  // Admin: Delete Game (cascades to delete all teams and submissions)
-  const deleteGame = async (gameId) => {
-    if (confirm('⚠️ DELETE ENTIRE GAME?\n\nThis will permanently delete:\n• The game\n• All teams\n• All submissions\n\nThis cannot be undone. Are you sure?')) {
-      setLoading(true);
-      try {
-        await gameService.delete(gameId);
+  // Admin: Open delete game modal
+  const openDeleteGameModal = (gameId) => {
+    setDeletingGameId(gameId);
+    setDownloadBeforeDelete(true);
+    setShowDeleteModal(true);
+  };
 
-        // Clear the current game from state since it's deleted
-        setAppState(prev => ({
-          ...prev,
-          game: null,
-          teams: [],
-          submissions: []
-        }));
+  // Admin: Close delete game modal
+  const closeDeleteGameModal = () => {
+    setShowDeleteModal(false);
+    setDeletingGameId(null);
+    setDownloadBeforeDelete(true);
+  };
 
-        alert('Game deleted successfully! All related data has been removed.');
-      } catch (error) {
-        console.error('Error deleting game:', error);
+  // Admin: Delete game with optional photo download
+  const handleDeleteGame = async (downloadPhotos = false) => {
+    if (!deletingGameId) return;
 
-        if (error.message.includes('not found')) {
-          alert('Game not found. It may have already been deleted.');
-        } else {
-          alert('Failed to delete game. Please try again.');
+    setLoading(true);
+    try {
+      // Download photos first if requested
+      if (downloadPhotos) {
+        const response = await fetch(`/api/download-photos?gameId=${deletingGameId}`);
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          const gameName = appState.game?.name || 'Game';
+          link.download = `${gameName}-photos-${new Date().toISOString().split('T')[0]}.zip`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
         }
-      } finally {
-        setLoading(false);
       }
+
+      // Delete the game
+      await gameService.delete(deletingGameId);
+
+      // Clear the current game from state since it's deleted
+      setAppState(prev => ({
+        ...prev,
+        game: null,
+        teams: [],
+        submissions: []
+      }));
+
+      closeDeleteGameModal();
+      setErrors([]);
+    } catch (error) {
+      console.error('Error deleting game:', error);
+
+      if (error.message.includes('not found')) {
+        setErrors(['Game not found. It may have already been deleted.']);
+      } else {
+        setErrors(['Failed to delete game. Please try again.']);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -1058,23 +1096,12 @@ function AmazingRaceApp() {
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-yellow-400">Game Master Control Panel</p>
           </div>
-          <div className="flex gap-3">
-            <button
-              onClick={downloadGamePhotos}
-              disabled={loading || !appState.game}
-              className="bg-blue-500 px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-2 disabled:bg-gray-500"
-              title="Download all photos from this game"
-            >
-              <Download className="w-4 h-4" />
-              <span className="hidden sm:inline">Download Photos</span>
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-600"
-            >
-              Logout
-            </button>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-600"
+          >
+            Logout
+          </button>
         </div>
 
         <div className="p-8">
@@ -1182,7 +1209,7 @@ function AmazingRaceApp() {
                         <Download className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Download Photos</span><span className="sm:hidden">Photos</span>
                       </button>
                       <button
-                        onClick={() => deleteGame(appState.game.id)}
+                        onClick={() => openDeleteGameModal(appState.game.id)}
                         className="bg-red-600 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-red-700 flex items-center gap-1 sm:gap-2"
                       >
                         <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Delete Game</span><span className="sm:hidden">Delete</span>
@@ -1558,6 +1585,79 @@ function AmazingRaceApp() {
                   <button
                     onClick={cancelRejectComment}
                     className="flex-1 bg-gray-500 text-white py-3 rounded-lg font-bold hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Delete Game Modal */}
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+                <div className="text-center mb-6">
+                  <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <Trash2 className="w-6 h-6 text-red-600" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2 text-red-600">Delete Game</h3>
+                  <p className="text-gray-600 text-sm">
+                    {appState.game?.name || 'This game'}
+                  </p>
+                </div>
+
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-red-800 font-semibold mb-2">⚠️ This will permanently delete:</p>
+                  <ul className="text-sm text-red-700 space-y-1">
+                    <li>• Game settings and configuration</li>
+                    <li>• All teams and their progress</li>
+                    <li>• All photo submissions</li>
+                    <li>• All completion data</li>
+                  </ul>
+                  <p className="text-xs text-red-600 mt-2 font-semibold">This cannot be undone!</p>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={downloadBeforeDelete}
+                      onChange={(e) => setDownloadBeforeDelete(e.target.checked)}
+                      className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    />
+                    <div>
+                      <p className="font-semibold text-blue-800 text-sm">📸 Download photos first</p>
+                      <p className="text-xs text-blue-600 mt-1">
+                        Recommended - Photos cannot be recovered after deletion
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                <div className="flex gap-2">
+                  {downloadBeforeDelete ? (
+                    <button
+                      onClick={() => handleDeleteGame(true)}
+                      disabled={loading}
+                      className="flex-1 bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download & Delete
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleDeleteGame(false)}
+                      disabled={loading}
+                      className="flex-1 bg-red-500 text-white py-3 rounded-lg font-bold hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Delete Without Backup
+                    </button>
+                  )}
+                  <button
+                    onClick={closeDeleteGameModal}
+                    disabled={loading}
+                    className="flex-1 bg-gray-500 text-white py-3 rounded-lg font-bold hover:bg-gray-600 disabled:opacity-50"
                   >
                     Cancel
                   </button>
