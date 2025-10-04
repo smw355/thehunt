@@ -991,11 +991,11 @@ function AmazingRaceApp() {
           <p className="text-6xl font-bold tracking-widest text-yellow-400">THE RACE</p>
         </div>
         <div className="p-8">
-          <div className={`${badgeColors[clue.type]} text-black text-3xl font-bold text-center py-4 -mx-2 mb-6 rounded-xl`}>
+          <div className={`${badgeColors[clue.type]} text-black text-3xl font-bold dark:text-white text-center py-4 -mx-2 mb-6 rounded-xl`}>
             {badgeText[clue.type]}
           </div>
-          <div className="bg-white rounded-xl p-8 min-h-[400px]">
-            <h2 className="text-3xl font-bold text-center mb-6">{displayTitle}</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 min-h-[400px]">
+            <h2 className="text-3xl font-bold dark:text-white text-center mb-6">{displayTitle}</h2>
             {displayContent.map((paragraph, idx) => (
               <p key={idx} className="text-lg leading-relaxed mb-4">{paragraph}</p>
             ))}
@@ -1008,14 +1008,14 @@ function AmazingRaceApp() {
   // LOGIN VIEW
   if (view === 'login') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-yellow-600 dark:from-yellow-600 dark:to-yellow-800 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-yellow-500">THE RACE</h1>
+            <h1 className="text-5xl font-bold text-yellow-500 dark:text-yellow-400">THE RACE</h1>
           </div>
 
           {errors.length > 0 && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded mb-6">
               {errors.map((error, index) => (
                 <p key={index}>{error}</p>
               ))}
@@ -1029,8 +1029,8 @@ function AmazingRaceApp() {
           )}
 
           <div className="space-y-6">
-            <div className="border-2 border-gray-200 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4">Admin Login</h3>
+            <div className="border-2 border-gray-200 dark:border-gray-600 rounded-xl p-6 dark:bg-gray-700">
+              <h3 className="text-xl font-bold dark:text-white mb-4 dark:text-white">Admin Login</h3>
               <input
                 type="password"
                 placeholder="Admin Password"
@@ -1047,8 +1047,8 @@ function AmazingRaceApp() {
               </button>
             </div>
 
-            <div className="border-2 border-gray-200 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4">Team Login</h3>
+            <div className="border-2 border-gray-200 dark:border-gray-600 rounded-xl p-6 dark:bg-gray-700">
+              <h3 className="text-xl font-bold dark:text-white mb-4 dark:text-white">Team Login</h3>
               <input
                 type="text"
                 placeholder="Game Code"
@@ -1090,10 +1090,10 @@ function AmazingRaceApp() {
     const pendingSubmissions = appState.submissions.filter(s => s.status === 'pending');
 
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
         <div className="bg-black text-white py-6 px-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold dark:text-white">Admin Dashboard</h1>
             <p className="text-yellow-400">Game Master Control Panel</p>
           </div>
           <button
@@ -1110,9 +1110,9 @@ function AmazingRaceApp() {
             <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 mb-8 shadow-lg">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-3xl font-bold mb-2">{appState.game.name}</h2>
+                  <h2 className="text-3xl font-bold dark:text-white mb-2">{appState.game.name}</h2>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="bg-black text-yellow-400 px-4 py-2 rounded-lg font-mono text-2xl font-bold">
+                    <div className="bg-black text-yellow-400 px-4 py-2 rounded-lg font-mono text-2xl font-bold dark:text-white">
                       {appState.game.code}
                     </div>
                     <button
@@ -1204,7 +1204,7 @@ function AmazingRaceApp() {
                       <button
                         onClick={downloadGamePhotos}
                         disabled={loading}
-                        className="bg-blue-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-1 sm:gap-2 disabled:bg-gray-500"
+                        className="bg-blue-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-1 sm:gap-2 disabled:bg-gray-50 dark:bg-gray-7000"
                       >
                         <Download className="w-4 h-4 sm:w-5 sm:h-5" /> <span className="hidden sm:inline">Download Photos</span><span className="sm:hidden">Photos</span>
                       </button>
@@ -1252,10 +1252,10 @@ function AmazingRaceApp() {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-xl p-12 text-center mb-8 shadow">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-12 text-center mb-8 shadow">
               <AlertCircle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <h2 className="text-2xl font-bold mb-4">No Active Game</h2>
-              <p className="text-gray-600 mb-6">Create a new game to get started</p>
+              <h2 className="text-2xl font-bold dark:text-white mb-4">No Active Game</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6">Create a new game to get started</p>
               <button
                 onClick={() => {
                   setGameForm({ name: '', code: generateGameCode(), clueSequence: [] });
@@ -1270,8 +1270,8 @@ function AmazingRaceApp() {
 
           {/* Game Setup Form */}
           {showGameForm && (
-            <div className="bg-white rounded-xl p-6 shadow mb-8 border-4 border-yellow-400">
-              <h3 className="text-2xl font-bold mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow mb-8 border-4 border-yellow-400">
+              <h3 className="text-2xl font-bold dark:text-white mb-6">
                 {appState.game ? 'Edit Game' : 'Create New Game'}
               </h3>
               
@@ -1307,7 +1307,7 @@ function AmazingRaceApp() {
               {/* Available Clues */}
               <div className="mb-4">
                 <h4 className="text-sm font-semibold mb-2 text-gray-700">Available Clues (click to add):</h4>
-                <div className="border rounded-lg p-2 max-h-40 overflow-y-auto bg-gray-50">
+                <div className="border rounded-lg p-2 max-h-40 overflow-y-auto bg-gray-50 dark:bg-gray-700">
                   {appState.clueLibrary.filter(clue => !gameForm.clueSequence.includes(clue.id)).map(clue => (
                     <div
                       key={clue.id}
@@ -1328,7 +1328,7 @@ function AmazingRaceApp() {
                     </div>
                   ))}
                   {appState.clueLibrary.filter(clue => !gameForm.clueSequence.includes(clue.id)).length === 0 && (
-                    <div className="text-gray-500 text-center py-4">All clues have been added to the game</div>
+                    <div className="text-gray-500 dark:text-gray-400 text-center py-4">All clues have been added to the game</div>
                   )}
                 </div>
               </div>
@@ -1403,7 +1403,7 @@ function AmazingRaceApp() {
                     );
                   })}
                   {gameForm.clueSequence.length === 0 && (
-                    <div className="text-gray-500 text-center py-4">No clues selected. Click clues above to add them.</div>
+                    <div className="text-gray-500 dark:text-gray-400 text-center py-4">No clues selected. Click clues above to add them.</div>
                   )}
                 </div>
               </div>
@@ -1420,7 +1420,7 @@ function AmazingRaceApp() {
                     setShowGameForm(false);
                     setGameForm({ name: '', code: '', clueSequence: [] });
                   }}
-                  className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+                  className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
                 >
                   Cancel
                 </button>
@@ -1431,26 +1431,26 @@ function AmazingRaceApp() {
           {/* Stats */}
           {appState.game && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-xl p-6 shadow">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
                 <div className="flex items-center justify-between mb-2">
                   <Users className="w-8 h-8 text-blue-500" />
-                  <span className="text-3xl font-bold">{appState.teams.length}</span>
+                  <span className="text-3xl font-bold dark:text-white">{appState.teams.length}</span>
                 </div>
-                <p className="text-gray-600">Teams in Game</p>
+                <p className="text-gray-600 dark:text-gray-300">Teams in Game</p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
                 <div className="flex items-center justify-between mb-2">
                   <Clock className="w-8 h-8 text-yellow-500" />
-                  <span className="text-3xl font-bold">{pendingSubmissions.length}</span>
+                  <span className="text-3xl font-bold dark:text-white">{pendingSubmissions.length}</span>
                 </div>
-                <p className="text-gray-600">Pending Approvals</p>
+                <p className="text-gray-600 dark:text-gray-300">Pending Approvals</p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
                 <div className="flex items-center justify-between mb-2">
                   <Trophy className="w-8 h-8 text-green-500" />
-                  <span className="text-3xl font-bold">{appState.clueLibrary.length}</span>
+                  <span className="text-3xl font-bold dark:text-white">{appState.clueLibrary.length}</span>
                 </div>
-                <p className="text-gray-600">Clues in Library</p>
+                <p className="text-gray-600 dark:text-gray-300">Clues in Library</p>
               </div>
             </div>
           )}
@@ -1458,7 +1458,7 @@ function AmazingRaceApp() {
           {/* Pending Submissions */}
           {pendingSubmissions.length > 0 && (
             <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <h2 className="text-2xl font-bold dark:text-white mb-4 flex items-center gap-2">
                 <Clock className="w-6 h-6" />
                 Pending Approvals
               </h2>
@@ -1473,14 +1473,14 @@ function AmazingRaceApp() {
                           <h3 className="font-bold text-xl text-blue-600">
                             {team?.name || 'Unknown Team'}
                           </h3>
-                          <p className="text-sm text-gray-600 mb-1">Clue: {clue?.title || 'Unknown'}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Clue: {clue?.title || 'Unknown'}</p>
                           {sub.clueType === 'detour' && sub.detourChoice && (
                             <p className="text-sm text-blue-600">Detour Choice: Option {sub.detourChoice}</p>
                           )}
                           {sub.clueType === 'road-block' && sub.roadblockPlayer && (
                             <p className="text-sm text-purple-600">Roadblock Player: {sub.roadblockPlayer}</p>
                           )}
-                          <p className="text-xs text-gray-500">{new Date(sub.timestamp).toLocaleString()}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(sub.timestamp).toLocaleString()}</p>
                         </div>
                         <div className="flex gap-2">
                           <button
@@ -1518,8 +1518,8 @@ function AmazingRaceApp() {
                                   <div className="w-full h-32 bg-gray-200 rounded-lg border flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow"
                                        onClick={() => window.open(photo.url, '_blank')}>
                                     <div className="text-center">
-                                      <Play className="w-8 h-8 mx-auto mb-1 text-gray-600" />
-                                      <span className="text-xs text-gray-600">Video</span>
+                                      <Play className="w-8 h-8 mx-auto mb-1 text-gray-600 dark:text-gray-300" />
+                                      <span className="text-xs text-gray-600 dark:text-gray-300">Video</span>
                                     </div>
                                   </div>
                                 )}
@@ -1533,7 +1533,7 @@ function AmazingRaceApp() {
                       )}
 
                       {/* Text Proof */}
-                      <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                         {sub.textProof && (
                           <>
                             <p className="font-semibold text-sm mb-2">📝 Text Proof:</p>
@@ -1547,7 +1547,7 @@ function AmazingRaceApp() {
                           </>
                         )}
                         {!sub.textProof && !sub.notes && sub.photos?.length > 0 && (
-                          <p className="text-sm text-gray-600 italic">No text proof provided - photos only</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 italic">No text proof provided - photos only</p>
                         )}
                       </div>
                     </div>
@@ -1560,9 +1560,9 @@ function AmazingRaceApp() {
           {/* Admin Comment Modal */}
           {showCommentModal && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
-                <h3 className="text-xl font-bold mb-4 text-red-600">Reject Submission</h3>
-                <p className="text-gray-600 mb-4">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
+                <h3 className="text-xl font-bold dark:text-white mb-4 text-red-600">Reject Submission</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Please provide a comment explaining why this submission is being rejected. This will help the team understand what they need to fix.
                 </p>
 
@@ -1584,7 +1584,7 @@ function AmazingRaceApp() {
                   </button>
                   <button
                     onClick={cancelRejectComment}
-                    className="flex-1 bg-gray-500 text-white py-3 rounded-lg font-bold hover:bg-gray-600"
+                    className="flex-1 bg-gray-50 dark:bg-gray-7000 text-white py-3 rounded-lg font-bold hover:bg-gray-600"
                   >
                     Cancel
                   </button>
@@ -1596,13 +1596,13 @@ function AmazingRaceApp() {
           {/* Delete Game Modal */}
           {showDeleteModal && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
                 <div className="text-center mb-6">
                   <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
                     <Trash2 className="w-6 h-6 text-red-600" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-red-600">Delete Game</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="text-xl font-bold dark:text-white mb-2 text-red-600">Delete Game</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
                     {appState.game?.name || 'This game'}
                   </p>
                 </div>
@@ -1657,7 +1657,7 @@ function AmazingRaceApp() {
                   <button
                     onClick={closeDeleteGameModal}
                     disabled={loading}
-                    className="flex-1 bg-gray-500 text-white py-3 rounded-lg font-bold hover:bg-gray-600 disabled:opacity-50"
+                    className="flex-1 bg-gray-50 dark:bg-gray-7000 text-white py-3 rounded-lg font-bold hover:bg-gray-600 disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -1668,9 +1668,9 @@ function AmazingRaceApp() {
 
           {/* Teams Section */}
           {appState.game && (
-            <div className="bg-white rounded-xl p-6 shadow mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow mb-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Teams in {appState.game.name}</h2>
+                <h2 className="text-2xl font-bold dark:text-white">Teams in {appState.game.name}</h2>
                 <button
                   onClick={() => setShowTeamForm(true)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600"
@@ -1680,8 +1680,8 @@ function AmazingRaceApp() {
               </div>
 
               {showTeamForm && (
-                <div className="mb-6 p-6 bg-gray-50 rounded-lg border-2 border-blue-400">
-                  <h3 className="text-xl font-bold mb-4">{editingTeamId ? 'Edit' : 'Add'} Team</h3>
+                <div className="mb-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-blue-400">
+                  <h3 className="text-xl font-bold dark:text-white mb-4">{editingTeamId ? 'Edit' : 'Add'} Team</h3>
                   <input
                     type="text"
                     placeholder="Team Name"
@@ -1709,7 +1709,7 @@ function AmazingRaceApp() {
                         setEditingTeamId(null);
                         setTeamForm({ name: '', password: '' });
                       }}
-                      className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+                      className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
                     >
                       Cancel
                     </button>
@@ -1722,7 +1722,7 @@ function AmazingRaceApp() {
                   <div key={team.id} className="border rounded-lg p-4 flex justify-between items-center">
                     <div>
                       <h3 className="font-bold text-lg">{team.name}</h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
                         Progress: {team.currentClueIndex} / {appState.game.clueSequence.length} clues
                       </p>
                     </div>
@@ -1789,16 +1789,16 @@ function AmazingRaceApp() {
                   </div>
                 ))}
                 {appState.teams.length === 0 && (
-                  <p className="text-center text-gray-500 py-8">No teams yet. Add your first team!</p>
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-8">No teams yet. Add your first team!</p>
                 )}
               </div>
             </div>
           )}
 
           {/* Clue Library Section */}
-          <div className="bg-white rounded-xl p-6 shadow">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Clue Library</h2>
+              <h2 className="text-2xl font-bold dark:text-white">Clue Library</h2>
               <div className="flex gap-2">
                 <input
                   type="file"
@@ -1830,8 +1830,8 @@ function AmazingRaceApp() {
             </div>
 
             {showClueForm && (
-              <div className="mb-6 p-6 bg-gray-50 rounded-lg border-2 border-yellow-400 max-h-[600px] overflow-y-auto">
-                <h3 className="text-xl font-bold mb-4">{editingClueId ? 'Edit' : 'Add'} Clue</h3>
+              <div className="mb-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-yellow-400 max-h-[600px] overflow-y-auto">
+                <h3 className="text-xl font-bold dark:text-white mb-4">{editingClueId ? 'Edit' : 'Add'} Clue</h3>
                 
                 <label className="block text-sm font-bold mb-2">Card Type:</label>
                 <select
@@ -1964,7 +1964,7 @@ function AmazingRaceApp() {
                     value={clueForm.requiredPhotos}
                     onChange={(e) => setClueForm({ ...clueForm, requiredPhotos: parseInt(e.target.value) || 0 })}
                   />
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                     {clueForm.requiredPhotos === 0 ?
                       "Teams can submit text proof or photos (optional)" :
                       `Teams must submit exactly ${clueForm.requiredPhotos} photo${clueForm.requiredPhotos > 1 ? 's' : ''} to complete this challenge`
@@ -1994,7 +1994,7 @@ function AmazingRaceApp() {
                         requiredPhotos: 0
                       });
                     }}
-                    className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+                    className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
                   >
                     Cancel
                   </button>
@@ -2044,7 +2044,7 @@ function AmazingRaceApp() {
                 </div>
               ))}
               {appState.clueLibrary.length === 0 && (
-                <p className="text-center text-gray-500 py-8">No clues yet. Create your first clue!</p>
+                <p className="text-center text-gray-500 dark:text-gray-400 py-8">No clues yet. Create your first clue!</p>
               )}
             </div>
           </div>
@@ -2073,14 +2073,14 @@ function AmazingRaceApp() {
 
     if (appState.game?.status !== 'active') {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-12 text-center shadow-2xl max-w-md">
+        <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-yellow-600 dark:from-yellow-600 dark:to-yellow-800 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-2xl max-w-md">
             <Clock className="w-24 h-24 mx-auto mb-6 text-gray-400" />
-            <h2 className="text-3xl font-bold mb-4">Game Not Started</h2>
-            <p className="text-gray-600 mb-6">The game master hasn't started the race yet. Please wait!</p>
+            <h2 className="text-3xl font-bold dark:text-white mb-4">Game Not Started</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">The game master hasn't started the race yet. Please wait!</p>
             <button
               onClick={handleLogout}
-              className="bg-gray-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
+              className="bg-gray-50 dark:bg-gray-7000 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-gray-600"
             >
               Back to Login
             </button>
@@ -2094,7 +2094,7 @@ function AmazingRaceApp() {
         <div className="max-w-4xl mx-auto">
           <div className="bg-black text-white rounded-2xl p-6 mb-8 flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold">{currentTeam.name}</h1>
+              <h1 className="text-3xl font-bold dark:text-white">{currentTeam.name}</h1>
               <p className="text-yellow-400">
                 Clue {currentTeam.currentClueIndex + 1} of {appState.game.clueSequence.length}
               </p>
@@ -2111,8 +2111,8 @@ function AmazingRaceApp() {
             <div className="bg-white rounded-2xl p-12 text-center shadow-2xl">
               <Trophy className="w-24 h-24 mx-auto mb-6 text-yellow-500" />
               <h2 className="text-4xl font-bold mb-4">Congratulations!</h2>
-              <p className="text-xl text-gray-600">You've completed all clues!</p>
-              <p className="text-lg text-gray-500 mt-4">Check with the game master for your final results.</p>
+              <p className="text-xl text-gray-600 dark:text-gray-300">You've completed all clues!</p>
+              <p className="text-lg text-gray-500 dark:text-gray-400 mt-4">Check with the game master for your final results.</p>
             </div>
           ) : currentClue ? (
             <>
@@ -2123,15 +2123,15 @@ function AmazingRaceApp() {
                     <div className="bg-yellow-400 text-black text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
                       DETOUR
                     </div>
-                    <h2 className="text-3xl font-bold mb-4">{currentClue.title}</h2>
-                    <p className="text-lg text-gray-600 mb-8">Choose one of the following tasks to complete:</p>
+                    <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
+                    <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">Choose one of the following tasks to complete:</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="border-4 border-blue-400 rounded-xl p-6 hover:bg-blue-50 cursor-pointer transition"
                          onClick={() => chooseDetour('A')}>
-                      <h3 className="text-2xl font-bold mb-4 text-blue-600">Option A</h3>
-                      <h4 className="text-xl font-bold mb-3">{currentClue.detourOptionA.title}</h4>
+                      <h3 className="text-2xl font-bold dark:text-white mb-4 text-blue-600">Option A</h3>
+                      <h4 className="text-xl font-bold dark:text-white mb-3">{currentClue.detourOptionA.title}</h4>
                       <button className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600">
                         Choose Option A
                       </button>
@@ -2139,8 +2139,8 @@ function AmazingRaceApp() {
 
                     <div className="border-4 border-green-400 rounded-xl p-6 hover:bg-green-50 cursor-pointer transition"
                          onClick={() => chooseDetour('B')}>
-                      <h3 className="text-2xl font-bold mb-4 text-green-600">Option B</h3>
-                      <h4 className="text-xl font-bold mb-3">{currentClue.detourOptionB.title}</h4>
+                      <h3 className="text-2xl font-bold dark:text-white mb-4 text-green-600">Option B</h3>
+                      <h4 className="text-xl font-bold dark:text-white mb-3">{currentClue.detourOptionB.title}</h4>
                       <button className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600">
                         Choose Option B
                       </button>
@@ -2163,12 +2163,12 @@ function AmazingRaceApp() {
                     <div className="bg-red-400 text-black text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
                       ROAD BLOCK
                     </div>
-                    <h2 className="text-3xl font-bold mb-4">{currentClue.title}</h2>
+                    <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
                     
                     <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-8 mb-8">
                       <AlertCircle className="w-16 h-16 mx-auto mb-4 text-yellow-600" />
-                      <p className="text-2xl font-bold mb-4">{currentClue.roadblockQuestion}</p>
-                      <p className="text-gray-600">Only ONE team member can complete this task.</p>
+                      <p className="text-2xl font-bold dark:text-white mb-4">{currentClue.roadblockQuestion}</p>
+                      <p className="text-gray-600 dark:text-gray-300">Only ONE team member can complete this task.</p>
                     </div>
 
                     <div className="max-w-md mx-auto">
@@ -2183,7 +2183,7 @@ function AmazingRaceApp() {
                       />
                       <button
                         onClick={assignRoadblockPlayer}
-                        className="w-full bg-red-500 text-white py-4 rounded-lg text-xl font-bold hover:bg-red-600"
+                        className="w-full bg-red-500 text-white py-4 rounded-lg text-xl font-bold dark:text-white hover:bg-red-600"
                       >
                         Commit to Player
                       </button>
@@ -2220,7 +2220,7 @@ function AmazingRaceApp() {
               {/* REJECTED SUBMISSIONS WITH ADMIN FEEDBACK */}
               {rejectedSubmissions.length > 0 && (
                 <div className="bg-red-50 border-2 border-red-400 rounded-2xl p-6 mb-8 shadow-lg">
-                  <h2 className="text-2xl font-bold mb-4 text-red-600 flex items-center gap-2">
+                  <h2 className="text-2xl font-bold dark:text-white mb-4 text-red-600 flex items-center gap-2">
                     <AlertCircle className="w-6 h-6" />
                     Previous Submissions Rejected
                   </h2>
@@ -2235,7 +2235,7 @@ function AmazingRaceApp() {
                           <h4 className="font-bold text-lg text-red-600">
                             Attempt #{rejectedSubmissions.length - idx}
                           </h4>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
                             {new Date(rejection.timestamp).toLocaleString()}
                           </span>
                         </div>
@@ -2248,10 +2248,10 @@ function AmazingRaceApp() {
                         )}
 
                         <details className="text-sm">
-                          <summary className="cursor-pointer text-gray-600 hover:text-gray-800">
+                          <summary className="cursor-pointer text-gray-600 dark:text-gray-300 hover:text-gray-800">
                             View Your Original Submission
                           </summary>
-                          <div className="mt-2 p-3 bg-gray-50 rounded border">
+                          <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded border">
                             {rejection.photos && rejection.photos.length > 0 && (
                               <div className="mb-2">
                                 <p className="font-semibold mb-1">Photos:</p>
@@ -2299,13 +2299,13 @@ function AmazingRaceApp() {
                 (currentClue.type === 'detour' && teamState.detourChoice) ||
                 (currentClue.type === 'road-block' && (roadblockRevealed || teamState.roadblockPlayer))) && (
                 <div className="bg-white rounded-2xl p-8 shadow-2xl">
-                  <h2 className="text-2xl font-bold mb-6">Submit Proof of Completion</h2>
+                  <h2 className="text-2xl font-bold dark:text-white mb-6">Submit Proof of Completion</h2>
                   
                   {isPending ? (
                     <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-6 text-center">
                       <Clock className="w-16 h-16 mx-auto mb-4 text-yellow-600" />
-                      <p className="text-xl font-bold mb-2">Submission Pending</p>
-                      <p className="text-gray-600">Waiting for game master approval...</p>
+                      <p className="text-xl font-bold dark:text-white mb-2">Submission Pending</p>
+                      <p className="text-gray-600 dark:text-gray-300">Waiting for game master approval...</p>
                     </div>
                   ) : (
                     <>
@@ -2346,7 +2346,7 @@ function AmazingRaceApp() {
                       <button
                         onClick={submitProof}
                         disabled={loading}
-                        className="w-full bg-yellow-500 text-black py-4 rounded-lg text-xl font-bold hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
+                        className="w-full bg-yellow-500 text-black py-4 rounded-lg text-xl font-bold dark:text-white hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
                       >
                         {loading ? (
                           <LoadingSpinner size="small" message="Submitting..." />

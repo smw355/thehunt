@@ -3,6 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --card-bg: #ffffff;
+  --border-color: #e5e7eb;
+  --input-bg: #ffffff;
+  --hover-bg: #f3f4f6;
+  --success-bg: #dcfce7;
+  --success-border: #bbf7d0;
+  --success-text: #166534;
+  --error-bg: #fecaca;
+  --error-border: #fca5a5;
+  --error-text: #991b1b;
+  --warning-bg: #fef3c7;
+  --warning-border: #fcd34d;
+  --warning-text: #92400e;
 }
 
 @theme inline {
@@ -16,6 +29,19 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --card-bg: #1f2937;
+    --border-color: #374151;
+    --input-bg: #111827;
+    --hover-bg: #374151;
+    --success-bg: #064e3b;
+    --success-border: #065f46;
+    --success-text: #6ee7b7;
+    --error-bg: #7f1d1d;
+    --error-border: #991b1b;
+    --error-text: #fca5a5;
+    --warning-bg: #78350f;
+    --warning-border: #92400e;
+    --warning-text: #fbbf24;
   }
 }
 
@@ -23,4 +49,35 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode improvements for better readability */
+@media (prefers-color-scheme: dark) {
+  /* Ensure text is readable on dark backgrounds */
+  .dark\:text-white {
+    color: #ffffff !important;
+  }
+
+  /* Improve button contrast in dark mode */
+  .dark\:bg-gray-800 {
+    background-color: #1f2937 !important;
+  }
+
+  /* Better border colors */
+  .dark\:border-gray-600 {
+    border-color: #4b5563 !important;
+  }
+
+  /* Input field improvements */
+  input, textarea, select {
+    background-color: var(--input-bg);
+    color: var(--foreground);
+    border-color: var(--border-color);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
 }
