@@ -2007,13 +2007,14 @@ function AmazingRaceApp() {
                 <div key={clue.id} className="border rounded-lg p-4 flex justify-between items-center">
                   <div>
                     <span className={`inline-block px-3 py-1 rounded text-xs font-bold mr-2 ${
-                      clue.type === 'route-info' ? 'bg-accent-cyan text-black' :
+                      clue.type === 'route-info' ? 'bg-cyan-400 text-black' :
                       clue.type === 'detour' ? 'bg-purple-700 text-white' :
-                      'bg-accent-red text-white'
+                      'bg-orange-500 text-white'
                     }`}>
-                      {clue.type.toUpperCase().replace('-', ' ')}
+                      {clue.type === 'route-info' ? 'WAYPOINT' :
+                       clue.type === 'detour' ? 'FORK' : 'SOLO'}
                     </span>
-                    <span className="font-bold text-lg text-purple-600 dark:text-purple-400">{clue.title}</span>
+                    <span className="font-bold text-lg text-black dark:text-white">{clue.title}</span>
                   </div>
                   <div className="flex gap-2">
                     <button
