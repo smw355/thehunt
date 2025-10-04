@@ -7,6 +7,12 @@
   --border-color: #e5e7eb;
   --input-bg: #ffffff;
   --hover-bg: #f3f4f6;
+  --primary: #4F9FFF;
+  --primary-dark: #3b82f6;
+  --secondary: #4B0082;
+  --secondary-light: #6b46c1;
+  --accent-green: #00FFA5;
+  --accent-cyan: #00FFFF;
   --success-bg: #dcfce7;
   --success-border: #bbf7d0;
   --success-text: #166534;
@@ -33,6 +39,12 @@
     --border-color: #374151;
     --input-bg: #111827;
     --hover-bg: #374151;
+    --primary: #4F9FFF;
+    --primary-dark: #2563eb;
+    --secondary: #4B0082;
+    --secondary-light: #8b5cf6;
+    --accent-green: #00FFA5;
+    --accent-cyan: #00FFFF;
     --success-bg: #064e3b;
     --success-border: #065f46;
     --success-text: #6ee7b7;

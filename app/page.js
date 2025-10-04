@@ -1107,7 +1107,7 @@ function AmazingRaceApp() {
         <div className="p-8">
           {/* Game Status */}
           {appState.game ? (
-            <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 mb-8 shadow-lg">
+            <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mb-8 shadow-lg text-white">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-3xl font-bold dark:text-white mb-2">{appState.game.name}</h2>
@@ -1123,10 +1123,10 @@ function AmazingRaceApp() {
                     </button>
                   </div>
                   <div className="flex gap-4 text-sm">
-                    <span className="bg-white bg-opacity-60 text-gray-800 dark:bg-black dark:bg-opacity-60 dark:text-gray-200 px-3 py-1 rounded">
+                    <span className="bg-white bg-opacity-25 text-white px-3 py-1 rounded font-semibold">
                       {appState.teams.length} Teams
                     </span>
-                    <span className="bg-white bg-opacity-60 text-gray-800 dark:bg-black dark:bg-opacity-60 dark:text-gray-200 px-3 py-1 rounded">
+                    <span className="bg-white bg-opacity-25 text-white px-3 py-1 rounded font-semibold">
                       {appState.game.clueSequence.length} Clues
                     </span>
                     <span className={`px-3 py-1 rounded font-bold ${

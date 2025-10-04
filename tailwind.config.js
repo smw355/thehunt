@@ -12,6 +12,18 @@ module.exports = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        primary: {
+          DEFAULT: 'var(--primary)',
+          dark: 'var(--primary-dark)',
+        },
+        secondary: {
+          DEFAULT: 'var(--secondary)',
+          light: 'var(--secondary-light)',
+        },
+        accent: {
+          green: 'var(--accent-green)',
+          cyan: 'var(--accent-cyan)',
+        },
       },
     },
   },

@@ -12,24 +12,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "The Race",
-  description: "An interactive Amazing Race style challenge application with clues, team management, and photo submissions.",
-  keywords: ["race", "challenge", "game", "team", "competition", "amazing race"],
-  authors: [{ name: "The Race Team" }],
-  creator: "The Race Team",
+  title: "The Hunt",
+  description: "An interactive treasure hunt challenge application with clues, team management, and photo submissions.",
+  keywords: ["hunt", "treasure hunt", "challenge", "game", "team", "competition"],
+  authors: [{ name: "The Hunt Team" }],
+  creator: "The Hunt Team",
   metadataBase: new URL('https://therace-pnq3klvtb-shannon-5385s-projects.vercel.app'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://therace-pnq3klvtb-shannon-5385s-projects.vercel.app',
-    siteName: 'The Race',
-    title: 'The Race',
-    description: 'An interactive Amazing Race style challenge application with clues, team management, and photo submissions.',
+    siteName: 'The Hunt',
+    title: 'The Hunt',
+    description: 'An interactive treasure hunt challenge application with clues, team management, and photo submissions.',
   },
   twitter: {
     card: 'summary',
-    title: 'The Race',
-    description: 'An interactive Amazing Race style challenge application with clues, team management, and photo submissions.',
+    title: 'The Hunt',
+    description: 'An interactive treasure hunt challenge application with clues, team management, and photo submissions.',
   },
   robots: {
     index: true,
