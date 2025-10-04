@@ -1670,7 +1670,7 @@ function AmazingRaceApp() {
           {appState.game && (
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow mb-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold dark:text-white">Teams in {appState.game.name}</h2>
+                <h2 className="text-2xl font-bold text-blue-500 dark:text-blue-400">Teams in {appState.game.name}</h2>
                 <button
                   onClick={() => setShowTeamForm(true)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600"
