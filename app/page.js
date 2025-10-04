@@ -965,9 +965,9 @@ function AmazingRaceApp() {
   // Render Clue Card
   const renderClueCard = (clue, detourChoice = null) => {
     const badgeColors = {
-      'route-info': 'bg-accent-cyan text-black',
-      'detour': 'bg-secondary text-white',
-      'road-block': 'bg-accent-red text-white'
+      'route-info': 'bg-cyan-400 text-black',
+      'detour': 'bg-purple-700 text-white',
+      'road-block': 'bg-red-500 text-white'
     };
 
     const badgeText = {
@@ -986,16 +986,16 @@ function AmazingRaceApp() {
     }
 
     return (
-      <div className="w-full max-w-md bg-secondary rounded-3xl overflow-hidden shadow-2xl">
+      <div className="w-full max-w-md bg-purple-700 rounded-3xl overflow-hidden shadow-2xl">
         <div className="bg-black text-white py-8 px-6 text-center">
-          <p className="text-6xl font-bold tracking-widest text-primary">THE HUNT</p>
+          <p className="text-6xl font-bold tracking-widest text-blue-500">THE HUNT</p>
         </div>
         <div className="p-8">
           <div className={`${badgeColors[clue.type]} text-3xl font-bold text-center py-4 -mx-2 mb-6 rounded-xl`}>
             {badgeText[clue.type]}
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 min-h-[400px]">
-            <h2 className="text-3xl font-bold text-primary dark:text-primary text-center mb-6">{displayTitle}</h2>
+            <h2 className="text-3xl font-bold text-blue-400 dark:text-blue-400 text-center mb-6">{displayTitle}</h2>
             {displayContent.map((paragraph, idx) => (
               <p key={idx} className="text-lg leading-relaxed mb-4">{paragraph}</p>
             ))}
@@ -1008,10 +1008,10 @@ function AmazingRaceApp() {
   // LOGIN VIEW
   if (view === 'login') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark dark:from-primary-dark dark:to-secondary flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-purple-700 flex items-center justify-center p-4">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-primary dark:text-primary">THE HUNT</h1>
+            <h1 className="text-5xl font-bold text-blue-500 dark:text-blue-500">THE HUNT</h1>
           </div>
 
           {errors.length > 0 && (
@@ -1030,7 +1030,7 @@ function AmazingRaceApp() {
 
           <div className="space-y-6">
             <div className="border-2 border-gray-200 dark:border-gray-600 rounded-xl p-6 dark:bg-gray-700">
-              <h3 className="text-xl font-bold text-primary dark:text-primary mb-4">Admin Login</h3>
+              <h3 className="text-xl font-bold text-blue-500 dark:text-blue-400 mb-4">Admin Login</h3>
               <input
                 type="password"
                 placeholder="Admin Password"
@@ -1048,7 +1048,7 @@ function AmazingRaceApp() {
             </div>
 
             <div className="border-2 border-gray-200 dark:border-gray-600 rounded-xl p-6 dark:bg-gray-700">
-              <h3 className="text-xl font-bold text-primary dark:text-primary mb-4">Team Login</h3>
+              <h3 className="text-xl font-bold text-blue-500 dark:text-blue-400 mb-4">Team Login</h3>
               <input
                 type="text"
                 placeholder="Game Code"
@@ -1074,7 +1074,7 @@ function AmazingRaceApp() {
               />
               <button
                 onClick={handleTeamLogin}
-                className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-primary-dark"
+                className="w-full bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600"
               >
                 Login as Team
               </button>
@@ -1093,8 +1093,8 @@ function AmazingRaceApp() {
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
         <div className="bg-black text-white py-6 px-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-primary">Admin Dashboard</h1>
-            <p className="text-primary">Game Master Control Panel</p>
+            <h1 className="text-3xl font-bold text-blue-500">Admin Dashboard</h1>
+            <p className="text-blue-400">Game Master Control Panel</p>
           </div>
           <button
             onClick={handleLogout}
@@ -1107,12 +1107,12 @@ function AmazingRaceApp() {
         <div className="p-8">
           {/* Game Status */}
           {appState.game ? (
-            <div className="bg-gradient-to-r from-primary to-primary-dark rounded-xl p-6 mb-8 shadow-lg text-white">
+            <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 mb-8 shadow-lg text-white">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-3xl font-bold text-white mb-2">{appState.game.name}</h2>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="bg-black text-accent-cyan px-4 py-2 rounded-lg font-mono text-2xl font-bold">
+                    <div className="bg-black text-cyan-400 px-4 py-2 rounded-lg font-mono text-2xl font-bold">
                       {appState.game.code}
                     </div>
                     <button
@@ -1172,7 +1172,7 @@ function AmazingRaceApp() {
                             setAppState(prev => ({ ...prev, game: updatedGame }));
                           }
                         }}
-                        className="bg-primary text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-primary-dark flex items-center gap-1 sm:gap-2"
+                        className="bg-blue-500 text-white px-2 sm:px-6 py-1 sm:py-2 text-sm sm:text-base rounded-lg hover:bg-blue-600 flex items-center gap-1 sm:gap-2"
                       >
                         ⏸️ <span className="hidden sm:inline">Pause Game</span><span className="sm:hidden">Pause</span>
                       </button>
@@ -1254,14 +1254,14 @@ function AmazingRaceApp() {
           ) : (
             <div className="bg-white dark:bg-gray-800 rounded-xl p-12 text-center mb-8 shadow">
               <AlertCircle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <h2 className="text-2xl font-bold text-primary dark:text-primary mb-4">No Active Game</h2>
+              <h2 className="text-2xl font-bold text-blue-500 dark:text-blue-400 mb-4">No Active Game</h2>
               <p className="text-gray-600 dark:text-gray-300 mb-6">Create a new game to get started</p>
               <button
                 onClick={() => {
                   setGameForm({ name: '', code: generateGameCode(), clueSequence: [] });
                   setShowGameForm(true);
                 }}
-                className="bg-primary text-white px-4 sm:px-8 py-2 sm:py-3 text-base sm:text-lg rounded-lg font-bold hover:bg-primary-dark"
+                className="bg-blue-500 text-white px-4 sm:px-8 py-2 sm:py-3 text-base sm:text-lg rounded-lg font-bold hover:bg-blue-600"
               >
                 Create New Game
               </button>
@@ -1270,8 +1270,8 @@ function AmazingRaceApp() {
 
           {/* Game Setup Form */}
           {showGameForm && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow mb-8 border-4 border-primary">
-              <h3 className="text-2xl font-bold text-primary dark:text-primary mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow mb-8 border-4 border-blue-500">
+              <h3 className="text-2xl font-bold text-blue-500 dark:text-blue-400 mb-6">
                 {appState.game ? 'Edit Game' : 'Create New Game'}
               </h3>
               
@@ -1347,7 +1347,7 @@ function AmazingRaceApp() {
                       >
                         <div className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
-                            <span className="bg-primary text-white px-2 py-1 rounded text-xs font-bold">
+                            <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold">
                               #{index + 1}
                             </span>
                             <span className="font-medium">{clue.title}</span>
@@ -1440,8 +1440,8 @@ function AmazingRaceApp() {
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
                 <div className="flex items-center justify-between mb-2">
-                  <Clock className="w-8 h-8 text-primary" />
-                  <span className="text-3xl font-bold text-primary dark:text-primary">{pendingSubmissions.length}</span>
+                  <Clock className="w-8 h-8 text-blue-500" />
+                  <span className="text-3xl font-bold text-blue-500 dark:text-blue-400">{pendingSubmissions.length}</span>
                 </div>
                 <p className="text-gray-600 dark:text-gray-300">Pending Approvals</p>
               </div>
@@ -1457,8 +1457,8 @@ function AmazingRaceApp() {
 
           {/* Pending Submissions */}
           {pendingSubmissions.length > 0 && (
-            <div className="bg-blue-50 dark:bg-gray-800 border-2 border-primary rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-primary dark:text-primary mb-4 flex items-center gap-2">
+            <div className="bg-blue-50 dark:bg-gray-800 border-2 border-blue-500 rounded-xl p-6 mb-8">
+              <h2 className="text-2xl font-bold text-blue-500 dark:text-blue-400 mb-4 flex items-center gap-2">
                 <Clock className="w-6 h-6" />
                 Pending Approvals
               </h2>
@@ -1467,10 +1467,10 @@ function AmazingRaceApp() {
                   const clue = appState.clueLibrary.find(c => c.id === sub.clueId);
                   const team = appState.teams.find(t => t.id === sub.teamId);
                   return (
-                    <div key={sub.id} className="bg-white rounded-lg p-6 border-2 border-primary shadow-lg">
+                    <div key={sub.id} className="bg-white rounded-lg p-6 border-2 border-blue-500 shadow-lg">
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <h3 className="font-bold text-xl text-primary">
+                          <h3 className="font-bold text-xl text-blue-500">
                             {team?.name || 'Unknown Team'}
                           </h3>
                           <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Clue: {clue?.title || 'Unknown'}</p>
@@ -1721,7 +1721,7 @@ function AmazingRaceApp() {
                 {appState.teams.map(team => (
                   <div key={team.id} className="border rounded-lg p-4 flex justify-between items-center">
                     <div>
-                      <h3 className="font-bold text-lg text-primary dark:text-primary">{team.name}</h3>
+                      <h3 className="font-bold text-lg text-blue-500 dark:text-blue-400">{team.name}</h3>
                       <p className="text-sm text-gray-600 dark:text-gray-300">
                         Progress: {team.currentClueIndex} / {appState.game.clueSequence.length} clues
                       </p>
@@ -1822,7 +1822,7 @@ function AmazingRaceApp() {
                 </button>
                 <button
                   onClick={() => setShowClueForm(true)}
-                  className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary-dark font-bold"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-600 font-bold"
                 >
                   <Plus className="w-5 h-5" /> Add Clue
                 </button>
@@ -1830,7 +1830,7 @@ function AmazingRaceApp() {
             </div>
 
             {showClueForm && (
-              <div className="mb-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-primary max-h-[600px] overflow-y-auto">
+              <div className="mb-6 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-blue-500 max-h-[600px] overflow-y-auto">
                 <h3 className="text-xl font-bold dark:text-white mb-4">{editingClueId ? 'Edit' : 'Add'} Clue</h3>
                 
                 <label className="block text-sm font-bold mb-2 dark:text-white">Card Type:</label>
@@ -2008,12 +2008,12 @@ function AmazingRaceApp() {
                   <div>
                     <span className={`inline-block px-3 py-1 rounded text-xs font-bold mr-2 ${
                       clue.type === 'route-info' ? 'bg-accent-cyan text-black' :
-                      clue.type === 'detour' ? 'bg-secondary text-white' :
+                      clue.type === 'detour' ? 'bg-purple-700 text-white' :
                       'bg-accent-red text-white'
                     }`}>
                       {clue.type.toUpperCase().replace('-', ' ')}
                     </span>
-                    <span className="font-bold text-lg text-secondary dark:text-secondary">{clue.title}</span>
+                    <span className="font-bold text-lg text-purple-600 dark:text-purple-400">{clue.title}</span>
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -2073,7 +2073,7 @@ function AmazingRaceApp() {
 
     if (appState.game?.status !== 'active') {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark dark:from-primary-dark dark:to-secondary flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-purple-700 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-2xl max-w-md">
             <Clock className="w-24 h-24 mx-auto mb-6 text-gray-400" />
             <h2 className="text-3xl font-bold dark:text-white mb-4">Game Not Started</h2>
@@ -2090,12 +2090,12 @@ function AmazingRaceApp() {
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-600 p-4">
         <div className="max-w-4xl mx-auto">
           <div className="bg-black text-white rounded-2xl p-6 mb-8 flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-accent-cyan">{currentTeam.name}</h1>
-              <p className="text-primary">
+              <h1 className="text-3xl font-bold text-cyan-400">{currentTeam.name}</h1>
+              <p className="text-blue-400">
                 Clue {currentTeam.currentClueIndex + 1} of {appState.game.clueSequence.length}
               </p>
             </div>
@@ -2109,7 +2109,7 @@ function AmazingRaceApp() {
 
           {isFinished ? (
             <div className="bg-white rounded-2xl p-12 text-center shadow-2xl">
-              <Trophy className="w-24 h-24 mx-auto mb-6 text-primary" />
+              <Trophy className="w-24 h-24 mx-auto mb-6 text-yellow-500" />
               <h2 className="text-4xl font-bold mb-4">Congratulations!</h2>
               <p className="text-xl text-gray-600 dark:text-gray-300">You've completed all clues!</p>
               <p className="text-lg text-gray-500 dark:text-gray-400 mt-4">Check with the game master for your final results.</p>
@@ -2120,7 +2120,7 @@ function AmazingRaceApp() {
               {currentClue.type === 'detour' && !teamState.detourChoice && (
                 <div className="bg-white rounded-2xl p-8 shadow-2xl mb-8">
                   <div className="text-center mb-8">
-                    <div className="bg-secondary text-white text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
+                    <div className="bg-purple-700 text-white text-4xl font-bold py-4 px-8 rounded-xl inline-block mb-6">
                       DETOUR
                     </div>
                     <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
@@ -2130,7 +2130,7 @@ function AmazingRaceApp() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="border-4 border-blue-400 rounded-xl p-6 hover:bg-blue-50 cursor-pointer transition"
                          onClick={() => chooseDetour('A')}>
-                      <h3 className="text-2xl font-bold text-primary dark:text-primary mb-4">Option A</h3>
+                      <h3 className="text-2xl font-bold text-blue-500 dark:text-blue-400 mb-4">Option A</h3>
                       <h4 className="text-xl font-bold dark:text-white mb-3">{currentClue.detourOptionA.title}</h4>
                       <button className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600">
                         Choose Option A
@@ -2139,7 +2139,7 @@ function AmazingRaceApp() {
 
                     <div className="border-4 border-green-400 rounded-xl p-6 hover:bg-green-50 cursor-pointer transition"
                          onClick={() => chooseDetour('B')}>
-                      <h3 className="text-2xl font-bold text-accent-green dark:text-accent-green mb-4">Option B</h3>
+                      <h3 className="text-2xl font-bold text-emerald-500 dark:text-emerald-400 mb-4">Option B</h3>
                       <h4 className="text-xl font-bold dark:text-white mb-3">{currentClue.detourOptionB.title}</h4>
                       <button className="w-full mt-6 bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600">
                         Choose Option B
@@ -2165,8 +2165,8 @@ function AmazingRaceApp() {
                     </div>
                     <h2 className="text-3xl font-bold dark:text-white mb-4">{currentClue.title}</h2>
                     
-                    <div className="bg-blue-50 dark:bg-gray-800 border-2 border-primary rounded-xl p-8 mb-8">
-                      <AlertCircle className="w-16 h-16 mx-auto mb-4 text-accent-orange" />
+                    <div className="bg-blue-50 dark:bg-gray-800 border-2 border-blue-500 rounded-xl p-8 mb-8">
+                      <AlertCircle className="w-16 h-16 mx-auto mb-4 text-orange-500" />
                       <p className="text-2xl font-bold dark:text-white mb-4">{currentClue.roadblockQuestion}</p>
                       <p className="text-gray-600 dark:text-gray-300">Only ONE team member can complete this task.</p>
                     </div>
@@ -2302,8 +2302,8 @@ function AmazingRaceApp() {
                   <h2 className="text-2xl font-bold dark:text-white mb-6">Submit Proof of Completion</h2>
                   
                   {isPending ? (
-                    <div className="bg-blue-50 dark:bg-gray-800 border-2 border-primary rounded-xl p-6 text-center">
-                      <Clock className="w-16 h-16 mx-auto mb-4 text-primary" />
+                    <div className="bg-blue-50 dark:bg-gray-800 border-2 border-blue-500 rounded-xl p-6 text-center">
+                      <Clock className="w-16 h-16 mx-auto mb-4 text-blue-500" />
                       <p className="text-xl font-bold dark:text-white mb-2">Submission Pending</p>
                       <p className="text-gray-600 dark:text-gray-300">Waiting for game master approval...</p>
                     </div>
@@ -2346,7 +2346,7 @@ function AmazingRaceApp() {
                       <button
                         onClick={submitProof}
                         disabled={loading}
-                        className="w-full bg-primary text-white py-4 rounded-lg text-xl font-bold dark:text-white hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
+                        className="w-full bg-blue-500 text-white py-4 rounded-lg text-xl font-bold dark:text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
                       >
                         {loading ? (
                           <LoadingSpinner size="small" message="Submitting..." />
