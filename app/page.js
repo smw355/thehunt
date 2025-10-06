@@ -1039,7 +1039,7 @@ function AmazingRaceApp() {
               <input
                 type="password"
                 placeholder="Admin Password"
-                className="w-full px-4 py-2 border rounded-lg mb-4"
+                className="w-full px-4 py-2 border rounded-lg mb-4 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
@@ -1057,7 +1057,7 @@ function AmazingRaceApp() {
               <input
                 type="text"
                 placeholder="Game Code"
-                className="w-full px-4 py-2 border rounded-lg mb-3 uppercase"
+                className="w-full px-4 py-2 border rounded-lg mb-3 uppercase bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                 value={gameCode}
                 onChange={(e) => setGameCode(e.target.value.toUpperCase())}
                 maxLength="6"
@@ -1065,14 +1065,14 @@ function AmazingRaceApp() {
               <input
                 type="text"
                 placeholder="Team Name"
-                className="w-full px-4 py-2 border rounded-lg mb-3"
+                className="w-full px-4 py-2 border rounded-lg mb-3 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                 value={teamLoginName}
                 onChange={(e) => setTeamLoginName(e.target.value)}
               />
               <input
                 type="password"
                 placeholder="Team Password"
-                className="w-full px-4 py-2 border rounded-lg mb-4"
+                className="w-full px-4 py-2 border rounded-lg mb-4 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                 value={teamLoginPassword}
                 onChange={(e) => setTeamLoginPassword(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleTeamLogin()}
@@ -1302,7 +1302,7 @@ function AmazingRaceApp() {
               <input
                 type="text"
                 placeholder="e.g., London Adventure"
-                className="w-full px-4 py-2 border rounded-lg mb-4"
+                className="w-full px-4 py-2 border rounded-lg mb-4 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                 value={gameForm.name}
                 onChange={(e) => setGameForm({ ...gameForm, name: e.target.value })}
               />
@@ -1312,7 +1312,7 @@ function AmazingRaceApp() {
                 <input
                   type="text"
                   placeholder="LONDON"
-                  className="flex-1 px-4 py-2 border rounded-lg uppercase font-mono text-xl"
+                  className="flex-1 px-4 py-2 border rounded-lg uppercase font-mono text-xl bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                   value={gameForm.code}
                   onChange={(e) => setGameForm({ ...gameForm, code: e.target.value.toUpperCase() })}
                   maxLength="6"
@@ -1600,7 +1600,7 @@ function AmazingRaceApp() {
                 </p>
 
                 <textarea
-                  className="w-full px-4 py-3 border-2 rounded-lg mb-4 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border-2 rounded-lg mb-4 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400"
                   rows="4"
                   placeholder="e.g., Photo is too blurry, wrong location, task not completed properly..."
                   value={currentAdminComment}
@@ -1718,14 +1718,14 @@ function AmazingRaceApp() {
                   <input
                     type="text"
                     placeholder="Team Name"
-                    className="w-full px-4 py-2 border rounded-lg mb-3"
+                    className="w-full px-4 py-2 border rounded-lg mb-3 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                     value={teamForm.name}
                     onChange={(e) => setTeamForm({ ...teamForm, name: e.target.value })}
                   />
                   <input
                     type="text"
                     placeholder="Team Password"
-                    className="w-full px-4 py-2 border rounded-lg mb-3"
+                    className="w-full px-4 py-2 border rounded-lg mb-3 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                     value={teamForm.password}
                     onChange={(e) => setTeamForm({ ...teamForm, password: e.target.value })}
                   />
@@ -1868,7 +1868,7 @@ function AmazingRaceApp() {
                 
                 <label className="block text-sm font-bold mb-2 dark:text-white">Card Type:</label>
                 <select
-                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                  className="w-full px-4 py-2 border rounded-lg mb-4 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500"
                   value={clueForm.type}
                   onChange={(e) => setClueForm({ ...clueForm, type: e.target.value })}
                 >
@@ -1881,7 +1881,7 @@ function AmazingRaceApp() {
                 <input
                   type="text"
                   placeholder="Challenge Title"
-                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                  className="w-full px-4 py-2 border rounded-lg mb-4 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                   value={clueForm.title}
                   onChange={(e) => setClueForm({ ...clueForm, title: e.target.value })}
                 />
@@ -1893,7 +1893,7 @@ function AmazingRaceApp() {
                       <textarea
                         key={idx}
                         placeholder={`Paragraph ${idx + 1}`}
-                        className="w-full px-4 py-2 border rounded-lg mb-3"
+                        className="w-full px-4 py-2 border rounded-lg mb-3 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                         rows="3"
                         value={para}
                         onChange={(e) => {
@@ -1919,7 +1919,7 @@ function AmazingRaceApp() {
                       <input
                         type="text"
                         placeholder="Option A Title (e.g., 'Stack It')"
-                        className="w-full px-4 py-2 border rounded-lg mb-2"
+                        className="w-full px-4 py-2 border rounded-lg mb-2 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                         value={clueForm.detourOptionA.title}
                         onChange={(e) => setClueForm({ 
                           ...clueForm, 
@@ -1928,7 +1928,7 @@ function AmazingRaceApp() {
                       />
                       <textarea
                         placeholder="Option A Description"
-                        className="w-full px-4 py-2 border rounded-lg"
+                        className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                         rows="4"
                         value={clueForm.detourOptionA.description}
                         onChange={(e) => setClueForm({ 
@@ -1943,7 +1943,7 @@ function AmazingRaceApp() {
                       <input
                         type="text"
                         placeholder="Option B Title (e.g., 'Track It')"
-                        className="w-full px-4 py-2 border rounded-lg mb-2"
+                        className="w-full px-4 py-2 border rounded-lg mb-2 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                         value={clueForm.detourOptionB.title}
                         onChange={(e) => setClueForm({ 
                           ...clueForm, 
@@ -1952,7 +1952,7 @@ function AmazingRaceApp() {
                       />
                       <textarea
                         placeholder="Option B Description"
-                        className="w-full px-4 py-2 border rounded-lg"
+                        className="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                         rows="4"
                         value={clueForm.detourOptionB.description}
                         onChange={(e) => setClueForm({ 
@@ -1970,14 +1970,14 @@ function AmazingRaceApp() {
                     <input
                       type="text"
                       placeholder="e.g., Who's ready to get their hands dirty?"
-                      className="w-full px-4 py-2 border rounded-lg mb-4"
+                      className="w-full px-4 py-2 border rounded-lg mb-4 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                       value={clueForm.roadblockQuestion}
                       onChange={(e) => setClueForm({ ...clueForm, roadblockQuestion: e.target.value })}
                     />
                     <label className="block text-sm font-bold mb-2 dark:text-white">Roadblock Task (revealed after player selection):</label>
                     <textarea
                       placeholder="e.g., One team member must eat 6 escargots"
-                      className="w-full px-4 py-2 border rounded-lg mb-4"
+                      className="w-full px-4 py-2 border rounded-lg mb-4 bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                       rows="4"
                       value={clueForm.roadblockTask}
                       onChange={(e) => setClueForm({ ...clueForm, roadblockTask: e.target.value })}
@@ -2210,7 +2210,7 @@ function AmazingRaceApp() {
                       <input
                         type="text"
                         placeholder="Enter team member's name"
-                        className="w-full px-4 py-3 border-2 rounded-lg mb-4 text-lg"
+                        className="w-full px-4 py-3 border-2 rounded-lg mb-4 text-lg bg-white dark:bg-gray-600 text-black dark:text-white border-gray-300 dark:border-gray-500 placeholder-gray-500 dark:placeholder-gray-400"
                         value={roadblockPlayer}
                         onChange={(e) => setRoadblockPlayer(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && assignRoadblockPlayer()}
