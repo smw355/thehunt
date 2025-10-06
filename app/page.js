@@ -1146,10 +1146,10 @@ function AmazingRaceApp() {
                     </button>
                   </div>
                   <div className="flex gap-4 text-sm">
-                    <span className="bg-white bg-opacity-25 text-white px-3 py-1 rounded font-semibold">
+                    <span className="bg-black bg-opacity-50 text-white px-3 py-1 rounded font-semibold">
                       {appState.teams.length} Teams
                     </span>
-                    <span className="bg-white bg-opacity-25 text-white px-3 py-1 rounded font-semibold">
+                    <span className="bg-black bg-opacity-50 text-white px-3 py-1 rounded font-semibold">
                       {appState.game.clueSequence.length} Clues
                     </span>
                     <span className={`px-3 py-1 rounded font-bold ${
