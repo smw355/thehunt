@@ -1,8 +1,8 @@
-# 🏁 The Race - Photo-Enabled Competition Platform
+# 🏹 The Hunt - Photo-Enabled Treasure Hunt Platform
 
-A complete digital recreation of Amazing Race-style competitions with **mobile photo/video uploads**, **admin feedback system**, and **comprehensive clue management**.
+A complete digital treasure hunt platform with **mobile photo/video uploads**, **admin feedback system**, and **comprehensive clue management**.
 
-Perfect for corporate team building, educational events, community competitions, and family gatherings.
+Perfect for treasure hunts, scavenger hunts, corporate team building, educational events, and community adventures.
 
 ## 🚀 **Key Features**
 
@@ -27,7 +27,7 @@ Perfect for corporate team building, educational events, community competitions,
 - **Attempt Tracking**: Numbered attempts with timestamps
 
 ### 🎮 **Game Mechanics**
-- **Three Challenge Types**: Route Info, Detour, Roadblock (TV show accurate)
+- **Three Challenge Types**: Waypoint, Fork, Solo (adventure-themed challenges)
 - **Multi-Team Support**: Unlimited teams per game
 - **Real-Time Updates**: Instant approval/rejection notifications
 - **Data Persistence**: Browser-based storage with auto-save
@@ -39,7 +39,7 @@ Perfect for corporate team building, educational events, community competitions,
 2. **Deploy via Vercel**:
    - Go to [vercel.com](https://vercel.com)
    - Click "New Project" → Import from GitHub
-   - Select repository: `smw355/therace`
+   - Select repository: `smw355/thehunt`
    - **Set Environment Variable**: `NEXT_PUBLIC_ADMIN_PASSWORD` = `your_secure_password`
    - Click "Deploy"
 
@@ -88,13 +88,13 @@ Set in Vercel Dashboard → Project Settings → Environment Variables:
 5. **Handle Feedback**:
    - If approved: advance to next clue
    - If rejected: read admin comments and resubmit
-6. **Race to Finish**: Complete all clues to win!
+6. **Hunt to Finish**: Complete all clues to win the treasure!
 
 ## 📋 **Clue Creation & Management**
 
 ### Challenge Types
 
-#### 1. **Route Info**
+#### 1. **Waypoint**
 Basic informational clues that direct teams to locations or give instructions.
 ```json
 {
@@ -109,8 +109,8 @@ Basic informational clues that direct teams to locations or give instructions.
 }
 ```
 
-#### 2. **Detour**
-Teams choose between two different tasks (just like the TV show).
+#### 2. **Fork**
+Teams choose between two different paths or approaches to complete their mission.
 ```json
 {
   "type": "detour",
@@ -127,7 +127,7 @@ Teams choose between two different tasks (just like the TV show).
 }
 ```
 
-#### 3. **Roadblock**
+#### 3. **Solo**
 One team member must be selected before the task is revealed.
 ```json
 {
@@ -210,8 +210,8 @@ Create a file called `my-clues.json` with this structure:
 
 1. **In Admin Panel**: Go to Clue Library section
 2. **Click Export**: Purple "Export" button
-3. **File Downloads**: `the-race-clues-[timestamp].json`
-4. **Share Library**: Send file to other race organizers
+3. **File Downloads**: `the-hunt-clues-[timestamp].json`
+4. **Share Library**: Send file to other hunt organizers
 
 ### 📸 **Multi-Photo Challenge System**
 
@@ -245,25 +245,25 @@ Teams get dual upload options on mobile devices:
 
 ### 💡 **Clue Writing Best Practices**
 
-#### Route Info Clues
+#### Waypoint Clues
 - **Be Specific**: Include landmark details and clear directions
 - **Photo Requirements**: Use `requiredPhotos` field for exact counts needed
 - **Difficulty Scaling**: Start easy, increase complexity throughout race
 - **Local Knowledge**: Reference well-known local landmarks
 
-#### Detour Clues
-- **Balanced Options**: Make sure both choices take similar time/effort
-- **Clear Differences**: Options should feel distinctly different (physical vs mental)
+#### Fork Clues
+- **Balanced Paths**: Make sure both choices take similar time/effort
+- **Clear Differences**: Paths should feel distinctly different (physical vs mental)
 - **Equipment Needs**: Consider what teams will have available
 - **Location Variety**: Mix indoor/outdoor and different neighborhoods
 
-#### Roadblock Clues
+#### Solo Clues
 - **Cryptic Questions**: Don't give away the task (like TV show)
-- **Single Person**: Task must be completable by one team member
+- **Solo Challenge**: Task must be completable by one team member
 - **Clear Success Criteria**: Teams must know when they're done
 - **Photo/Video Proof**: Specify exactly what evidence is needed
 
-### 🎯 **Sample Race Scenarios**
+### 🎯 **Sample Hunt Scenarios**
 
 #### **🏛️ Museum Collection Hunt** (Perfect for British Museum!)
 ```json
@@ -394,8 +394,8 @@ Teams get dual upload options on mobile devices:
 
 ### Local Development
 ```bash
-git clone https://github.com/smw355/therace.git
-cd therace
+git clone https://github.com/smw355/thehunt.git
+cd thehunt
 npm install
 npm run dev  # http://localhost:3000
 ```
@@ -481,24 +481,24 @@ npm run lint   # Check code quality
 ## 📞 **Support**
 
 For issues, feature requests, or questions:
-- **GitHub Issues**: [Create an issue](https://github.com/smw355/therace/issues)
+- **GitHub Issues**: [Create an issue](https://github.com/smw355/thehunt/issues)
 - **Documentation**: This README and inline code comments
-- **Community**: Share your race experiences and clue libraries!
+- **Community**: Share your hunt experiences and clue libraries!
 
 ---
 
-## 🏆 **Ready to Race!**
+## 🏆 **Ready to Hunt!**
 
-This platform provides everything needed to run professional-quality Amazing Race competitions with:
+This platform provides everything needed to run professional-quality treasure hunt adventures with:
 - ✅ **Multi-Photo Challenges**: Require 1-10 specific photos per challenge
 - ✅ **Dual Mobile Upload**: Camera + gallery selection for maximum flexibility
 - ✅ **Smart Photo Validation**: Real-time feedback and exact count enforcement
 - ✅ **Admin Review System**: Beautiful photo galleries with mandatory feedback
 - ✅ **Database Persistence**: Production-ready PostgreSQL integration
-- ✅ **Comprehensive Clue System**: Route Info, Detour, and Roadblock challenges
+- ✅ **Comprehensive Clue System**: Waypoint, Fork, and Solo challenges
 - ✅ **Real-time Progress Tracking**: Live team status monitoring
 - ✅ **One-Click Vercel Deployment**: Professional hosting in minutes
 
-**Perfect for museum hunts, scavenger hunts, and photo-based challenges!**
+**Perfect for treasure hunts, museum adventures, scavenger hunts, and photo-based challenges!**
 
-**Start your race today!** 🏁📸🎯
+**Start your hunt today!** 🏹📸🎯
