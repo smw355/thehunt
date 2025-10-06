@@ -2332,7 +2332,7 @@ function AmazingRaceApp() {
               {((currentClue.type === 'route-info') ||
                 (currentClue.type === 'detour' && teamState.detourChoice) ||
                 (currentClue.type === 'road-block' && (roadblockRevealed || teamState.roadblockPlayer))) && (
-                <div className="bg-white rounded-2xl p-8 shadow-2xl">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl">
                   <h2 className="text-2xl font-bold dark:text-white mb-6">Submit Proof of Completion</h2>
                   
                   {isPending ? (
@@ -2354,9 +2354,9 @@ function AmazingRaceApp() {
                       />
 
                       <div className="mb-4">
-                        <label className="block font-bold mb-2">Text Description (optional):</label>
+                        <label className="block font-bold mb-2 text-black dark:text-white">Text Description (optional):</label>
                         <textarea
-                          className="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400"
                           rows="3"
                           placeholder="Describe what you did to complete this challenge..."
                           value={submissionProof}
@@ -2366,9 +2366,9 @@ function AmazingRaceApp() {
                       </div>
 
                       <div className="mb-6">
-                        <label className="block font-bold mb-2">Additional Notes (optional):</label>
+                        <label className="block font-bold mb-2 text-black dark:text-white">Additional Notes (optional):</label>
                         <textarea
-                          className="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-black dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400"
                           rows="2"
                           placeholder="Any extra details or comments..."
                           value={submissionNotes}
