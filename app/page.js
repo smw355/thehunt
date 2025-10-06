@@ -130,7 +130,9 @@ function AmazingRaceApp() {
   useEffect(() => {
     const initializeData = async () => {
       setLoading(true);
-      await loadClueLibrary();
+
+      // Load clue library in parallel with session restoration
+      const clueLibraryPromise = loadClueLibrary();
 
       // Try to restore session
       const savedSession = localStorage.getItem('theRaceSession');
@@ -180,6 +182,9 @@ function AmazingRaceApp() {
           localStorage.removeItem('theRaceSession');
         }
       }
+
+      // Ensure clue library is loaded before marking as complete
+      await clueLibraryPromise;
 
       setDataLoaded(true);
       setLoading(false);
@@ -1106,7 +1111,25 @@ function AmazingRaceApp() {
 
         <div className="p-8">
           {/* Game Status */}
-          {appState.game ? (
+          {!dataLoaded ? (
+            <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 mb-8 shadow-lg text-white">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="w-64 h-8 bg-white bg-opacity-25 rounded mb-2 animate-pulse"></div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-20 h-10 bg-black rounded-lg animate-pulse"></div>
+                    <div className="w-28 h-10 bg-white bg-opacity-25 rounded-lg animate-pulse"></div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-20 h-6 bg-white bg-opacity-25 rounded animate-pulse"></div>
+                    <div className="w-20 h-6 bg-white bg-opacity-25 rounded animate-pulse"></div>
+                    <div className="w-16 h-6 bg-white bg-opacity-25 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                <div className="w-24 h-10 bg-white bg-opacity-25 rounded-lg animate-pulse"></div>
+              </div>
+            </div>
+          ) : appState.game ? (
             <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 mb-8 shadow-lg text-white">
               <div className="flex justify-between items-start">
                 <div>
@@ -1429,31 +1452,41 @@ function AmazingRaceApp() {
           )}
 
           {/* Stats */}
-          {appState.game && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <Users className="w-8 h-8 text-blue-500" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
+              <div className="flex items-center justify-between mb-2">
+                <Users className="w-8 h-8 text-blue-500" />
+                {appState.game ? (
                   <span className="text-3xl font-bold text-blue-500 dark:text-blue-400">{appState.teams.length}</span>
-                </div>
-                <p className="text-black dark:text-white">Teams in Game</p>
+                ) : (
+                  <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                )}
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <Clock className="w-8 h-8 text-blue-500" />
-                  <span className="text-3xl font-bold text-blue-500 dark:text-blue-400">{pendingSubmissions.length}</span>
-                </div>
-                <p className="text-black dark:text-white">Pending Approvals</p>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <Trophy className="w-8 h-8 text-green-500" />
-                  <span className="text-3xl font-bold text-green-500 dark:text-green-400">{appState.clueLibrary.length}</span>
-                </div>
-                <p className="text-black dark:text-white">Clues in Library</p>
-              </div>
+              <p className="text-black dark:text-white">Teams in Game</p>
             </div>
-          )}
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
+              <div className="flex items-center justify-between mb-2">
+                <Clock className="w-8 h-8 text-blue-500" />
+                {appState.game ? (
+                  <span className="text-3xl font-bold text-blue-500 dark:text-blue-400">{pendingSubmissions.length}</span>
+                ) : (
+                  <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                )}
+              </div>
+              <p className="text-black dark:text-white">Pending Approvals</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
+              <div className="flex items-center justify-between mb-2">
+                <Trophy className="w-8 h-8 text-green-500" />
+                {dataLoaded ? (
+                  <span className="text-3xl font-bold text-green-500 dark:text-green-400">{appState.clueLibrary.length}</span>
+                ) : (
+                  <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                )}
+              </div>
+              <p className="text-black dark:text-white">Clues in Library</p>
+            </div>
+          </div>
 
           {/* Pending Submissions */}
           {pendingSubmissions.length > 0 && (
