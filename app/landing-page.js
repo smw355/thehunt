@@ -3,7 +3,7 @@
 import { useSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { isFeatureEnabled } from '../lib/feature-flags'
+import { isFeatureEnabled } from '../lib/feature-flags-core'
 
 export default function LandingPage() {
   const { data: session, status } = useSession()

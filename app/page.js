@@ -1,4 +1,4 @@
-import { isFeatureEnabled } from '../lib/feature-flags'
+import { isFeatureEnabled } from '../lib/feature-flags-core'
 import LandingPage from './landing-page'
 import LegacyApp from './legacy/page'
 
