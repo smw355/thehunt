@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Camera, Check, X, Users, Plus, Edit2, Trash2, Eye, Clock, Trophy, AlertCircle, Play, Copy, Download } from 'lucide-react';
-import ErrorBoundary from '../components/ErrorBoundary';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { validateGameForm, validateTeamForm, validateClueForm, copyToClipboard, downloadJSON, parseJSONFile } from '../utils/gameUtils';
-import PhotoUpload from '../components/PhotoUpload';
-import { gameService, teamService, submissionService, clueService } from '../utils/databaseService';
+import ErrorBoundary from '../../components/ErrorBoundary';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { validateGameForm, validateTeamForm, validateClueForm, copyToClipboard, downloadJSON, parseJSONFile } from '../../utils/gameUtils';
+import PhotoUpload from '../../components/PhotoUpload';
+import { gameService, teamService, submissionService, clueService } from '../../utils/databaseService';
 
 // App state for database integration
 const initialAppState = {
