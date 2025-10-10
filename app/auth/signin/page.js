@@ -1,10 +1,10 @@
 'use client'
 
 import { signIn, getProviders } from 'next-auth/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-export default function SignIn() {
+function SignInContent() {
   const [providers, setProviders] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
@@ -115,5 +115,26 @@ export default function SignIn() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="animate-pulse">
+            <div className="h-8 w-48 bg-gray-300 dark:bg-gray-700 rounded mx-auto mb-4"></div>
+            <div className="h-4 w-32 bg-gray-300 dark:bg-gray-700 rounded mx-auto mb-8"></div>
+            <div className="space-y-4">
+              <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded"></div>
+              <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   )
 }
