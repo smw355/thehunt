@@ -3,9 +3,15 @@ import GoogleProvider from 'next-auth/providers/google'
 import GitHubProvider from 'next-auth/providers/github'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '../../../../db/database'
+import { users, accounts, sessions, verificationTokens } from '../../../../db/schema'
 
 const handler = NextAuth({
-  adapter: DrizzleAdapter(db),
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  }),
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
