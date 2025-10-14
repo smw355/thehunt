@@ -1,13 +1,30 @@
+import { getServerSession } from 'next-auth/next'
 import { db } from '@/db/index.js';
-import { clues } from '@/db/schema.js';
+import { clues, libraryClues } from '@/db/schema.js';
 import { eq } from 'drizzle-orm';
 
 // Get all clues from the library
-export async function GET() {
+export async function GET(request) {
   try {
-    const allClues = await db.select().from(clues);
-    return Response.json(allClues);
+    const session = await getServerSession()
+    if (!session || !session.user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const type = searchParams.get('type')
+    const limit = parseInt(searchParams.get('limit') || '100')
+
+    let query = db.select().from(clues)
+
+    if (type && ['route-info', 'detour', 'road-block'].includes(type)) {
+      query = query.where(eq(clues.type, type))
+    }
+
+    const allClues = await query.limit(limit)
+    return Response.json({ clues: allClues });
   } catch (error) {
+    console.error('Error fetching clues:', error)
     return Response.json({ error: 'Failed to fetch clues' }, { status: 500 });
   }
 }
@@ -15,6 +32,11 @@ export async function GET() {
 // Create single clue or import clues from JSON (bulk insert)
 export async function POST(request) {
   try {
+    const session = await getServerSession()
+    if (!session || !session.user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await request.json();
 
     // Check if this is a bulk import (has 'clues' array) or single clue
@@ -35,13 +57,69 @@ export async function POST(request) {
         clues: insertedClues
       });
     } else {
-      // Single clue creation
-      const clueData = body;
+      // Single clue creation with validation
+      const {
+        type,
+        title,
+        content,
+        detourOptionA,
+        detourOptionB,
+        roadblockQuestion,
+        roadblockTask,
+        requiredPhotos,
+        libraryId,
+      } = body
+
+      // Validate required fields
+      if (!type || !title) {
+        return Response.json({ error: 'Type and title are required' }, { status: 400 })
+      }
+
+      if (!['route-info', 'detour', 'road-block'].includes(type)) {
+        return Response.json({ error: 'Invalid clue type' }, { status: 400 })
+      }
+
+      // Type-specific validation
+      if (type === 'route-info' && (!content || !Array.isArray(content) || content.length === 0)) {
+        return Response.json({ error: 'Route info clues require content array' }, { status: 400 })
+      }
+
+      if (type === 'detour' && (!detourOptionA || !detourOptionB)) {
+        return Response.json({ error: 'Detour clues require both options' }, { status: 400 })
+      }
+
+      if (type === 'road-block' && !roadblockQuestion) {
+        return Response.json({ error: 'Road block clues require a question' }, { status: 400 })
+      }
+
+      // Create the clue
+      const clueData = {
+        type,
+        title: title.trim(),
+        content: type === 'route-info' ? content : null,
+        detourOptionA: type === 'detour' ? detourOptionA : null,
+        detourOptionB: type === 'detour' ? detourOptionB : null,
+        roadblockQuestion: type === 'road-block' ? roadblockQuestion?.trim() : null,
+        roadblockTask: type === 'road-block' ? roadblockTask?.trim() : null,
+        requiredPhotos: requiredPhotos || 0,
+        createdAt: new Date(),
+      }
+
       const [newClue] = await db.insert(clues).values(clueData).returning();
 
-      return Response.json(newClue);
+      // If libraryId is provided, add to library
+      if (libraryId) {
+        await db.insert(libraryClues).values({
+          libraryId: parseInt(libraryId),
+          clueId: newClue.id,
+          addedAt: new Date(),
+        })
+      }
+
+      return Response.json(newClue, { status: 201 });
     }
   } catch (error) {
+    console.error('Error creating clue:', error)
     return Response.json({ error: 'Failed to create clue(s)' }, { status: 500 });
   }
 }
