@@ -71,8 +71,8 @@ export const teamStates = pgTable('team_states', {
 // Users table (OAuth-based authentication)
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }),
   image: text('image'), // Avatar URL from OAuth provider
   emailVerified: timestamp('email_verified'),
   globalRole: varchar('global_role', { length: 50 }).notNull().default('user'), // 'admin' or 'user'
