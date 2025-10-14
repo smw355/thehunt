@@ -12,10 +12,20 @@ console.log('NextAuth Config Check:', {
   hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
   hasNextAuthUrl: !!process.env.NEXTAUTH_URL,
   nextAuthUrl: process.env.NEXTAUTH_URL,
+  nodeEnv: process.env.NODE_ENV,
+  vercelEnv: process.env.VERCEL_ENV,
 })
 
+// Ensure secret is defined - critical for NextAuth
+if (!process.env.NEXTAUTH_SECRET) {
+  console.error('CRITICAL: NEXTAUTH_SECRET is not defined!')
+  console.error('Available env keys:', Object.keys(process.env).filter(k => k.includes('NEXT')))
+}
+
 export const authOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || (() => {
+    throw new Error('NEXTAUTH_SECRET environment variable is required but not defined')
+  })(),
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
