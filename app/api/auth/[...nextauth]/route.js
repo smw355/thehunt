@@ -29,18 +29,12 @@ const handler = NextAuth({
   callbacks: {
     async session({ session, user }) {
       // Add user ID and global role to session
-      if (session?.user) {
+      // When using database sessions, the 'user' param contains the full user object
+      if (session?.user && user) {
         session.user.id = user.id;
-        session.user.globalRole = user.globalRole;
+        session.user.globalRole = user.globalRole || 'user';
       }
       return session;
-    },
-    async jwt({ user, token }) {
-      // Add user details to JWT token
-      if (user) {
-        token.globalRole = user.globalRole;
-      }
-      return token;
     },
   },
   session: {
