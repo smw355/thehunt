@@ -5,6 +5,15 @@ import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '../../../../db/database'
 import { users, accounts, sessions, verificationTokens } from '../../../../db/schema'
 
+// Log environment variables for debugging (only log existence, not values)
+console.log('NextAuth Config Check:', {
+  hasGitHubClientId: !!process.env.GITHUB_CLIENT_ID,
+  hasGitHubClientSecret: !!process.env.GITHUB_CLIENT_SECRET,
+  hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
+  hasNextAuthUrl: !!process.env.NEXTAUTH_URL,
+  nextAuthUrl: process.env.NEXTAUTH_URL,
+})
+
 const handler = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: users,
