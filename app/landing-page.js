@@ -2,32 +2,20 @@
 
 import { useSession, signIn } from 'next-auth/react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { isFeatureEnabled } from '../lib/feature-flags-core'
+import { useEffect } from 'react'
 
 export default function LandingPage() {
   const { data: session, status } = useSession()
-  const [multiUserEnabled, setMultiUserEnabled] = useState(false)
 
+  // If user is already authenticated, redirect to dashboard
   useEffect(() => {
-    // Check feature flags on client side
-    setMultiUserEnabled(isFeatureEnabled('MULTI_USER_AUTH'))
-  }, [])
-
-  // If user is already authenticated and multi-user is enabled, redirect to dashboard
-  useEffect(() => {
-    if (session && multiUserEnabled) {
+    if (session) {
       window.location.href = '/dashboard'
     }
-  }, [session, multiUserEnabled])
+  }, [session])
 
   const handleGetStarted = () => {
-    if (multiUserEnabled) {
-      signIn(undefined, { callbackUrl: '/dashboard' })
-    } else {
-      // Use legacy login system
-      window.location.href = '/legacy'
-    }
+    signIn(undefined, { callbackUrl: '/dashboard' })
   }
 
   return (
@@ -43,41 +31,30 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center space-x-4">
-              {multiUserEnabled ? (
-                <>
-                  {status === 'loading' ? (
-                    <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-10 w-20 rounded"></div>
-                  ) : session ? (
-                    <Link
-                      href="/dashboard"
-                      className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                    >
-                      Dashboard
-                    </Link>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => signIn()}
-                        className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium"
-                      >
-                        Sign In
-                      </button>
-                      <button
-                        onClick={() => signIn()}
-                        className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                      >
-                        Get Started
-                      </button>
-                    </>
-                  )}
-                </>
-              ) : (
+              {status === 'loading' ? (
+                <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-10 w-20 rounded"></div>
+              ) : session ? (
                 <Link
-                  href="/legacy"
+                  href="/dashboard"
                   className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
-                  Enter Game
+                  Dashboard
                 </Link>
+              ) : (
+                <>
+                  <button
+                    onClick={() => signIn()}
+                    className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => signIn()}
+                    className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    Get Started
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -104,7 +81,7 @@ export default function LandingPage() {
               onClick={handleGetStarted}
               className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transition-all transform hover:scale-105"
             >
-              {multiUserEnabled ? 'Start Creating' : 'Enter Game'}
+              Start Creating
             </button>
             <Link
               href="#features"
@@ -114,11 +91,9 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {multiUserEnabled && (
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Sign in with Google or GitHub to get started
-            </p>
-          )}
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            Sign in with Google or GitHub to get started
+          </p>
         </div>
 
         {/* Features Grid */}
@@ -144,10 +119,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Team Management</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              {multiUserEnabled
-                ? 'Create games, invite players, and manage teams with role-based permissions and real-time progress tracking.'
-                : 'Multi-team support with real-time progress tracking and admin feedback system.'
-              }
+              Create games, invite players, and manage teams with role-based permissions and real-time progress tracking.
             </p>
           </div>
 
@@ -159,8 +131,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Smart Clue System</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Three challenge types: Waypoints (info), Forks (choice), and Solo (individual).
-              {multiUserEnabled ? ' Personal clue libraries and sharing.' : ' Import/export clue libraries.'}
+              Three challenge types: Waypoints (info), Forks (choice), and Solo (individual). Personal clue libraries and sharing.
             </p>
           </div>
 
@@ -226,16 +197,13 @@ export default function LandingPage() {
         <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 md:p-12 text-center text-white">
           <h3 className="text-3xl md:text-4xl font-bold mb-4">Ready to Start Your Hunt?</h3>
           <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
-            {multiUserEnabled
-              ? 'Sign up today and create your first treasure hunt adventure. Join thousands of game masters creating memorable experiences.'
-              : 'Create engaging photo-based treasure hunts with professional-grade tools and real-time team management.'
-            }
+            Sign up today and create your first treasure hunt adventure. Join thousands of game masters creating memorable experiences.
           </p>
           <button
             onClick={handleGetStarted}
             className="bg-white text-primary hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold shadow-lg transition-all transform hover:scale-105"
           >
-            {multiUserEnabled ? 'Create Free Account' : 'Get Started'}
+            Create Free Account
           </button>
         </div>
       </main>
@@ -246,11 +214,9 @@ export default function LandingPage() {
           <p className="text-gray-600 dark:text-gray-400">
             © 2024 The Hunt. Create memorable treasure hunt adventures.
           </p>
-          {multiUserEnabled && (
-            <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-              Multi-user platform in beta. More features coming soon!
-            </p>
-          )}
+          <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+            Multi-user platform in beta. More features coming soon!
+          </p>
         </div>
       </footer>
     </div>
