@@ -18,17 +18,25 @@ const handler = NextAuth({
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async session({ session, user }) {
-      // Add user ID and global role to session
-      if (session?.user && user) {
-        session.user.id = user.id;
-        session.user.globalRole = user.globalRole || 'user';
+    async jwt({ token, user, account }) {
+      // On sign in, add user ID and role to token
+      if (user) {
+        token.id = user.id;
+        token.globalRole = user.globalRole || 'user';
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Add user ID and role from token to session
+      if (token) {
+        session.user.id = token.id;
+        session.user.globalRole = token.globalRole;
       }
       return session;
     },
   },
   session: {
-    strategy: 'database',
+    strategy: 'jwt',
   },
   debug: true,
 })
