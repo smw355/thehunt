@@ -3,18 +3,19 @@
 import { useSession, signOut } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
+  const router = useRouter()
   const [userGames, setUserGames] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      redirect('/auth/signin')
+      router.push('/auth/signin')
     }
-  }, [status])
+  }, [status, router])
 
   useEffect(() => {
     // TODO: Fetch user's games from API
