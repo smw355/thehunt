@@ -17,6 +17,8 @@ const handler = NextAuth({
     error: '/auth/error',
   },
   secret: process.env.NEXTAUTH_SECRET,
+  // Use NEXTAUTH_URL from environment - should be https://therace-xi.vercel.app
+  url: process.env.NEXTAUTH_URL,
   callbacks: {
     async jwt({ token, user, account }) {
       try {
