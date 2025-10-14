@@ -1,4 +1,5 @@
 import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { db } from '@/db/index.js'
 import { clueLibraries, libraryClues, clues } from '@/db/schema.js'
 import { eq, desc, or, and, sql } from 'drizzle-orm'
@@ -6,7 +7,7 @@ import { eq, desc, or, and, sql } from 'drizzle-orm'
 // Get all libraries (user's own + public ones)
 export async function GET(request) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -62,7 +63,7 @@ export async function GET(request) {
 // Create a new library
 export async function POST(request) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }

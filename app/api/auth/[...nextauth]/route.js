@@ -14,7 +14,7 @@ console.log('NextAuth Config Check:', {
   nextAuthUrl: process.env.NEXTAUTH_URL,
 })
 
-const handler = NextAuth({
+export const authOptions = {
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
@@ -95,6 +95,8 @@ const handler = NextAuth({
       console.log('User created:', message);
     },
   },
-})
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

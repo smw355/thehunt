@@ -1,4 +1,5 @@
 import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { db } from '@/db/index.js';
 import { clues, libraryClues } from '@/db/schema.js';
 import { eq } from 'drizzle-orm';
@@ -6,7 +7,7 @@ import { eq } from 'drizzle-orm';
 // Get all clues from the library
 export async function GET(request) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -32,7 +33,7 @@ export async function GET(request) {
 // Create single clue or import clues from JSON (bulk insert)
 export async function POST(request) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }

@@ -1,4 +1,5 @@
 import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { db } from '@/db/index.js'
 import { games, gameMembers, teams, users } from '@/db/schema.js'
 import { eq, and } from 'drizzle-orm'
@@ -6,7 +7,7 @@ import { eq, and } from 'drizzle-orm'
 // Get a specific game by ID
 export async function GET(request, { params }) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -79,7 +80,7 @@ export async function GET(request, { params }) {
 // Update a specific game (game masters only)
 export async function PATCH(request, { params }) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
