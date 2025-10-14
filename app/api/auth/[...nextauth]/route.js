@@ -23,9 +23,7 @@ if (!process.env.NEXTAUTH_SECRET) {
 }
 
 export const authOptions = {
-  secret: process.env.NEXTAUTH_SECRET || (() => {
-    throw new Error('NEXTAUTH_SECRET environment variable is required but not defined')
-  })(),
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
