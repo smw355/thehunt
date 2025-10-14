@@ -10,6 +10,11 @@ const handler = NextAuth({
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: 'read:user user:email',
+        },
+      },
     }),
   ],
   pages: {
@@ -20,6 +25,12 @@ const handler = NextAuth({
   // Use NEXTAUTH_URL from environment - should be https://therace-xi.vercel.app
   url: process.env.NEXTAUTH_URL,
   callbacks: {
+    async signIn({ user, account, profile }) {
+      console.log('Sign in callback - account:', account);
+      console.log('Sign in callback - profile:', profile);
+      console.log('Sign in callback - NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+      return true;
+    },
     async jwt({ token, user, account }) {
       try {
         // On sign in, add user ID and role to token
