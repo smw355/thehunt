@@ -36,9 +36,6 @@ const handler = NextAuth({
     signIn: '/auth/signin',
     error: '/auth/error',
   },
-  secret: process.env.NEXTAUTH_SECRET,
-  // Use NEXTAUTH_URL from environment - should be https://therace-xi.vercel.app
-  url: process.env.NEXTAUTH_URL,
   callbacks: {
     async signIn({ user, account, profile }) {
       console.log('Sign in callback - account:', account);
