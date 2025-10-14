@@ -15,6 +15,7 @@ console.log('NextAuth Config Check:', {
 })
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
