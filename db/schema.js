@@ -41,14 +41,16 @@ export const submissions = pgTable('submissions', {
   id: serial('id').primaryKey(),
   teamId: integer('team_id').notNull().references(() => teams.id, { onDelete: 'cascade' }),
   gameId: integer('game_id').notNull().references(() => games.id, { onDelete: 'cascade' }),
-  clueId: integer('clue_id').notNull().references(() => clues.id),
+  clueId: integer('clue_id').references(() => clues.id),
   clueIndex: integer('clue_index').notNull(),
-  clueType: varchar('clue_type', { length: 50 }).notNull(),
+  clueTitle: varchar('clue_title', { length: 255 }),
+  clueType: varchar('clue_type', { length: 50 }),
   detourChoice: varchar('detour_choice', { length: 1 }), // A or B
   roadblockPlayer: varchar('roadblock_player', { length: 255 }),
   textProof: text('text_proof'),
   notes: text('notes'),
   photos: jsonb('photos').notNull().default([]), // Array of photo objects
+  photoUrls: jsonb('photo_urls').notNull().default([]), // Array of photo URLs
   status: varchar('status', { length: 50 }).notNull().default('pending'), // pending, approved, rejected
   adminComment: text('admin_comment'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
