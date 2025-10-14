@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]/route'
+import { authOptions } from '../../auth/[...nextauth]/route'
 import { db } from '@/db/index.js'
 import { games, gameMembers, teams, users } from '@/db/schema.js'
 import { eq, and } from 'drizzle-orm'
