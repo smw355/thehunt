@@ -3,15 +3,9 @@ import GoogleProvider from 'next-auth/providers/google'
 import GitHubProvider from 'next-auth/providers/github'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '../../../../db/database'
-import { accounts, sessions, users, verificationTokens } from '../../../../db/schema'
 
 const handler = NextAuth({
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }),
+  adapter: DrizzleAdapter(db),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -26,6 +20,7 @@ const handler = NextAuth({
     signIn: '/auth/signin',
     error: '/auth/error',
   },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ session, user }) {
       // Add user ID and global role to session
@@ -40,7 +35,7 @@ const handler = NextAuth({
   session: {
     strategy: 'database',
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: true,
 })
 
 export { handler as GET, handler as POST }
