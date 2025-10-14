@@ -1,10 +1,17 @@
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../../auth/[...nextauth]/route'
 import { db } from '@/db/index.js';
-import { clues, submissions } from '@/db/schema.js';
-import { eq } from 'drizzle-orm';
+import { clues, submissions, libraryClues, clueLibraries } from '@/db/schema.js';
+import { eq, and } from 'drizzle-orm';
 
 // Delete a specific clue by ID
 export async function DELETE(request, { params }) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     // Fix Next.js 15 issue - await params before using
     const resolvedParams = await params;
     const { id } = resolvedParams;
@@ -19,6 +26,25 @@ export async function DELETE(request, { params }) {
     const existingClue = await db.select().from(clues).where(eq(clues.id, clueId)).limit(1);
     if (existingClue.length === 0) {
       return Response.json({ error: 'Clue not found' }, { status: 404 });
+    }
+
+    // Check if user owns any library that contains this clue
+    const userLibraries = await db
+      .select({ libraryId: libraryClues.libraryId })
+      .from(libraryClues)
+      .innerJoin(clueLibraries, eq(libraryClues.libraryId, clueLibraries.id))
+      .where(
+        and(
+          eq(libraryClues.clueId, clueId),
+          eq(clueLibraries.userId, session.user.id)
+        )
+      )
+      .limit(1)
+
+    if (userLibraries.length === 0) {
+      return Response.json({
+        error: 'Access denied. You can only delete clues from your own libraries.'
+      }, { status: 403 })
     }
 
     // Check if clue has submissions (foreign key constraint)

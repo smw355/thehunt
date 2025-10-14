@@ -1,9 +1,16 @@
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const formData = await request.formData();
     const file = formData.get('file');
     const teamId = formData.get('teamId');

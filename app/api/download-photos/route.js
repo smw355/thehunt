@@ -1,16 +1,40 @@
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { db } from '@/db/index.js';
-import { submissions, teams, clues } from '@/db/schema.js';
-import { eq, sql } from 'drizzle-orm';
+import { submissions, teams, clues, gameMembers } from '@/db/schema.js';
+import { eq, sql, and } from 'drizzle-orm';
 import JSZip from 'jszip';
 
 export async function GET(request) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     // Get game ID from query parameters
     const { searchParams } = new URL(request.url);
     const gameId = searchParams.get('gameId');
 
     if (!gameId) {
       return Response.json({ error: 'Game ID is required' }, { status: 400 });
+    }
+
+    // Check if user is a game master for this game
+    const [userMembership] = await db
+      .select()
+      .from(gameMembers)
+      .where(
+        and(
+          eq(gameMembers.gameId, parseInt(gameId)),
+          eq(gameMembers.userId, session.user.id),
+          eq(gameMembers.role, 'game_master')
+        )
+      )
+      .limit(1)
+
+    if (!userMembership) {
+      return Response.json({ error: 'Access denied. Only game masters can download photos.' }, { status: 403 })
     }
 
     // Get all submissions with photos for the specific game
