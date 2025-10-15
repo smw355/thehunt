@@ -155,9 +155,43 @@ function buildAuthOptions() {
   }
 }
 
-// Export for use in getServerSession() calls
-export const authOptions = buildAuthOptions()
+// Lazy-load authOptions on each request to ensure env vars are available
+let cachedAuthOptions = null
 
-const handler = NextAuth(authOptions)
+function getAuthOptions() {
+  if (!cachedAuthOptions) {
+    cachedAuthOptions = buildAuthOptions()
+  }
+  return cachedAuthOptions
+}
 
-export { handler as GET, handler as POST }
+// Export for use in getServerSession() calls - returns the options lazily
+export const authOptions = new Proxy({}, {
+  get: (target, prop) => {
+    const options = getAuthOptions()
+    return options[prop]
+  },
+  ownKeys: () => {
+    const options = getAuthOptions()
+    return Reflect.ownKeys(options)
+  },
+  getOwnPropertyDescriptor: (target, prop) => {
+    const options = getAuthOptions()
+    return Object.getOwnPropertyDescriptor(options, prop)
+  }
+})
+
+// Create handler that builds options at request time
+async function GET(req, context) {
+  const options = getAuthOptions()
+  const handler = NextAuth(options)
+  return handler.GET(req, context)
+}
+
+async function POST(req, context) {
+  const options = getAuthOptions()
+  const handler = NextAuth(options)
+  return handler.POST(req, context)
+}
+
+export { GET, POST }
