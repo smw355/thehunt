@@ -74,6 +74,7 @@ export const teamStates = pgTable('team_states', {
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   email: varchar('email', { length: 255 }).notNull(),
+  password: varchar('password', { length: 255 }), // Hashed password for credentials auth (nullable for OAuth users)
   name: varchar('name', { length: 255 }),
   image: text('image'), // Avatar URL from OAuth provider
   emailVerified: timestamp('email_verified'),

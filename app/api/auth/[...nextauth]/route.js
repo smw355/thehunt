@@ -1,8 +1,11 @@
 import NextAuth from 'next-auth'
 import GitHubProvider from 'next-auth/providers/github'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '../../../../db/database'
 import { users, accounts, sessions, verificationTokens } from '../../../../db/schema'
+import { eq } from 'drizzle-orm'
+import bcrypt from 'bcryptjs'
 
 // Log environment variables for debugging (only log existence, not values)
 console.log('NextAuth Config Check:', {
@@ -30,6 +33,49 @@ export const authOptions = {
     verificationTokensTable: verificationTokens,
   }),
   providers: [
+    CredentialsProvider({
+      name: 'Email and Password',
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "your@email.com" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Please enter your email and password')
+        }
+
+        // Find user by email
+        const [user] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, credentials.email))
+          .limit(1)
+
+        if (!user) {
+          throw new Error('No user found with this email')
+        }
+
+        // Check if user has a password (might be OAuth only)
+        if (!user.password) {
+          throw new Error('Please sign in with the provider you used to create your account')
+        }
+
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+
+        if (!isPasswordValid) {
+          throw new Error('Invalid password')
+        }
+
+        // Return user object (will be stored in JWT)
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          globalRole: user.globalRole || 'user',
+        }
+      }
+    }),
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
