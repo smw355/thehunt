@@ -7,24 +7,27 @@ import { users, accounts, sessions, verificationTokens } from '../../../../db/sc
 import { eq } from 'drizzle-orm'
 import bcrypt from 'bcryptjs'
 
-// Log environment variables for debugging (only log existence, not values)
-console.log('NextAuth Config Check:', {
-  hasGitHubClientId: !!process.env.GITHUB_CLIENT_ID,
-  hasGitHubClientSecret: !!process.env.GITHUB_CLIENT_SECRET,
-  hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
-  hasNextAuthUrl: !!process.env.NEXTAUTH_URL,
-  nextAuthUrl: process.env.NEXTAUTH_URL,
-  nodeEnv: process.env.NODE_ENV,
-  vercelEnv: process.env.VERCEL_ENV,
-})
+// Build authOptions dynamically at runtime (not at build time)
+// This ensures environment variables are available when needed
+function buildAuthOptions() {
+  // Log environment variables for debugging (only log existence, not values)
+  console.log('NextAuth Config Check (runtime):', {
+    hasGitHubClientId: !!process.env.GITHUB_CLIENT_ID,
+    hasGitHubClientSecret: !!process.env.GITHUB_CLIENT_SECRET,
+    hasNextAuthSecret: !!process.env.NEXTAUTH_SECRET,
+    hasNextAuthUrl: !!process.env.NEXTAUTH_URL,
+    nextAuthUrl: process.env.NEXTAUTH_URL,
+    nodeEnv: process.env.NODE_ENV,
+    vercelEnv: process.env.VERCEL_ENV,
+  })
 
-// Ensure secret is defined - critical for NextAuth
-if (!process.env.NEXTAUTH_SECRET) {
-  console.error('CRITICAL: NEXTAUTH_SECRET is not defined!')
-  console.error('Available env keys:', Object.keys(process.env).filter(k => k.includes('NEXT')))
-}
+  // Ensure secret is defined - critical for NextAuth
+  if (!process.env.NEXTAUTH_SECRET) {
+    console.error('CRITICAL: NEXTAUTH_SECRET is not defined at runtime!')
+    console.error('Available env keys:', Object.keys(process.env).filter(k => k.includes('NEXT')))
+  }
 
-export const authOptions = {
+  return {
   secret: process.env.NEXTAUTH_SECRET,
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -149,7 +152,11 @@ export const authOptions = {
       console.log('User created:', message);
     },
   },
+  }
 }
+
+// Export for use in getServerSession() calls
+export const authOptions = buildAuthOptions()
 
 const handler = NextAuth(authOptions)
 
