@@ -114,8 +114,8 @@ export default function SubmissionReview() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -127,22 +127,22 @@ export default function SubmissionReview() {
   const pendingCount = submissions.filter(s => s.submission.status === 'pending').length
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Submission Review
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                📝 Submission Review
               </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                 {gameData.game?.name} • {pendingCount} pending
               </p>
             </div>
             <Link
               href={`/games/${params.id}`}
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
             >
               ← Back to Game
             </Link>
@@ -158,12 +158,19 @@ export default function SubmissionReview() {
         )}
 
         {/* Filter Tabs */}
-        <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="mb-6 border-b border-purple-200 dark:border-purple-900/50">
           <nav className="-mb-px flex space-x-8">
             {['pending', 'approved', 'rejected', 'all'].map(filter => {
               const count = filter === 'all'
                 ? submissions.length
                 : submissions.filter(s => s.submission.status === filter).length
+
+              const filterEmoji = {
+                pending: '⏳',
+                approved: '✅',
+                rejected: '❌',
+                all: '📋'
+              }[filter]
 
               return (
                 <button
@@ -171,11 +178,11 @@ export default function SubmissionReview() {
                   onClick={() => setStatusFilter(filter)}
                   className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                     statusFilter === filter
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+                      ? 'border-purple-600 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20'
+                      : 'border-transparent text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-300 hover:border-purple-300 dark:hover:border-purple-600'
                   }`}
                 >
-                  {filter} ({count})
+                  {filterEmoji} {filter} ({count})
                 </button>
               )
             })}
@@ -185,8 +192,8 @@ export default function SubmissionReview() {
         {/* Submissions List */}
         <div className="grid grid-cols-1 gap-4">
           {submissions.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
-              <p className="text-gray-500 dark:text-gray-400">
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-12 text-center">
+              <p className="text-gray-700 dark:text-gray-300">
                 No {statusFilter !== 'all' ? statusFilter : ''} submissions found
               </p>
             </div>
@@ -223,21 +230,27 @@ function SubmissionCard({ submission, teamName, onView }) {
     rejected: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
   }
 
+  const statusEmoji = {
+    pending: '⏳',
+    approved: '✅',
+    rejected: '❌'
+  }
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6 hover:shadow-xl hover:border-purple-200 dark:hover:border-purple-800 transition-all">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-3 mb-2">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {teamName || 'Unknown Team'}
+              👥 {teamName || 'Unknown Team'}
             </h3>
             <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[submission.status]}`}>
-              {submission.status}
+              {statusEmoji[submission.status]} {submission.status}
             </span>
           </div>
 
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            Clue #{submission.clueIndex + 1} • {submission.clueTitle || 'Untitled'}
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+            🎯 Clue #{submission.clueIndex + 1} • {submission.clueTitle || 'Untitled'}
           </p>
 
           {submission.textProof && (
@@ -246,9 +259,9 @@ function SubmissionCard({ submission, teamName, onView }) {
             </p>
           )}
 
-          <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center space-x-4 text-xs text-gray-700 dark:text-gray-300">
             <span>
-              {submission.photoUrls?.length || 0} photo{submission.photoUrls?.length !== 1 ? 's' : ''}
+              📷 {submission.photoUrls?.length || 0} photo{submission.photoUrls?.length !== 1 ? 's' : ''}
             </span>
             <span>•</span>
             <span>
@@ -257,7 +270,7 @@ function SubmissionCard({ submission, teamName, onView }) {
           </div>
 
           {submission.adminComment && (
-            <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded">
+            <div className="mt-3 p-3 bg-purple-50 dark:bg-purple-900/20 rounded">
               <p className="text-sm text-gray-700 dark:text-gray-300">
                 <span className="font-medium">Admin: </span>
                 {submission.adminComment}
@@ -268,9 +281,9 @@ function SubmissionCard({ submission, teamName, onView }) {
 
         <button
           onClick={onView}
-          className="ml-4 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium"
+          className="ml-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium"
         >
-          View Details
+          👁️ View Details
         </button>
       </div>
     </div>
@@ -287,14 +300,14 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full my-8 max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl max-w-4xl w-full my-8 max-h-[90vh] overflow-y-auto border border-purple-100 dark:border-purple-900/50">
+        <div className="sticky top-0 px-6 py-4 border-b border-purple-100 dark:border-purple-900/50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              Submission Details
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              📝 Submission Details
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-700 dark:text-gray-300">
               {submission.teamName} • Clue #{submission.clueIndex + 1}
             </p>
           </div>
@@ -311,8 +324,8 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
         <div className="px-6 py-4">
           {/* Clue Info */}
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-              Clue
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              🎯 Clue
             </h3>
             <p className="text-lg font-medium text-gray-900 dark:text-white">
               {submission.clueTitle || 'Untitled Clue'}
@@ -322,8 +335,8 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
           {/* Text Proof */}
           {submission.textProof && (
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Proof
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                ✅ Proof
               </h3>
               <p className="text-gray-900 dark:text-white whitespace-pre-wrap">
                 {submission.textProof}
@@ -334,8 +347,8 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
           {/* Notes */}
           {submission.notes && (
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Notes
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                📝 Notes
               </h3>
               <p className="text-gray-900 dark:text-white whitespace-pre-wrap">
                 {submission.notes}
@@ -346,8 +359,8 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
           {/* Detour Choice */}
           {submission.detourChoice && (
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Fork Choice
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                🔀 Fork Choice
               </h3>
               <p className="text-gray-900 dark:text-white">
                 Path {submission.detourChoice.toUpperCase()}
@@ -358,8 +371,8 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
           {/* Roadblock Player */}
           {submission.roadblockPlayer && (
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Solo Challenge Player
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                🎯 Solo Challenge Player
               </h3>
               <p className="text-gray-900 dark:text-white">
                 {submission.roadblockPlayer}
@@ -370,8 +383,8 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
           {/* Photos */}
           {submission.photoUrls && submission.photoUrls.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
-                Photos ({submission.photoUrls.length})
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                📷 Photos ({submission.photoUrls.length})
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {submission.photoUrls.map((url, index) => (
@@ -380,7 +393,7 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:opacity-90 transition-opacity"
+                    className="block aspect-square bg-purple-100 dark:bg-purple-900/20 rounded-lg overflow-hidden hover:opacity-90 transition-opacity border border-purple-200 dark:border-purple-800"
                   >
                     <img
                       src={url}
@@ -394,10 +407,10 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
           )}
 
           {/* Submission Info */}
-          <div className="mb-6 text-sm text-gray-500 dark:text-gray-400">
-            <p>Submitted: {new Date(submission.createdAt).toLocaleString()}</p>
+          <div className="mb-6 text-sm text-gray-700 dark:text-gray-300">
+            <p>⏰ Submitted: {new Date(submission.createdAt).toLocaleString()}</p>
             {submission.updatedAt && submission.updatedAt !== submission.createdAt && (
-              <p>Updated: {new Date(submission.updatedAt).toLocaleString()}</p>
+              <p>🔄 Updated: {new Date(submission.updatedAt).toLocaleString()}</p>
             )}
           </div>
 
@@ -405,7 +418,7 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
           {submission.adminComment && (
             <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <h3 className="text-sm font-medium text-red-900 dark:text-red-300 mb-2">
-                Rejection Reason
+                ❌ Rejection Reason
               </h3>
               <p className="text-sm text-red-700 dark:text-red-400">
                 {submission.adminComment}
@@ -432,7 +445,7 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
                   type="submit"
                   className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium"
                 >
-                  Confirm Rejection
+                  ❌ Confirm Rejection
                 </button>
                 <button
                   type="button"
@@ -440,7 +453,7 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
                     setShowRejectForm(false)
                     setRejectComment('')
                   }}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  className="px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                 >
                   Cancel
                 </button>
@@ -451,20 +464,20 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
 
         {/* Actions */}
         {submission.status === 'pending' && (
-          <div className="sticky bottom-0 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex gap-3">
+          <div className="sticky bottom-0 px-6 py-4 border-t border-purple-100 dark:border-purple-900/50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm flex gap-3">
             {!showRejectForm && (
               <>
                 <button
                   onClick={() => setShowRejectForm(true)}
                   className="flex-1 px-4 py-2 border border-red-300 dark:border-red-600 rounded-md text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
-                  Reject
+                  ❌ Reject
                 </button>
                 <button
                   onClick={onApprove}
-                  className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium"
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-md text-sm font-medium"
                 >
-                  Approve & Advance Team
+                  ✅ Approve & Advance Team
                 </button>
               </>
             )}

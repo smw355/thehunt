@@ -155,8 +155,8 @@ export default function TeamManagement() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -169,22 +169,22 @@ export default function TeamManagement() {
   const unassignedPlayers = players.filter(p => !p.teamId)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Team Management
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                👥 Team Management
               </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                 {gameData.game?.name}
               </p>
             </div>
             <Link
               href={`/games/${params.id}`}
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
             >
               ← Back to Game
             </Link>
@@ -202,28 +202,28 @@ export default function TeamManagement() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Teams List */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+              <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50 flex items-center justify-between">
+                <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Teams ({teams.length})
                 </h2>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium"
                 >
-                  Create Team
+                  ➕ Create Team
                 </button>
               </div>
 
               <div className="p-6">
                 {teams.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400 mb-4">
+                    <p className="text-gray-700 dark:text-gray-300 mb-4">
                       No teams created yet
                     </p>
                     <button
                       onClick={() => setShowCreateModal(true)}
-                      className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium"
+                      className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium"
                     >
                       Create First Team
                     </button>
@@ -248,20 +248,20 @@ export default function TeamManagement() {
 
           {/* Unassigned Players */}
           <div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Unassigned Players
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+              <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+                <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  ⏳ Unassigned Players
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
                   {unassignedPlayers.length} player{unassignedPlayers.length !== 1 ? 's' : ''}
                 </p>
               </div>
 
               <div className="p-6">
                 {unassignedPlayers.length === 0 ? (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">
-                    All players assigned
+                  <p className="text-sm text-gray-700 dark:text-gray-300 text-center py-8">
+                    ✅ All players assigned
                   </p>
                 ) : (
                   <div className="space-y-2">
@@ -282,14 +282,14 @@ export default function TeamManagement() {
                             <p className="text-sm font-medium text-gray-900 dark:text-white">
                               {player.userName}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs text-gray-700 dark:text-gray-300">
                               {player.userEmail}
                             </p>
                           </div>
                         </div>
                         <select
                           onChange={(e) => handleAssignPlayer(player.id, e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm dark:bg-gray-700 dark:text-white"
+                          className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm dark:bg-gray-700 dark:text-white focus:ring-purple-500 focus:border-purple-500"
                           defaultValue=""
                         >
                           <option value="" disabled>Assign to team...</option>
@@ -332,47 +332,47 @@ export default function TeamManagement() {
 
 function TeamCard({ team, members, onEdit, onDelete, onUnassignPlayer }) {
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+    <div className="border border-purple-100 dark:border-purple-900/50 rounded-lg p-4 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-colors">
       <div className="flex items-start justify-between mb-3">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             {team.name}
           </h3>
           {team.password && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Password: <span className="font-mono">{team.password}</span>
+            <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+              🔒 Password: <span className="font-mono">{team.password}</span>
             </p>
           )}
         </div>
         <div className="flex items-center space-x-2">
           <button
             onClick={onEdit}
-            className="text-sm text-primary hover:text-primary-dark font-medium"
+            className="text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
           >
-            Edit
+            ✏️ Edit
           </button>
           <button
             onClick={onDelete}
             className="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium"
           >
-            Delete
+            🗑️ Delete
           </button>
         </div>
       </div>
 
       {members.length === 0 ? (
-        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+        <p className="text-sm text-gray-700 dark:text-gray-300 italic">
           No players assigned
         </p>
       ) : (
         <div className="space-y-2">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+          <p className="text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
             Team Members ({members.length})
           </p>
           {members.map(member => (
             <div
               key={member.id}
-              className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700/50 rounded"
+              className="flex items-center justify-between py-2 px-3 bg-purple-50 dark:bg-purple-900/20 rounded"
             >
               <div className="flex items-center space-x-2">
                 {member.userImage && (
@@ -388,7 +388,7 @@ function TeamCard({ team, members, onEdit, onDelete, onUnassignPlayer }) {
               </div>
               <button
                 onClick={() => onUnassignPlayer(member.id)}
-                className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                className="text-xs text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
               >
                 Remove
               </button>
@@ -411,11 +411,11 @@ function TeamModal({ team, onClose, onSave }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            {team ? 'Edit Team' : 'Create New Team'}
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-xl max-w-md w-full border border-purple-100 dark:border-purple-900/50">
+        <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50 flex items-center justify-between">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            {team ? '✏️ Edit Team' : '➕ Create New Team'}
           </h2>
           <button
             onClick={onClose}
@@ -437,7 +437,7 @@ function TeamModal({ team, onClose, onSave }) {
               id="teamName"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+              className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
               placeholder="Enter team name"
               required
             />
@@ -452,11 +452,11 @@ function TeamModal({ team, onClose, onSave }) {
               id="teamPassword"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+              className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
               placeholder="Leave blank for no password"
             />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Players will need this password to join the team in legacy mode
+            <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
+              🔒 Players will need this password to join the team in legacy mode
             </p>
           </div>
 
@@ -464,14 +464,14 @@ function TeamModal({ team, onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!name.trim()}
-              className="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium disabled:opacity-50"
+              className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50"
             >
               {team ? 'Update Team' : 'Create Team'}
             </button>

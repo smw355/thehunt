@@ -130,8 +130,8 @@ export default function ClueSequenceEditor() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -141,16 +141,16 @@ export default function ClueSequenceEditor() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Clue Sequence Editor
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                🎯 Clue Sequence Editor
               </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                 {gameData.game?.name} • {clueSequence.length} clues
               </p>
             </div>
@@ -158,13 +158,13 @@ export default function ClueSequenceEditor() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium disabled:opacity-50"
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50"
               >
-                {isSaving ? 'Saving...' : 'Save Sequence'}
+                {isSaving ? 'Saving...' : '💾 Save Sequence'}
               </button>
               <Link
                 href={`/games/${params.id}`}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
               >
                 ← Back to Game
               </Link>
@@ -183,9 +183,9 @@ export default function ClueSequenceEditor() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Current Sequence */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+              <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+                <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Current Sequence ({clueSequence.length})
                 </h2>
               </div>
@@ -193,10 +193,10 @@ export default function ClueSequenceEditor() {
               <div className="p-6">
                 {clueSequence.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400 mb-2">
+                    <p className="text-gray-700 dark:text-gray-300 mb-2">
                       No clues in sequence yet
                     </p>
-                    <p className="text-sm text-gray-400 dark:text-gray-500">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
                       Select a library and add clues to get started
                     </p>
                   </div>
@@ -205,7 +205,7 @@ export default function ClueSequenceEditor() {
                     {clueSequence.map((clue, index) => (
                       <div
                         key={index}
-                        className="flex items-start space-x-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                        className="flex items-start space-x-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
                       >
                         <div className="flex flex-col space-y-1">
                           <button
@@ -251,8 +251,8 @@ export default function ClueSequenceEditor() {
                             </button>
                           </div>
                           {clue.requiredPhotos > 0 && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              Requires {clue.requiredPhotos} photo{clue.requiredPhotos !== 1 ? 's' : ''}
+                            <p className="text-xs text-gray-700 dark:text-gray-300">
+                              📷 Requires {clue.requiredPhotos} photo{clue.requiredPhotos !== 1 ? 's' : ''}
                             </p>
                           )}
                         </div>
@@ -266,10 +266,10 @@ export default function ClueSequenceEditor() {
 
           {/* Add Clues from Library */}
           <div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Add Clues
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+              <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+                <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  ➕ Add Clues
                 </h2>
               </div>
 
@@ -282,7 +282,7 @@ export default function ClueSequenceEditor() {
                   <select
                     value={selectedLibrary || ''}
                     onChange={(e) => fetchLibraryClues(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md dark:bg-gray-700 dark:text-white focus:ring-purple-500 focus:border-purple-500"
                   >
                     <option value="">Choose a library...</option>
                     {libraries.map(lib => (
@@ -300,7 +300,7 @@ export default function ClueSequenceEditor() {
                       Available Clues ({availableClues.length})
                     </p>
                     {availableClues.length === 0 ? (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                      <p className="text-sm text-gray-700 dark:text-gray-300 text-center py-4">
                         No clues in this library
                       </p>
                     ) : (
@@ -308,7 +308,7 @@ export default function ClueSequenceEditor() {
                         {availableClues.map(clue => (
                           <div
                             key={clue.id}
-                            className="p-3 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                            className="p-3 border border-purple-100 dark:border-purple-900/50 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
@@ -321,7 +321,7 @@ export default function ClueSequenceEditor() {
                               </div>
                               <button
                                 onClick={() => handleAddClue(clue)}
-                                className="ml-2 px-3 py-1 bg-primary hover:bg-primary-dark text-white rounded text-xs font-medium"
+                                className="ml-2 px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded text-xs font-medium"
                               >
                                 Add
                               </button>
@@ -335,7 +335,7 @@ export default function ClueSequenceEditor() {
 
                 {!selectedLibrary && (
                   <div className="text-center py-8">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
                       Select a library to view available clues
                     </p>
                   </div>
@@ -344,23 +344,23 @@ export default function ClueSequenceEditor() {
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-4 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <div className="mt-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-4">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Quick Actions
+                ⚡ Quick Actions
               </h3>
               <div className="space-y-2">
                 <Link
                   href="/libraries"
-                  className="block w-full px-4 py-2 text-center border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  className="block w-full px-4 py-2 text-center border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                 >
-                  Manage Libraries
+                  📚 Manage Libraries
                 </Link>
                 <button
                   onClick={() => setClueSequence([])}
                   disabled={clueSequence.length === 0}
                   className="block w-full px-4 py-2 text-center border border-red-300 dark:border-red-600 rounded-md text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50"
                 >
-                  Clear All Clues
+                  🗑️ Clear All Clues
                 </button>
               </div>
             </div>

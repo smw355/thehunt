@@ -47,8 +47,8 @@ export default function GameDetail() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -59,14 +59,14 @@ export default function GameDetail() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <header className="bg-white dark:bg-gray-800 shadow">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+        <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Error</h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Error</h1>
               <Link
                 href="/dashboard"
-                className="text-primary hover:text-primary-dark text-sm font-medium"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
               >
                 ← Back to Dashboard
               </Link>
@@ -86,36 +86,36 @@ export default function GameDetail() {
   const game = gameData?.game
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {game?.name}
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  🎮 {game?.name}
                 </h1>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   game?.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
                   game?.status === 'setup' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
                   'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                 }`}>
-                  {game?.status}
+                  {game?.status === 'active' ? '🏆 ' : game?.status === 'setup' ? '⚙️ ' : ''}{game?.status}
                 </span>
                 {isGameMaster && (
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                    Game Master
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                    🎯 Game Master
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                 Game Code: <span className="font-mono font-semibold">{game?.code}</span>
               </p>
             </div>
             <Link
               href="/dashboard"
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
             >
               ← Dashboard
             </Link>
@@ -166,36 +166,36 @@ function GameMasterView({ gameData }) {
     <div className="space-y-6">
       {/* Game Controls */}
       {game.status === 'setup' && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Game Setup
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6">
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            ⚙️ Game Setup
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
             Your game is in setup mode. Add clues, create teams, and assign players before starting.
           </p>
           <div className="flex gap-3">
             <Link
               href={`/games/${game.id}/clues`}
-              className="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+              className="px-4 py-2 bg-white dark:bg-gray-700 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
             >
-              Manage Clues
+              🎯 Manage Clues
             </Link>
             <Link
               href={`/games/${game.id}/teams`}
-              className="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+              className="px-4 py-2 bg-white dark:bg-gray-700 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
             >
-              Manage Teams
+              👥 Manage Teams
             </Link>
             <button
               onClick={handleStartGame}
               disabled={isStarting || players.length === 0 || teams.length === 0}
-              className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isStarting ? 'Starting...' : 'Start Game'}
+              {isStarting ? 'Starting...' : '🏆 Start Game'}
             </button>
           </div>
           {(players.length === 0 || teams.length === 0) && (
-            <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-3 text-xs text-gray-700 dark:text-gray-300">
               You need at least one player and one team to start the game.
             </p>
           )}
@@ -204,15 +204,15 @@ function GameMasterView({ gameData }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Teams */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+          <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Teams ({teams.length})
+              <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                👥 Teams ({teams.length})
               </h3>
               <Link
                 href={`/games/${game.id}/teams`}
-                className="text-primary hover:text-primary-dark text-sm font-medium"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
               >
                 Manage →
               </Link>
@@ -221,12 +221,12 @@ function GameMasterView({ gameData }) {
           <div className="p-6">
             {teams.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
                   No teams created yet
                 </p>
                 <Link
                   href={`/games/${game.id}/teams`}
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark"
+                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
                 >
                   Create First Team
                 </Link>
@@ -238,13 +238,13 @@ function GameMasterView({ gameData }) {
                   return (
                     <div
                       key={team.id}
-                      className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+                      className="border border-purple-100 dark:border-purple-900/50 rounded-lg p-4 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-gray-900 dark:text-white">
                           {team.name}
                         </h4>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-gray-700 dark:text-gray-300">
                           {teamMembers.length} {teamMembers.length === 1 ? 'player' : 'players'}
                         </span>
                       </div>
@@ -253,7 +253,7 @@ function GameMasterView({ gameData }) {
                           {teamMembers.map(member => (
                             <div
                               key={member.id}
-                              className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-700/50 rounded px-2 py-1"
+                              className="flex items-center space-x-2 bg-purple-50 dark:bg-purple-900/20 rounded px-2 py-1"
                             >
                               {member.userImage && (
                                 <img
@@ -278,19 +278,19 @@ function GameMasterView({ gameData }) {
         </div>
 
         {/* Players */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Players ({players.length})
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+          <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+            <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              👥 Players ({players.length})
             </h3>
           </div>
           <div className="p-6">
             {players.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
+                <p className="text-gray-700 dark:text-gray-300 text-sm mb-2">
                   No players have joined yet
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
+                <p className="text-xs text-gray-700 dark:text-gray-300">
                   Share game code <span className="font-mono font-semibold">{game.code}</span> with players
                 </p>
               </div>
@@ -298,7 +298,7 @@ function GameMasterView({ gameData }) {
               <div className="space-y-3">
                 {unassignedPlayers.length > 0 && (
                   <div>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Unassigned ({unassignedPlayers.length})
                     </p>
                     {unassignedPlayers.map(player => (
@@ -320,7 +320,7 @@ function GameMasterView({ gameData }) {
                         </div>
                         <Link
                           href={`/games/${game.id}/teams`}
-                          className="text-xs text-primary hover:text-primary-dark"
+                          className="text-xs text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                         >
                           Assign →
                         </Link>
@@ -329,7 +329,7 @@ function GameMasterView({ gameData }) {
                   </div>
                 )}
                 <div>
-                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                  <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
                     All Players
                   </p>
                   {players.map(player => (
@@ -350,7 +350,7 @@ function GameMasterView({ gameData }) {
                         </span>
                       </div>
                       {player.teamId && (
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-gray-700 dark:text-gray-300">
                           {teams.find(t => t.id === player.teamId)?.name}
                         </span>
                       )}
@@ -364,15 +364,15 @@ function GameMasterView({ gameData }) {
       </div>
 
       {/* Clues Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+        <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Clues ({game.clueSequence?.length || 0})
+            <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              🎯 Clues ({game.clueSequence?.length || 0})
             </h3>
             <Link
               href={`/games/${game.id}/clues`}
-              className="text-primary hover:text-primary-dark text-sm font-medium"
+              className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
             >
               Manage →
             </Link>
@@ -381,12 +381,12 @@ function GameMasterView({ gameData }) {
         <div className="p-6">
           {(!game.clueSequence || game.clueSequence.length === 0) ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+              <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
                 No clues added yet
               </p>
               <Link
                 href={`/games/${game.id}/clues`}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
               >
                 Add Clues
               </Link>
@@ -396,12 +396,12 @@ function GameMasterView({ gameData }) {
               {game.clueSequence.map((clue, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700/50 rounded-md"
+                  className="flex items-center justify-between py-2 px-3 bg-purple-50 dark:bg-purple-900/20 rounded-md hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
                 >
                   <span className="text-sm text-gray-900 dark:text-white">
                     {index + 1}. {clue.text || clue.title || 'Untitled Clue'}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-gray-700 dark:text-gray-300">
                     {clue.type ? getClueTypeDisplay(clue.type) : 'Standard'}
                   </span>
                 </div>
@@ -413,10 +413,10 @@ function GameMasterView({ gameData }) {
 
       {/* Game Masters */}
       {gameMasters.length > 1 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Game Masters ({gameMasters.length})
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+          <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+            <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              🎯 Game Masters ({gameMasters.length})
             </h3>
           </div>
           <div className="p-6">
@@ -452,11 +452,11 @@ function PlayerView({ gameData, onRefresh }) {
     <div className="space-y-6">
       {/* Player Status */}
       {game.status === 'setup' && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Game Setup in Progress
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6">
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            ⚙️ Game Setup in Progress
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             The game master is still setting up the game. You'll be notified when the game starts.
           </p>
         </div>
@@ -464,26 +464,26 @@ function PlayerView({ gameData, onRefresh }) {
 
       {/* Team Assignment */}
       {!userTeamId ? (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Waiting for Team Assignment
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-yellow-200 dark:border-yellow-800 p-6">
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            ⏳ Waiting for Team Assignment
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             You haven't been assigned to a team yet. The game master will assign you to a team soon.
           </p>
         </div>
       ) : (
         <>
           {/* Team Info Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Your Team
+          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+            <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+              <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                👥 Your Team
               </h3>
             </div>
             <div className="p-6">
-              <h4 className="text-xl font-bold text-primary mb-4">{userTeam.name}</h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Team Members:</p>
+              <h4 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">{userTeam.name}</h4>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">Team Members:</p>
               <div className="space-y-2">
                 {teamMembers.map(member => (
                   <div key={member.id} className="flex items-center space-x-3 py-2">
@@ -513,8 +513,8 @@ function PlayerView({ gameData, onRefresh }) {
           )}
 
           {game.status === 'setup' && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-8 text-center">
+              <p className="text-gray-700 dark:text-gray-300">
                 Game hasn't started yet. Waiting for game master to start the game.
               </p>
             </div>
@@ -523,34 +523,34 @@ function PlayerView({ gameData, onRefresh }) {
       )}
 
       {/* Game Info */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Game Information
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+        <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+          <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            🎮 Game Information
           </h3>
         </div>
         <div className="p-6">
           <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Game Code</dt>
+              <dt className="text-sm font-medium text-gray-700 dark:text-gray-300">Game Code</dt>
               <dd className="mt-1 text-sm font-mono font-semibold text-gray-900 dark:text-white">
                 {game.code}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+              <dt className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</dt>
               <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white capitalize">
                 {game.status}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Clues</dt>
+              <dt className="text-sm font-medium text-gray-700 dark:text-gray-300">Total Clues</dt>
               <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
                 {game.clueSequence?.length || 0}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Teams</dt>
+              <dt className="text-sm font-medium text-gray-700 dark:text-gray-300">Total Teams</dt>
               <dd className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
                 {teams.length}
               </dd>
