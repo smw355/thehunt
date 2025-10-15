@@ -171,13 +171,23 @@ export const authOptions = new Proxy({}, {
     const options = getAuthOptions()
     return options[prop]
   },
+  set: (target, prop, value) => {
+    const options = getAuthOptions()
+    options[prop] = value
+    return true
+  },
   ownKeys: () => {
     const options = getAuthOptions()
     return Reflect.ownKeys(options)
   },
   getOwnPropertyDescriptor: (target, prop) => {
     const options = getAuthOptions()
-    return Object.getOwnPropertyDescriptor(options, prop)
+    const descriptor = Object.getOwnPropertyDescriptor(options, prop)
+    if (descriptor) {
+      descriptor.configurable = true
+      descriptor.writable = true
+    }
+    return descriptor
   }
 })
 
