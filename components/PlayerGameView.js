@@ -146,15 +146,15 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
   // Game completed
   if (currentClueIndex >= clueSequence.length) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-8 text-center">
         <div className="text-6xl mb-4">🏆</div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
           Congratulations!
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-2">
+        <p className="text-gray-700 dark:text-gray-300 mb-2">
           Your team has completed all clues!
         </p>
-        <p className="text-sm text-gray-500 dark:text-gray-500">
+        <p className="text-sm text-gray-700 dark:text-gray-300">
           Total clues completed: {clueSequence.length}
         </p>
       </div>
@@ -164,9 +164,9 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
   // No clues in game yet
   if (!currentClue) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
-        <p className="text-gray-500 dark:text-gray-400">
-          Waiting for game master to add clues...
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-8 text-center">
+        <p className="text-gray-700 dark:text-gray-300">
+          ⏳ Waiting for game master to add clues...
         </p>
       </div>
     )
@@ -175,10 +175,10 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
   return (
     <div className="space-y-6">
       {/* Progress */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Clue {currentClueIndex + 1} of {clueSequence.length}
+            📍 Clue {currentClueIndex + 1} of {clueSequence.length}
           </span>
           <span className={`px-2 py-1 rounded text-xs font-medium ${getClueTypeClasses(currentClue.type)}`}>
             {getClueTypeDisplay(currentClue.type)}
@@ -186,16 +186,16 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
         </div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
-            className="bg-primary h-2 rounded-full transition-all"
+            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all"
             style={{ width: `${((currentClueIndex) / clueSequence.length) * 100}%` }}
           />
         </div>
       </div>
 
       {/* Current Clue */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+        <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             {currentClue.title}
           </h2>
         </div>
@@ -228,10 +228,10 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
                     className="w-full p-4 border-2 border-yellow-300 dark:border-yellow-600 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 text-left transition-colors"
                   >
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2">
-                      Path A: {currentClue.detourOptionA?.title}
+                      🅰️ Path A: {currentClue.detourOptionA?.title}
                     </h3>
                     {currentClue.detourOptionA?.description && (
-                      <p className="text-gray-600 dark:text-gray-400">
+                      <p className="text-gray-700 dark:text-gray-300">
                         {currentClue.detourOptionA.description}
                       </p>
                     )}
@@ -242,10 +242,10 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
                     className="w-full p-4 border-2 border-yellow-300 dark:border-yellow-600 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 text-left transition-colors"
                   >
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2">
-                      Path B: {currentClue.detourOptionB?.title}
+                      🅱️ Path B: {currentClue.detourOptionB?.title}
                     </h3>
                     {currentClue.detourOptionB?.description && (
-                      <p className="text-gray-600 dark:text-gray-400">
+                      <p className="text-gray-700 dark:text-gray-300">
                         {currentClue.detourOptionB.description}
                       </p>
                     )}
@@ -295,7 +295,7 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
                       type="text"
                       value={submission.roadblockPlayer}
                       onChange={(e) => setSubmission(prev => ({ ...prev, roadblockPlayer: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white mb-3"
+                      className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md dark:bg-gray-700 dark:text-white mb-3 focus:ring-purple-500 focus:border-purple-500"
                       placeholder="Enter player name"
                     />
                     <button
@@ -305,9 +305,9 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
                         }
                       }}
                       disabled={!submission.roadblockPlayer.trim()}
-                      className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium disabled:opacity-50"
+                      className="w-full px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-md font-medium disabled:opacity-50"
                     >
-                      Assign to {submission.roadblockPlayer || 'Player'}
+                      🎯 Assign to {submission.roadblockPlayer || 'Player'}
                     </button>
                   </div>
                 </div>
@@ -347,14 +347,14 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
 
               <div className="mb-4">
                 <label htmlFor="textProof" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Proof / Answer *
+                  📝 Proof / Answer *
                 </label>
                 <textarea
                   id="textProof"
                   value={submission.textProof}
                   onChange={(e) => setSubmission(prev => ({ ...prev, textProof: e.target.value }))}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Describe what you found or provide the answer..."
                   required
                 />
@@ -362,14 +362,14 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
 
               <div className="mb-4">
                 <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Additional Notes (Optional)
+                  💭 Additional Notes (Optional)
                 </label>
                 <textarea
                   id="notes"
                   value={submission.notes}
                   onChange={(e) => setSubmission(prev => ({ ...prev, notes: e.target.value }))}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Any additional information..."
                 />
               </div>
@@ -386,9 +386,9 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
               <button
                 type="submit"
                 disabled={isSubmitting || !submission.textProof.trim()}
-                className="w-full px-4 py-3 bg-primary hover:bg-primary-dark text-white rounded-md text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Submitting...' : 'Submit for Review'}
+                {isSubmitting ? '⏳ Submitting...' : '✅ Submit for Review'}
               </button>
             </form>
           )}
