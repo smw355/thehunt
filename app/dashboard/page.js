@@ -41,24 +41,24 @@ export default function Dashboard() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
         <div className="animate-pulse">
-          <div className="bg-white dark:bg-gray-800 shadow">
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center py-6">
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                <div className="h-8 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-900/50 dark:to-purple-900/50 rounded w-32"></div>
+                <div className="h-10 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-900/50 dark:to-pink-900/50 rounded w-24"></div>
               </div>
             </div>
           </div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-4"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-96 mb-8"></div>
+            <div className="h-6 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-900/50 dark:to-purple-900/50 rounded w-48 mb-4"></div>
+            <div className="h-4 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-900/50 dark:to-pink-900/50 rounded w-96 mb-8"></div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-full mb-4"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                <div key={i} className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-6">
+                  <div className="h-6 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-900/50 dark:to-purple-900/50 rounded w-full mb-4"></div>
+                  <div className="h-4 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-900/50 dark:to-pink-900/50 rounded w-3/4"></div>
                 </div>
               ))}
             </div>
@@ -73,13 +73,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 The Hunt
               </h1>
             </div>
@@ -113,7 +113,7 @@ export default function Dashboard() {
 
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
-                className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-all shadow-md hover:shadow-lg"
               >
                 Sign Out
               </button>
@@ -125,12 +125,12 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome back, {session.user.name?.split(' ')[0]}!
+        <div className="mb-8 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-purple-100 dark:border-purple-900/50">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            Welcome back, {session.user.name?.split(' ')[0]}! 👋
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage your treasure hunt games, create clue libraries, and track your adventures.
+          <p className="text-gray-700 dark:text-gray-300">
+            Ready for your next adventure? Manage treasure hunts, craft clever clues, and track your epic quests!
           </p>
         </div>
 
@@ -138,60 +138,60 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Link
             href="/games/create"
-            className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary"
+            className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl shadow-lg hover:shadow-2xl transition-all p-6 border border-blue-400/50 transform hover:scale-105"
           >
             <div className="flex items-center">
-              <div className="bg-primary/10 rounded-lg p-3 mr-4">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-white/20 rounded-lg p-3 mr-4 backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Create Game</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Start a new treasure hunt</p>
+                <h3 className="font-semibold text-white mb-1">Create Game 🎮</h3>
+                <p className="text-sm text-blue-100">Start a new treasure hunt</p>
               </div>
             </div>
           </Link>
 
           <Link
             href="/libraries"
-            className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary"
+            className="bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-xl shadow-lg hover:shadow-2xl transition-all p-6 border border-purple-400/50 transform hover:scale-105"
           >
             <div className="flex items-center">
-              <div className="bg-secondary/10 rounded-lg p-3 mr-4">
-                <svg className="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-white/20 rounded-lg p-3 mr-4 backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Clue Libraries</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Manage your clue collections</p>
+                <h3 className="font-semibold text-white mb-1">Clue Libraries 📚</h3>
+                <p className="text-sm text-purple-100">Manage your clue collections</p>
               </div>
             </div>
           </Link>
 
           <Link
             href="/games/join"
-            className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700 hover:border-accent-green dark:hover:border-accent-green"
+            className="bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-xl shadow-lg hover:shadow-2xl transition-all p-6 border border-green-400/50 transform hover:scale-105"
           >
             <div className="flex items-center">
-              <div className="bg-accent-green/10 rounded-lg p-3 mr-4">
-                <svg className="w-6 h-6 text-accent-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-white/20 rounded-lg p-3 mr-4 backdrop-blur-sm">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Join Game</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Enter a game code to play</p>
+                <h3 className="font-semibold text-white mb-1">Join Game 🚀</h3>
+                <p className="text-sm text-green-100">Enter a game code to play</p>
               </div>
             </div>
           </Link>
         </div>
 
         {/* Games Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Your Games</h3>
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+          <div className="px-6 py-4 border-b border-purple-200 dark:border-purple-800/50">
+            <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Your Games 🎯</h3>
           </div>
 
           {userGames.length === 0 ? (
@@ -206,13 +206,13 @@ export default function Dashboard() {
               <div className="mt-6 flex justify-center space-x-3">
                 <Link
                   href="/games/create"
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   Create Game
                 </Link>
                 <Link
                   href="/games/join"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  className="inline-flex items-center px-4 py-2 border border-purple-300 dark:border-purple-600 shadow-sm text-sm font-medium rounded-md text-purple-700 dark:text-purple-200 bg-white dark:bg-gray-700 hover:bg-purple-50 dark:hover:bg-purple-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   Join Game
                 </Link>
@@ -233,7 +233,7 @@ export default function Dashboard() {
                     </div>
                     <Link
                       href={`/games/${game.id}`}
-                      className="text-primary hover:text-primary-dark text-sm font-medium"
+                      className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
                     >
                       View →
                     </Link>

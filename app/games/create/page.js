@@ -80,8 +80,8 @@ export default function CreateGame() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -91,13 +91,13 @@ export default function CreateGame() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Create New Game
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              🎮 Create New Game
             </h1>
             <button
               onClick={() => router.push('/dashboard')}
@@ -111,7 +111,7 @@ export default function CreateGame() {
 
       {/* Main Content */}
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6">
           <form onSubmit={handleSubmit}>
             {/* Game Name */}
             <div className="mb-6">
@@ -119,14 +119,14 @@ export default function CreateGame() {
                 htmlFor="gameName"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Game Name
+                🎯 Game Name
               </label>
               <input
                 type="text"
                 id="gameName"
                 value={gameName}
                 onChange={(e) => setGameName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                 placeholder="e.g., Summer Scavenger Hunt"
                 disabled={isCreating}
               />
@@ -138,7 +138,7 @@ export default function CreateGame() {
                 htmlFor="gameCode"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Game Code
+                🔑 Game Code
               </label>
               <div className="flex gap-2">
                 <input
@@ -146,7 +146,7 @@ export default function CreateGame() {
                   id="gameCode"
                   value={gameCode}
                   onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white font-mono"
+                  className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white font-mono"
                   placeholder="ABC123"
                   maxLength={6}
                   disabled={isCreating}
@@ -155,12 +155,12 @@ export default function CreateGame() {
                   type="button"
                   onClick={generateGameCode}
                   disabled={isGeneratingCode || isCreating}
-                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md font-medium transition-colors disabled:opacity-50"
+                  className="px-4 py-2 border border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-md font-medium transition-colors disabled:opacity-50"
                 >
-                  Generate
+                  🎲 Generate
                 </button>
               </div>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                 6 characters - players will use this code to join your game
               </p>
             </div>
@@ -173,9 +173,9 @@ export default function CreateGame() {
             )}
 
             {/* Info Box */}
-            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
-              <p className="text-sm text-blue-600 dark:text-blue-400">
-                After creating your game, you'll be able to add clues from your libraries,
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                🚀 <strong>Next steps:</strong> After creating your game, you'll be able to add clues from your libraries,
                 create teams, and invite players.
               </p>
             </div>
@@ -185,7 +185,7 @@ export default function CreateGame() {
               <button
                 type="button"
                 onClick={() => router.push('/dashboard')}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+                className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm text-sm font-medium text-purple-700 dark:text-purple-200 bg-white dark:bg-gray-700 hover:bg-purple-50 dark:hover:bg-purple-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
                 disabled={isCreating}
               >
                 Cancel
@@ -193,9 +193,9 @@ export default function CreateGame() {
               <button
                 type="submit"
                 disabled={isCreating || !gameName.trim() || !gameCode.trim()}
-                className="flex-1 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+                className="flex-1 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
               >
-                {isCreating ? 'Creating...' : 'Create Game'}
+                {isCreating ? '🎮 Creating...' : '🎮 Create Game'}
               </button>
             </div>
           </form>

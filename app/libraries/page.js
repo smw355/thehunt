@@ -99,8 +99,8 @@ export default function Libraries() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -110,17 +110,17 @@ export default function Libraries() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Clue Libraries
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              📚 Clue Libraries
             </h1>
             <Link
               href="/dashboard"
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
             >
               ← Dashboard
             </Link>
@@ -134,47 +134,47 @@ export default function Libraries() {
           <div className="flex items-center space-x-4">
             <button
               onClick={() => setShowPublic(false)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 !showPublic
-                  ? 'bg-primary text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
+                  : 'bg-white/70 dark:bg-gray-800/70 text-gray-700 dark:text-gray-300 border border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-700'
               }`}
             >
-              My Libraries
+              🗂️ My Libraries
             </button>
             <button
               onClick={() => setShowPublic(true)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                 showPublic
-                  ? 'bg-primary text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
+                  : 'bg-white/70 dark:bg-gray-800/70 text-gray-700 dark:text-gray-300 border border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-700'
               }`}
             >
-              Browse Public
+              🌐 Browse Public
             </button>
           </div>
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark"
+            className="inline-flex items-center px-4 py-2 border border-transparent shadow-lg text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all hover:shadow-xl"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            New Library
+            ✨ New Library
           </button>
         </div>
 
         {/* Libraries Grid */}
         {libraries.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
-            <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-12 text-center">
+            <svg className="mx-auto h-12 w-12 text-purple-400 dark:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            <h3 className="mt-4 text-sm font-medium text-gray-900 dark:text-white">
-              {showPublic ? 'No public libraries yet' : 'No libraries yet'}
+            <h3 className="mt-4 text-sm font-medium bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              {showPublic ? '📚 No public libraries yet' : '📚 No libraries yet'}
             </h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
               {showPublic
                 ? 'Check back later or create your own library.'
                 : 'Get started by creating your first clue library.'}
@@ -182,9 +182,9 @@ export default function Libraries() {
             {!showPublic && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="mt-6 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark"
+                className="mt-6 inline-flex items-center px-4 py-2 border border-transparent shadow-lg text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all"
               >
-                Create Library
+                ✨ Create Library
               </button>
             )}
           </div>
@@ -194,26 +194,26 @@ export default function Libraries() {
               <Link
                 key={library.id}
                 href={`/libraries/${library.id}`}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-md transition-shadow p-6 border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary"
+                className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 p-6 border border-purple-200 dark:border-purple-900/50 hover:border-purple-400 dark:hover:border-purple-600"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {library.name}
+                  <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    📚 {library.name}
                   </h3>
                   {library.isPublic && (
-                    <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
-                      Public
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-sm">
+                      🌐 Public
                     </span>
                   )}
                 </div>
                 {library.description && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">
                     {library.description}
                   </p>
                 )}
-                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
                   <span>{library.clueCount} {library.clueCount === 1 ? 'clue' : 'clues'}</span>
-                  <span className="text-primary hover:text-primary-dark font-medium">
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-medium">
                     View →
                   </span>
                 </div>
@@ -225,11 +225,11 @@ export default function Libraries() {
 
       {/* Create Library Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-2xl max-w-md w-full p-6 border border-purple-200 dark:border-purple-900/50">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Create New Library
+              <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                ✨ Create New Library
               </h2>
               <button
                 onClick={() => {
@@ -239,7 +239,7 @@ export default function Libraries() {
                   setNewLibraryDescription('')
                   setNewLibraryPublic(false)
                 }}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="text-gray-500 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -248,7 +248,7 @@ export default function Libraries() {
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
               </div>
             )}
@@ -256,14 +256,14 @@ export default function Libraries() {
             <form onSubmit={handleCreateLibrary}>
               <div className="mb-4">
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Library Name
+                  📚 Library Name
                 </label>
                 <input
                   type="text"
                   id="name"
                   value={newLibraryName}
                   onChange={(e) => setNewLibraryName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-200 dark:border-purple-800 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700/50 dark:text-white transition-all"
                   placeholder="My Clue Collection"
                   disabled={isCreating}
                   required
@@ -272,14 +272,14 @@ export default function Libraries() {
 
               <div className="mb-4">
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Description (optional)
+                  📝 Description (optional)
                 </label>
                 <textarea
                   id="description"
                   value={newLibraryDescription}
                   onChange={(e) => setNewLibraryDescription(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-200 dark:border-purple-800 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700/50 dark:text-white transition-all"
                   placeholder="A collection of clues for..."
                   disabled={isCreating}
                 />
@@ -291,14 +291,14 @@ export default function Libraries() {
                     type="checkbox"
                     checked={newLibraryPublic}
                     onChange={(e) => setNewLibraryPublic(e.target.checked)}
-                    className="rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary"
+                    className="rounded border-purple-300 dark:border-purple-700 text-purple-600 focus:ring-purple-500"
                     disabled={isCreating}
                   />
                   <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                    Make this library public
+                    🌐 Make this library public
                   </span>
                 </label>
-                <p className="ml-6 mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <p className="ml-6 mt-1 text-xs text-gray-700 dark:text-gray-300">
                   Public libraries can be viewed by all users
                 </p>
               </div>
@@ -313,7 +313,7 @@ export default function Libraries() {
                     setNewLibraryDescription('')
                     setNewLibraryPublic(false)
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  className="flex-1 px-4 py-2 border border-purple-200 dark:border-purple-800 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-700/50 hover:bg-white dark:hover:bg-gray-600 transition-all"
                   disabled={isCreating}
                 >
                   Cancel
@@ -321,9 +321,9 @@ export default function Libraries() {
                 <button
                   type="submit"
                   disabled={isCreating || !newLibraryName.trim()}
-                  className="flex-1 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark disabled:opacity-50"
+                  className="flex-1 px-4 py-2 border border-transparent rounded-lg shadow-lg text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  {isCreating ? 'Creating...' : 'Create Library'}
+                  {isCreating ? '⏳ Creating...' : '✨ Create Library'}
                 </button>
               </div>
             </form>

@@ -67,8 +67,8 @@ export default function AdminContent() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -79,14 +79,14 @@ export default function AdminContent() {
 
   if (error && !hasAccess) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <header className="bg-white dark:bg-gray-800 shadow">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+        <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Content Oversight</h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">📚 Content Oversight</h1>
               <Link
                 href="/admin"
-                className="text-primary hover:text-primary-dark text-sm font-medium"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
               >
                 ← Admin Dashboard
               </Link>
@@ -94,9 +94,9 @@ export default function AdminContent() {
           </div>
         </header>
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-6">
+          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-red-200 dark:border-red-800 p-6">
             <h2 className="text-lg font-semibold text-red-900 dark:text-red-300 mb-2">
-              Access Denied
+              🚫 Access Denied
             </h2>
             <p className="text-red-700 dark:text-red-400">{error}</p>
           </div>
@@ -106,16 +106,16 @@ export default function AdminContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Content Oversight
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                📚 Content Oversight
               </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                 {viewMode === 'libraries'
                   ? `${libraries.length} ${libraries.length === 1 ? 'library' : 'libraries'}`
                   : `${clues.length} ${clues.length === 1 ? 'clue' : 'clues'}`
@@ -124,7 +124,7 @@ export default function AdminContent() {
             </div>
             <Link
               href="/admin"
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
+              className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
             >
               ← Admin Dashboard
             </Link>
@@ -134,7 +134,7 @@ export default function AdminContent() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && hasAccess && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+          <div className="mb-6 p-4 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-red-200 dark:border-red-800">
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           </div>
         )}
@@ -144,23 +144,23 @@ export default function AdminContent() {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setViewMode('libraries')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-md ${
                 viewMode === 'libraries'
-                  ? 'bg-primary text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                  : 'bg-white/70 dark:bg-gray-800/70 text-gray-700 dark:text-gray-300 border border-purple-200 dark:border-purple-800 backdrop-blur-sm hover:bg-purple-50 dark:hover:bg-purple-900/20'
               }`}
             >
-              Libraries
+              📚 Libraries
             </button>
             <button
               onClick={() => setViewMode('clues')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-md ${
                 viewMode === 'clues'
-                  ? 'bg-primary text-white'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                  : 'bg-white/70 dark:bg-gray-800/70 text-gray-700 dark:text-gray-300 border border-purple-200 dark:border-purple-800 backdrop-blur-sm hover:bg-purple-50 dark:hover:bg-purple-900/20'
               }`}
             >
-              Clues
+              🔍 Clues
             </button>
           </div>
 
@@ -170,7 +170,7 @@ export default function AdminContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={`Search ${viewMode}...`}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-2 border border-purple-200 dark:border-purple-800 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm text-gray-900 dark:text-white"
             />
           </div>
         </div>
@@ -189,14 +189,14 @@ export default function AdminContent() {
 function LibrariesView({ libraries }) {
   if (libraries.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
-        <p className="text-gray-500 dark:text-gray-400">No libraries found</p>
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-12 text-center">
+        <p className="text-gray-700 dark:text-gray-300">📚 No libraries found</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
@@ -259,7 +259,7 @@ function LibrariesView({ libraries }) {
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <Link
                   href={`/libraries/${library.id}`}
-                  className="text-primary hover:text-primary-dark"
+                  className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                 >
                   View
                 </Link>
@@ -275,14 +275,14 @@ function LibrariesView({ libraries }) {
 function CluesView({ clues }) {
   if (clues.length === 0) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
-        <p className="text-gray-500 dark:text-gray-400">No clues found</p>
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-12 text-center">
+        <p className="text-gray-700 dark:text-gray-300">🔍 No clues found</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+    <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
