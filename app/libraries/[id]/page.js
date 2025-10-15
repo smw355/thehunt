@@ -139,8 +139,8 @@ export default function LibraryDetail() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
     )
   }
@@ -151,14 +151,14 @@ export default function LibraryDetail() {
 
   if (error && !libraryData) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <header className="bg-white dark:bg-gray-800 shadow">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
+        <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Error</h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Error</h1>
               <Link
                 href="/libraries"
-                className="text-primary hover:text-primary-dark text-sm font-medium"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
               >
                 ← Back to Libraries
               </Link>
@@ -179,9 +179,9 @@ export default function LibraryDetail() {
   const isOwner = libraryData?.isOwner
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
+      <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
@@ -191,11 +191,11 @@ export default function LibraryDetail() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="text-2xl font-bold px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="text-2xl font-bold px-2 py-1 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
                   />
                 ) : (
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {library?.name}
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    📚 {library?.name}
                   </h1>
                 )}
                 {library?.isPublic && (
@@ -214,12 +214,12 @@ export default function LibraryDetail() {
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
                   rows={2}
-                  className="mt-2 w-full max-w-2xl px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm text-gray-600 dark:text-gray-400"
+                  className="mt-2 w-full max-w-2xl px-2 py-1 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 focus:ring-purple-500 focus:border-purple-500"
                   placeholder="Library description..."
                 />
               ) : (
                 library?.description && (
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">
                     {library.description}
                   </p>
                 )
@@ -236,7 +236,7 @@ export default function LibraryDetail() {
                       setEditPublic(library.isPublic)
                       setError('')
                     }}
-                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    className="px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                     disabled={isSaving}
                   >
                     Cancel
@@ -244,9 +244,9 @@ export default function LibraryDetail() {
                   <button
                     onClick={handleSaveEdit}
                     disabled={isSaving || !editName.trim()}
-                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium disabled:opacity-50"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50"
                   >
-                    {isSaving ? 'Saving...' : 'Save'}
+                    {isSaving ? 'Saving... ✨' : 'Save ✨'}
                   </button>
                 </>
               ) : (
@@ -273,7 +273,7 @@ export default function LibraryDetail() {
                   )}
                   <Link
                     href="/libraries"
-                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
+                    className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
                   >
                     ← Libraries
                   </Link>
@@ -290,10 +290,10 @@ export default function LibraryDetail() {
                   type="checkbox"
                   checked={editPublic}
                   onChange={(e) => setEditPublic(e.target.checked)}
-                  className="rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary"
+                  className="rounded border-purple-300 dark:border-purple-600 text-purple-600 focus:ring-purple-500"
                 />
                 <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                  Make this library public
+                  Make this library public 🌍
                 </span>
               </label>
             </div>
@@ -309,18 +309,18 @@ export default function LibraryDetail() {
         )}
 
         {/* Clues Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50">
+          <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Clues ({clues.length})
+              <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                🎯 Clues ({clues.length})
               </h3>
               {isOwner && (
                 <button
-                  className="text-primary hover:text-primary-dark text-sm font-medium"
+                  className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
                   onClick={() => setShowClueModal(true)}
                 >
-                  + Add Clue
+                  + Add Clue ✨
                 </button>
               )}
             </div>
@@ -328,11 +328,11 @@ export default function LibraryDetail() {
 
           {clues.length === 0 ? (
             <div className="px-6 py-12 text-center">
-              <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="mx-auto h-12 w-12 text-purple-400 dark:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
-              <h3 className="mt-4 text-sm font-medium text-gray-900 dark:text-white">No clues yet</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              <h3 className="mt-4 text-sm font-medium bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">No clues yet 🔍</h3>
+              <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
                 {isOwner
                   ? 'Get started by adding your first clue to this library.'
                   : 'This library is empty.'}
@@ -340,16 +340,16 @@ export default function LibraryDetail() {
               {isOwner && (
                 <button
                   onClick={() => setShowClueModal(true)}
-                  className="mt-6 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark"
+                  className="mt-6 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
                 >
-                  Add First Clue
+                  Add First Clue ✨
                 </button>
               )}
             </div>
           ) : (
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="divide-y divide-purple-100 dark:divide-purple-900/30">
               {clues.map(({ id, clue, addedAt }) => (
-                <div key={id} className="px-6 py-4">
+                <div key={id} className="px-6 py-4 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-colors">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
@@ -361,25 +361,25 @@ export default function LibraryDetail() {
                         </span>
                       </div>
                       {clue.type === 'route-info' && clue.content && (
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">
                           {Array.isArray(clue.content) && clue.content.length > 0 && (
                             <p className="line-clamp-2">{clue.content[0]}</p>
                           )}
                         </div>
                       )}
                       {clue.type === 'detour' && (
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">
                           <p>Option A: {clue.detourOptionA?.title}</p>
                           <p>Option B: {clue.detourOptionB?.title}</p>
                         </div>
                       )}
                       {clue.type === 'road-block' && clue.roadblockQuestion && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
                           {clue.roadblockQuestion}
                         </p>
                       )}
                       {clue.requiredPhotos > 0 && (
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                        <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
                           📷 Requires {clue.requiredPhotos} {clue.requiredPhotos === 1 ? 'photo' : 'photos'}
                         </p>
                       )}
@@ -405,19 +405,19 @@ export default function LibraryDetail() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 dark:border-purple-900/50 max-w-md w-full p-6">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
               Delete Library?
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-6">
               Are you sure you want to delete "{library?.name}"? This action cannot be undone.
               The clues themselves will not be deleted, only removed from this library.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                 disabled={isDeleting}
               >
                 Cancel

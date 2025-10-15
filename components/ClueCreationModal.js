@@ -141,11 +141,11 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full my-8">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Create New Clue
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 dark:border-purple-900/50 max-w-2xl w-full my-8">
+        <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50 flex items-center justify-between">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Create New Clue ✨
           </h2>
           <button
             onClick={handleClose}
@@ -167,41 +167,41 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
           {/* Clue Type */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Challenge Type
+              Challenge Type 🎯
             </label>
             <div className="grid grid-cols-3 gap-3">
               <button
                 type="button"
                 onClick={() => setClueType('route-info')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   clueType === 'route-info'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                    ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
+                    : 'bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-700 dark:text-gray-300 border border-purple-100 dark:border-purple-900/50 hover:bg-purple-50 dark:hover:bg-purple-900/30'
                 }`}
               >
-                Waypoint
+                📍 Waypoint
               </button>
               <button
                 type="button"
                 onClick={() => setClueType('detour')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   clueType === 'detour'
-                    ? 'bg-yellow-500 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg'
+                    : 'bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-700 dark:text-gray-300 border border-purple-100 dark:border-purple-900/50 hover:bg-purple-50 dark:hover:bg-purple-900/30'
                 }`}
               >
-                Fork
+                🔀 Fork
               </button>
               <button
                 type="button"
                 onClick={() => setClueType('road-block')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   clueType === 'road-block'
-                    ? 'bg-red-500 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                    ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg'
+                    : 'bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-700 dark:text-gray-300 border border-purple-100 dark:border-purple-900/50 hover:bg-purple-50 dark:hover:bg-purple-900/30'
                 }`}
               >
-                Solo
+                🎯 Solo
               </button>
             </div>
           </div>
@@ -216,7 +216,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+              className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
               placeholder="Enter clue title"
               required
             />
@@ -226,7 +226,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
           {clueType === 'route-info' && (
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Waypoint Instructions *
+                📍 Waypoint Instructions *
               </label>
               {routeInfoContent.map((line, index) => (
                 <div key={index} className="flex gap-2 mb-2">
@@ -234,7 +234,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
                     type="text"
                     value={line}
                     onChange={(e) => updateRouteInfoLine(index, e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                    className="flex-1 px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                     placeholder={`Line ${index + 1}`}
                   />
                   {routeInfoContent.length > 1 && (
@@ -253,7 +253,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
               <button
                 type="button"
                 onClick={addRouteInfoLine}
-                className="text-sm text-primary hover:text-primary-dark font-medium"
+                className="text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
               >
                 + Add Line
               </button>
@@ -263,13 +263,13 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
           {/* Fork Fields */}
           {clueType === 'detour' && (
             <div className="mb-4 space-y-4">
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Path A *</h3>
+              <div className="border border-purple-200 dark:border-purple-900/50 rounded-lg p-4 bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">🅰️ Path A *</h3>
                 <input
                   type="text"
                   value={detourOptionA.title}
                   onChange={(e) => setDetourOptionA({ ...detourOptionA, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white mb-2"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white mb-2"
                   placeholder="Option A title"
                   required
                 />
@@ -277,17 +277,17 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
                   value={detourOptionA.description}
                   onChange={(e) => setDetourOptionA({ ...detourOptionA, description: e.target.value })}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Option A description"
                 />
               </div>
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Path B *</h3>
+              <div className="border border-purple-200 dark:border-purple-900/50 rounded-lg p-4 bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">🅱️ Path B *</h3>
                 <input
                   type="text"
                   value={detourOptionB.title}
                   onChange={(e) => setDetourOptionB({ ...detourOptionB, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white mb-2"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white mb-2"
                   placeholder="Option B title"
                   required
                 />
@@ -295,7 +295,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
                   value={detourOptionB.description}
                   onChange={(e) => setDetourOptionB({ ...detourOptionB, description: e.target.value })}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Option B description"
                 />
               </div>
@@ -307,18 +307,18 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
             <div className="mb-4 space-y-4">
               <div>
                 <label htmlFor="roadblockQuestion" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Team Member Selection Question *
+                  🎯 Team Member Selection Question *
                 </label>
                 <textarea
                   id="roadblockQuestion"
                   value={roadblockQuestion}
                   onChange={(e) => setRoadblockQuestion(e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                   placeholder="e.g., Who has the best memory for details?"
                   required
                 />
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
                   This question is asked before revealing the task (like the TV show!)
                 </p>
               </div>
@@ -331,7 +331,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
                   value={roadblockTask}
                   onChange={(e) => setRoadblockTask(e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
                   placeholder="Describe what the selected team member must do alone"
                 />
               </div>
@@ -341,7 +341,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
           {/* Required Photos */}
           <div className="mb-4">
             <label htmlFor="requiredPhotos" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Required Photos
+              📷 Required Photos
             </label>
             <input
               type="number"
@@ -350,19 +350,19 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
               onChange={(e) => setRequiredPhotos(e.target.value)}
               min="0"
               max="10"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary dark:bg-gray-700 dark:text-white"
+              className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
             />
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
               Number of photos players must upload to complete this clue (0-10)
             </p>
           </div>
         </form>
 
-        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+        <div className="px-6 py-4 border-t border-purple-100 dark:border-purple-900/50 flex gap-3">
           <button
             type="button"
             onClick={handleClose}
-            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
             disabled={isCreating}
           >
             Cancel
@@ -370,9 +370,9 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
           <button
             onClick={handleSubmit}
             disabled={isCreating || !title.trim()}
-            className="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium disabled:opacity-50"
+            className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50"
           >
-            {isCreating ? 'Creating...' : 'Create Clue'}
+            {isCreating ? 'Creating... ✨' : 'Create Clue ✨'}
           </button>
         </div>
       </div>
