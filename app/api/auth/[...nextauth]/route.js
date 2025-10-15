@@ -182,16 +182,6 @@ export const authOptions = new Proxy({}, {
 })
 
 // Create handler that builds options at request time
-async function GET(req, context) {
-  const options = getAuthOptions()
-  const handler = NextAuth(options)
-  return handler.GET(req, context)
-}
+const handler = NextAuth(authOptions)
 
-async function POST(req, context) {
-  const options = getAuthOptions()
-  const handler = NextAuth(options)
-  return handler.POST(req, context)
-}
-
-export { GET, POST }
+export { handler as GET, handler as POST }
