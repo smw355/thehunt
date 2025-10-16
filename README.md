@@ -1,504 +1,655 @@
-# 🏹 The Hunt - Photo-Enabled Treasure Hunt Platform
+# 🏁 The Hunt - Multi-User Photo Hunt Platform
 
-A complete digital treasure hunt platform with **mobile photo/video uploads**, **admin feedback system**, and **comprehensive clue management**.
+A complete **multi-user photo hunt platform** with OAuth authentication, personal clue libraries, and team-based gameplay. Perfect for treasure hunts, scavenger hunts, corporate team building, museum adventures, and community events.
 
-Perfect for treasure hunts, scavenger hunts, corporate team building, educational events, and community adventures.
+## 🚀 Key Features
 
-## 🚀 **Key Features**
+### 👥 Multi-User Architecture
+- **OAuth Authentication**: Sign in with GitHub (more providers coming)
+- **Personal Clue Libraries**: Create, organize, and reuse your clue collections
+- **Game Master & Player Roles**: Flexible permission system
+- **Multiple Games**: Host unlimited simultaneous hunts
+- **Team Management**: Invite players, assign teams, track progress
 
-### 📱 **Mobile-First Experience**
-- **Dual Upload Options**: Take new photos with camera OR select from gallery
-- **Multi-Photo Challenges**: Support for challenges requiring 1-10 specific photos
-- **Real-Time Photo Counter**: Visual progress tracking for photo requirements
-- **Smart Validation**: Exact photo count enforcement with helpful feedback
-- **Auto-Compression**: Up to 10MB files optimized automatically
-- **Touch-Optimized**: Designed for phones and tablets
+### 📚 Clue Library System
+- **Personal Collections**: Build reusable libraries of clues
+- **Ordering & Organization**: Set clue order within libraries
+- **JSON Import/Export**: Share libraries between users
+- **Three Clue Types**: Waypoint, Fork, Solo challenges
+- **Edit & Reorder**: Modify clues and change sequence anytime
 
-### 🎯 **Advanced Admin Tools**
-- **Photo Gallery Reviews**: Beautiful grid layout for submission review
-- **Mandatory Feedback**: Admins must comment when rejecting submissions
-- **Team Progress Tracking**: Real-time view of all team statuses
-- **Bulk Clue Management**: Import/export clue libraries as JSON
+### 📱 Mobile-First Team Experience
+- **Dual Upload Options**: Camera or gallery selection
+- **Multi-Photo Challenges**: Require 1-10 specific photos per challenge
+- **Real-Time Progress**: Visual photo counter and validation
+- **Auto-Compression**: Optimize large files automatically
+- **Touch-Optimized**: Perfect for phones and tablets
 
-### 🔄 **Smart Feedback System**
-- **Rejection History**: Teams see all previous attempts with admin feedback
-- **Clear Guidance**: Specific comments on what needs fixing
-- **Visual Comparison**: Side-by-side view of rejected vs new submissions
-- **Attempt Tracking**: Numbered attempts with timestamps
+### 🎮 Game Master Tools
+- **Photo Review System**: Beautiful gallery view with approval/rejection
+- **Mandatory Feedback**: Comment on rejected submissions
+- **Team Progress Dashboard**: Real-time status for all teams
+- **Clue Sequence Editor**: Drag-and-drop clue ordering
+- **Flexible Invitations**: Email or direct user invites
 
-### 🎮 **Game Mechanics**
-- **Three Challenge Types**: Waypoint, Fork, Solo (adventure-themed challenges)
-- **Multi-Team Support**: Unlimited teams per game
-- **Real-Time Updates**: Instant approval/rejection notifications
-- **Data Persistence**: Browser-based storage with auto-save
+## 📦 Quick Deploy to Vercel
 
-## 📦 **Quick Deploy to Vercel**
+### Prerequisites
+1. **GitHub Account** (for OAuth authentication)
+2. **Neon PostgreSQL Database** (free tier available)
+3. **Vercel Account** (free tier sufficient)
 
-### Option 1: GitHub Integration (Recommended)
-1. **Fork or clone this repository**
-2. **Deploy via Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Click "New Project" → Import from GitHub
-   - Select repository: `smw355/thehunt`
-   - **Set Environment Variable**: `NEXT_PUBLIC_ADMIN_PASSWORD` = `your_secure_password`
-   - Click "Deploy"
+### Deployment Steps
 
-### Option 2: Direct Deploy
+1. **Fork or Clone Repository**
+   ```bash
+   git clone https://github.com/smw355/thehunt.git
+   cd thehunt
+   ```
+
+2. **Set Up PostgreSQL Database**
+   - Go to [Neon.tech](https://neon.tech) and create free database
+   - Copy connection string
+
+3. **Create GitHub OAuth App**
+   - Go to GitHub Settings → Developer Settings → OAuth Apps
+   - Create New OAuth App:
+     - **Homepage URL**: `https://your-app.vercel.app`
+     - **Callback URL**: `https://your-app.vercel.app/api/auth/callback/github`
+   - Save Client ID and Client Secret
+
+4. **Deploy to Vercel**
+   - Go to [vercel.com](https://vercel.com) → New Project
+   - Import your repository
+   - Set environment variables (see below)
+   - Click Deploy
+
+### Required Environment Variables
+
+Set these in Vercel Dashboard → Project Settings → Environment Variables:
+
 ```bash
-npm install -g vercel
-vercel login
-vercel --prod
+# Database
+POSTGRES_URL=postgresql://user:pass@host/db?sslmode=require
+
+# NextAuth (generate with: openssl rand -base64 32)
+NEXTAUTH_SECRET=your-32-character-secret
+NEXTAUTH_URL=https://your-app.vercel.app
+
+# GitHub OAuth
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+
+# Vercel Blob Storage (auto-configured)
+BLOB_READ_WRITE_TOKEN=(automatic)
 ```
 
-## 🔐 **Environment Variables**
+## 🎯 Complete User Guide
 
-Set in Vercel Dashboard → Project Settings → Environment Variables:
+### 👤 Getting Started
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_ADMIN_PASSWORD` | Admin login password | `MySecurePassword123!` |
-| `BLOB_READ_WRITE_TOKEN` | Auto-configured by Vercel Blob | (automatic) |
+#### 1. Sign Up / Sign In
+- Visit your deployed app
+- Click "Sign in with GitHub"
+- Authorize the application
+- You're ready to create games!
 
-## 🎮 **Complete Usage Guide**
+#### 2. Create Your First Library
+- Go to **Libraries** page
+- Click **New Library**
+- Name it (e.g., "Downtown Adventure")
+- Add description and set public/private
+- Start adding clues!
 
-### 👨‍💼 **Admin Workflow**
+#### 3. Build Your Clue Collection
+- Click **+ Add Clue** in your library
+- Choose clue type: Waypoint, Fork, or Solo
+- Fill in title, content, and photo requirements
+- Save and repeat
+- Reorder clues using up/down arrows
 
-1. **Login**: Use your admin password
-2. **Create Game**:
-   - Enter game name (e.g., "Downtown Adventure")
-   - Generate or enter 6-character game code (e.g., "LONDON")
-3. **Build Clue Library**: Create challenges or import from JSON
-4. **Assign Clues**: Select clues and set sequence for the game
-5. **Add Teams**: Create team names and passwords
-6. **Start Game**: Teams can now login and begin racing
-7. **Review Submissions**:
-   - View photo galleries of team submissions
-   - Approve or reject with detailed feedback
-   - Track team progress in real-time
+#### 4. Create a Game
+- Go to **Games** page
+- Click **Create New Game**
+- Enter game name and optional code
+- Invite players via email or username
+- Add your clue sequence from libraries
+- Start the game!
 
-### 📱 **Team Workflow**
+### 🎮 Game Master Workflow
 
-1. **Login**: Enter game code + team credentials
-2. **View Current Clue**: See challenge card with instructions
-3. **Complete Challenge**: Go to location, perform task
-4. **Submit Proof**:
-   - Take photos/videos at location
-   - Add text description (optional)
-   - Submit for admin review
-5. **Handle Feedback**:
-   - If approved: advance to next clue
-   - If rejected: read admin comments and resubmit
-6. **Hunt to Finish**: Complete all clues to win the treasure!
+#### Setting Up a Game
 
-## 📋 **Clue Creation & Management**
+1. **Create Game**
+   - Name: "Museum Artifact Hunt"
+   - Game Code: "MUSEUM" (optional, auto-generated if blank)
+   - Click Create
 
-### Challenge Types
+2. **Invite Players**
+   - Email invitations to participants
+   - Or add by GitHub username
+   - Assign role: Game Master or Player
 
-#### 1. **Waypoint**
-Basic informational clues that direct teams to locations or give instructions.
+3. **Build Clue Sequence**
+   - Go to **Clues** tab in game
+   - Select clues from your libraries
+   - Add to sequence
+   - Reorder with drag controls
+   - Save sequence
+
+4. **Create Teams**
+   - Go to **Teams** tab
+   - Click **Add Team**
+   - Name team (e.g., "Team Alpha")
+   - Set team password
+   - Assign players to teams
+
+5. **Start Game**
+   - Review setup
+   - Click **Start Game**
+   - Teams can now login and begin!
+
+#### Managing Active Games
+
+- **Review Submissions**:
+  - View team progress in real-time
+  - Check photo galleries
+  - Approve/reject with feedback
+
+- **Monitor Progress**:
+  - See which clue each team is on
+  - Track completion status
+  - View submission history
+
+- **Communicate**:
+  - Add admin comments to submissions
+  - Guide teams with feedback
+  - Answer questions via rejection notes
+
+### 📱 Player/Team Workflow
+
+#### Joining a Game
+
+1. **Accept Invitation**
+   - Click link in email invite
+   - Or navigate to game with code
+   - Sign in with GitHub
+
+2. **Team Login**
+   - Enter game code
+   - Enter team name and password
+   - View your first clue!
+
+#### Playing the Hunt
+
+1. **View Current Clue**
+   - See clue card with instructions
+   - Note required photo count
+   - Check clue type (Waypoint/Fork/Solo)
+
+2. **Complete Challenge**
+   - Navigate to location
+   - Perform task
+   - Take required photos
+
+3. **Submit Proof**
+   - Click camera button for new photo
+   - Or select from gallery
+   - Upload required number of photos
+   - Add text notes (optional)
+   - Click Submit
+
+4. **Handle Feedback**
+   - **Approved**: Next clue unlocks automatically
+   - **Rejected**: Read admin comments, fix issues, resubmit
+   - **Pending**: Wait for review
+
+5. **Finish the Hunt**
+   - Complete all clues
+   - Celebrate with your team!
+   - Check final time
+
+## 📋 Clue Types & Creation
+
+### 1. Waypoint Clues
+
+Standard information clues directing teams to locations.
+
+**Example:**
 ```json
 {
-  "type": "route-info",
-  "title": "Find the Red Bridge",
+  "type": "waypoint",
+  "title": "British Museum Gods Collection",
   "content": [
-    "Make your way to the historic red bridge in downtown.",
-    "Once there, find the plaque with the founding date.",
-    "Take a photo of your team with the plaque clearly visible."
+    "The British conquered much of the world over three centuries.",
+    "During that time they discovered many incredible antiquities.",
+    "Find and photograph objects depicting each of these five famous gods:",
+    "1) Hoa Hakananai'a",
+    "2) Isis protecting Osiris",
+    "3) Bastet",
+    "4) Athena",
+    "5) Seated Buddha"
   ],
-  "requiredPhotos": 1
+  "requiredPhotos": 5
 }
 ```
 
-#### 2. **Fork**
-Teams choose between two different paths or approaches to complete their mission.
+### 2. Fork Clues
+
+Teams choose between two different paths.
+
+**Example:**
 ```json
 {
-  "type": "detour",
+  "type": "fork",
   "title": "Work It or Walk It",
-  "detourOptionA": {
+  "optionA": {
     "title": "Work It",
-    "description": "Find a local coffee shop and successfully make and serve a cappuccino to a customer. Take a photo of the finished drink and the happy customer."
+    "description": "Find a local coffee shop and make a cappuccino for a customer. Take photos of you making it and the happy customer with the finished drink."
   },
-  "detourOptionB": {
+  "optionB": {
     "title": "Walk It",
-    "description": "Walk to the nearest park and find 5 different types of flowers. Take individual photos of each flower type with a team member's hand for scale."
+    "description": "Walk to the nearest park and find 5 different types of flowers. Take individual photos of each flower with a team member's hand for scale."
   },
+  "requiredPhotos": 3
+}
+```
+
+### 3. Solo Clues
+
+One team member must be selected before seeing the task.
+
+**Example:**
+```json
+{
+  "type": "solo",
+  "title": "Memory Master",
+  "question": "Who has the best memory for details?",
+  "task": "Study a storefront window display for 2 minutes, then recreate the exact arrangement using items from your backpack. Take a photo of your recreation next to the original.",
   "requiredPhotos": 2
 }
 ```
 
-#### 3. **Solo**
-One team member must be selected before the task is revealed.
-```json
-{
-  "type": "road-block",
-  "title": "Memory Challenge",
-  "roadblockQuestion": "Who has the best memory for details?",
-  "roadblockTask": "Study the storefront window display for 2 minutes, then recreate the exact arrangement using items from your backpack. Take a photo of your recreation next to the original.",
-  "requiredPhotos": 2
-}
-```
+## 📤 JSON Library Format (Version 2.0)
 
-### 📤 **Importing Clue Libraries**
+### Export Format
 
-#### Creating Your JSON File
-
-Create a file called `my-clues.json` with this structure:
+When you export a library, you get this structure:
 
 ```json
 {
-  "version": "1.0",
-  "exportDate": "2024-01-15T10:00:00.000Z",
+  "version": "2.0",
+  "exportDate": "2025-01-15T10:00:00.000Z",
+  "library": {
+    "name": "Downtown Adventure",
+    "description": "Urban scavenger hunt for teams of 2-4",
+    "isPublic": false
+  },
   "clues": [
     {
-      "type": "route-info",
+      "type": "waypoint",
       "title": "Central Station Start",
       "content": [
-        "Begin your race at Central Station's main entrance.",
-        "Look for the information board with departure times.",
-        "Take a team photo in front of the board showing the current time."
+        "Begin at Central Station main entrance.",
+        "Find the departure board.",
+        "Take a team photo showing the current time."
       ],
       "requiredPhotos": 1
     },
     {
-      "type": "detour",
-      "title": "Fast Food or Slow Food",
-      "detourOptionA": {
+      "type": "fork",
+      "title": "Fast or Slow Food",
+      "optionA": {
         "title": "Fast Food",
-        "description": "Visit any fast food restaurant and order exactly 3 different items. Take photos of each item and your receipt showing the timestamp."
+        "description": "Visit a fast food restaurant, order 3 items, photo each item and receipt."
       },
-      "detourOptionB": {
+      "optionB": {
         "title": "Slow Food",
-        "description": "Find a sit-down restaurant and order an appetizer. Take a photo with the server and a selfie with your food when it arrives."
+        "description": "Find a sit-down restaurant, order appetizer, photo with server and food."
       },
       "requiredPhotos": 4
     },
     {
-      "type": "road-block",
+      "type": "solo",
       "title": "Street Performance",
-      "roadblockQuestion": "Who's ready to entertain the crowd?",
-      "roadblockTask": "Perform a 2-minute street performance (song, dance, or comedy) and collect at least $5 in donations. Take a photo of the money collected and a video of the performance.",
+      "question": "Who's ready to entertain?",
+      "task": "Perform for 2 minutes, collect $5 in donations, photo the money and video of performance.",
+      "requiredPhotos": 2
+    }
+  ]
+}
+```
+
+### Importing Libraries
+
+1. **From Libraries Page**:
+   - Click **Import JSON** button
+   - Choose file
+   - Review preview
+   - Confirm import (creates new library)
+
+2. **From Existing Library**:
+   - Open library detail page
+   - Click import icon in header
+   - Clues are added to existing library
+   - Maintains order from JSON
+
+## 🎨 Sample Hunt Scenarios
+
+### Museum Treasure Hunt (2-3 hours)
+
+Perfect for educational field trips or cultural adventures.
+
+```json
+{
+  "version": "2.0",
+  "library": {
+    "name": "Museum Artifact Quest",
+    "description": "Explore world history through famous artifacts"
+  },
+  "clues": [
+    {
+      "type": "waypoint",
+      "title": "Ancient Egypt Gallery",
+      "content": [
+        "Navigate to the Ancient Egypt section.",
+        "Find the Rosetta Stone.",
+        "Take a photo with the stone and read one of the translations aloud.",
+        "Find the hieroglyphics chart nearby and take a photo of it."
+      ],
       "requiredPhotos": 2
     },
     {
-      "type": "route-info",
-      "title": "City Hall Finish",
-      "content": [
-        "Make your way to City Hall for the finish line.",
-        "Find the main flagpole in front of the building.",
-        "Take a celebratory team photo with the flag in the background.",
-        "Check in with the race official to stop your time!"
-      ],
-      "requiredPhotos": 1
-    }
-  ]
-}
-```
-
-#### Import Process
-
-1. **Access Admin Panel**: Login with admin password
-2. **Go to Clue Library**: Scroll to "Clue Library" section
-3. **Click Import**: Green "Import" button next to "Add Clue"
-4. **Select File**: Choose your `.json` file
-5. **Choose Import Mode**:
-   - **Replace**: Removes all existing clues and imports new ones
-   - **Add**: Keeps existing clues and adds new ones
-6. **Confirm**: Review the import summary and confirm
-
-#### Export Your Clues
-
-1. **In Admin Panel**: Go to Clue Library section
-2. **Click Export**: Purple "Export" button
-3. **File Downloads**: `the-hunt-clues-[timestamp].json`
-4. **Share Library**: Send file to other hunt organizers
-
-### 📸 **Multi-Photo Challenge System**
-
-#### NEW: Required Photos Feature
-Set `requiredPhotos` to any number from `0-10` for precise photo requirements:
-
-- **`requiredPhotos: 0`**: Optional photos (teams can submit text or photos)
-- **`requiredPhotos: 1-10`**: Exact number of photos required (enforced validation)
-
-#### Mobile Photo Experience
-Teams get dual upload options on mobile devices:
-- **🔵 Blue Button**: "Take Photo" - Opens camera for new photos
-- **🟢 Green Button**: "Select from Gallery" - Choose existing photos
-
-#### Real-Time Feedback System
-- **Photo Counter**: Shows "(2/5 required photos)" progress
-- **Visual Indicators**:
-  - 🔴 Red: Need more photos
-  - 🟡 Yellow: Too many photos
-  - 🟢 Green: Perfect count
-- **Smart Validation**: Prevents submission unless exact count met
-
-### 📋 **Quick Reference: Required Photos Field**
-
-| Value | Behavior | Use Case |
-|-------|----------|----------|
-| `requiredPhotos: 0` | Optional photos (default) | Text-based challenges, flexible submission |
-| `requiredPhotos: 1` | Exactly 1 photo required | Simple photo tasks, team selfies |
-| `requiredPhotos: 2-5` | Multiple specific photos | Multi-step challenges, before/after shots |
-| `requiredPhotos: 6-10` | High-count photo collections | Scavenger hunts, artifact collections |
-
-### 💡 **Clue Writing Best Practices**
-
-#### Waypoint Clues
-- **Be Specific**: Include landmark details and clear directions
-- **Photo Requirements**: Use `requiredPhotos` field for exact counts needed
-- **Difficulty Scaling**: Start easy, increase complexity throughout race
-- **Local Knowledge**: Reference well-known local landmarks
-
-#### Fork Clues
-- **Balanced Paths**: Make sure both choices take similar time/effort
-- **Clear Differences**: Paths should feel distinctly different (physical vs mental)
-- **Equipment Needs**: Consider what teams will have available
-- **Location Variety**: Mix indoor/outdoor and different neighborhoods
-
-#### Solo Clues
-- **Cryptic Questions**: Don't give away the task (like TV show)
-- **Solo Challenge**: Task must be completable by one team member
-- **Clear Success Criteria**: Teams must know when they're done
-- **Photo/Video Proof**: Specify exactly what evidence is needed
-
-### 🎯 **Sample Hunt Scenarios**
-
-#### **🏛️ Museum Collection Hunt** (Perfect for British Museum!)
-```json
-{
-  "clues": [
-    {
-      "type": "route-info",
-      "title": "Ancient Artifacts Collection",
-      "content": [
-        "Find and photograph these 5 famous artifacts in the British Museum:",
-        "1. The Rosetta Stone (Egyptian Gallery)",
-        "2. The Elgin Marbles (Greek Galleries)",
-        "3. The Lewis Chessmen (Medieval Gallery)",
-        "4. Egyptian Mummy Case (Egyptian Gallery)",
-        "5. Roman Amphora (Roman Gallery)",
-        "Each photo must show the artifact's information plaque clearly."
-      ],
-      "requiredPhotos": 5
-    },
-    {
-      "type": "detour",
-      "title": "Ancient vs Modern",
-      "detourOptionA": {
-        "title": "Ancient World",
-        "description": "Find 3 artifacts from 3 different ancient civilizations (Egypt, Greece, Rome). Take photos of each with your team member posing as if they're from that era."
+      "type": "fork",
+      "title": "Ancient Civilizations Choice",
+      "optionA": {
+        "title": "Greek Glory",
+        "description": "Find 3 Greek artifacts from different time periods (Archaic, Classical, Hellenistic). Photo each with its date label visible."
       },
-      "detourOptionB": {
-        "title": "Modern Discovery",
-        "description": "Find 3 artifacts discovered in the last 200 years. Take photos showing the discovery date on each information plaque."
+      "optionB": {
+        "title": "Roman Rule",
+        "description": "Find 3 Roman artifacts showing daily life (pottery, tools, jewelry). Photo each with descriptive plaques."
       },
       "requiredPhotos": 3
+    },
+    {
+      "type": "solo",
+      "title": "Expert Guide Challenge",
+      "question": "Who's the best speaker and teacher?",
+      "task": "Choose any artifact you've seen today. Give a 2-minute presentation to museum visitors about it. Get 3 people to sign their names confirming they watched. Photo the signatures and video your presentation.",
+      "requiredPhotos": 2
     }
   ]
 }
 ```
 
-#### **Corporate Team Building** (2-3 hours)
+### Corporate Team Building (Half Day)
+
+Ideal for office teams exploring the neighborhood.
+
 ```json
 {
+  "version": "2.0",
+  "library": {
+    "name": "Downtown Team Challenge",
+    "description": "Corporate team building adventure"
+  },
   "clues": [
     {
-      "type": "route-info",
-      "title": "Office Neighborhood Hunt",
+      "type": "waypoint",
+      "title": "Office Neighborhood",
       "content": [
-        "Find 5 different company logos within a 2-block radius of the office.",
-        "Take a selfie with each logo clearly visible in the background."
+        "Find 5 businesses within 3 blocks of the office.",
+        "Take a team photo at each business entrance.",
+        "Each photo must include the business sign clearly visible."
       ],
       "requiredPhotos": 5
     },
     {
-      "type": "detour",
+      "type": "fork",
       "title": "Lunch Rush or Coffee Culture",
-      "detourOptionA": {
+      "optionA": {
         "title": "Lunch Rush",
-        "description": "Order team lunch from 3 different food trucks. Take photos of each food item and receipt."
+        "description": "Visit 3 different food establishments. Order something small from each. Photo the food, receipt, and team member eating it (9 photos total)."
       },
-      "detourOptionB": {
+      "optionB": {
         "title": "Coffee Culture",
-        "description": "Visit 3 coffee shops and order different drinks. Take photos of each drink and rate them."
+        "description": "Find 3 coffee shops. Order different specialty drinks. Rate each shop 1-10. Photo: drink, menu board, rating sign you make (9 photos)."
       },
-      "requiredPhotos": 6
-    }
-  ]
-}
-```
-
-#### **Campus Adventure** (4-5 hours)
-```json
-{
-  "clues": [
-    {
-      "type": "road-block",
-      "title": "Academic Challenge",
-      "roadblockQuestion": "Who's the biggest bookworm?",
-      "roadblockTask": "Find books in the library from 4 different decades (1980s, 1990s, 2000s, 2010s). Take photos of each book's publication page showing the year.",
-      "requiredPhotos": 4
+      "requiredPhotos": 9
     },
     {
-      "type": "route-info",
-      "title": "Campus Landmarks Tour",
-      "content": [
-        "Visit these 6 iconic campus locations and take a team selfie at each:",
-        "1. Main entrance gate",
-        "2. Clock tower",
-        "3. Student union building",
-        "4. Library steps",
-        "5. Cafeteria entrance",
-        "6. Sports stadium"
-      ],
-      "requiredPhotos": 6
+      "type": "solo",
+      "title": "LinkedIn Network Master",
+      "question": "Who's the most professionally connected?",
+      "task": "Go to nearby offices and get business cards from 5 people who work at 5 different companies. Take a photo with each person (holding their card) and connect with them on LinkedIn. Screenshot the connection requests.",
+      "requiredPhotos": 10
     }
   ]
 }
 ```
 
-#### **City-Wide Competition** (Full day)
+### Campus Orientation Hunt (3-4 hours)
+
+Great for new student orientation programs.
+
 ```json
 {
+  "version": "2.0",
+  "library": {
+    "name": "Campus Discovery Tour",
+    "description": "Learn your way around campus"
+  },
   "clues": [
     {
-      "type": "route-info",
-      "title": "Transportation Photo Journey",
+      "type": "waypoint",
+      "title": "Historic Campus Buildings",
       "content": [
-        "Using only public transportation, visit the city's highest viewpoint.",
-        "Document your journey with photos of 3 different transportation modes you used.",
-        "Take a final panoramic photo from the viewpoint showing the city below."
+        "Visit these 6 iconic campus landmarks:",
+        "1. Main Gate - Find the founding year on the plaque",
+        "2. Library - Photo at main entrance",
+        "3. Student Union - Find the hours posted",
+        "4. Oldest Building - Read cornerstone date",
+        "5. Clock Tower - Note the time",
+        "6. Sports Stadium - Find capacity number",
+        "Each photo must show the team AND the information requested."
       ],
-      "requiredPhotos": 4
+      "requiredPhotos": 6
     },
     {
-      "type": "detour",
-      "title": "Street Art Safari or Food Market Hunt",
-      "detourOptionA": {
-        "title": "Street Art Safari",
-        "description": "Find 7 different murals or street art pieces around the arts district. Each photo must include one team member pointing at the artwork."
+      "type": "fork",
+      "title": "Study Smart or Play Hard",
+      "optionA": {
+        "title": "Study Smart",
+        "description": "Library scavenger hunt: Find a book from your birth year, the oldest book you can access, a thesis by a current professor, a magazine from this month, and a DVD/media item. Photo each with team member holding it."
       },
-      "detourOptionB": {
-        "title": "Food Market Hunt",
-        "description": "Visit the central market and buy ingredients from 5 different vendors. Take photos of each purchase with the vendor who sold it to you."
+      "optionB": {
+        "title": "Play Hard",
+        "description": "Rec center challenges: Shoot 5 free throws (video), do 60-second team plank (video), take photo at pool, try one machine in gym (photo), get staff member signature."
       },
-      "requiredPhotos": 7
+      "requiredPhotos": 5
+    },
+    {
+      "type": "solo",
+      "title": "Professor Network",
+      "question": "Who's brave enough to approach faculty?",
+      "task": "Find a professor in their office during office hours. Introduce yourself, ask about their research, and get them to pose for a photo with you. Get their business card. Write a 3-sentence summary of what they research.",
+      "requiredPhotos": 2
     }
   ]
 }
 ```
 
-## 🛠 **Development & Customization**
+## 🛠 Development & Customization
 
 ### Local Development
+
 ```bash
+# Clone repository
 git clone https://github.com/smw355/thehunt.git
 cd thehunt
+
+# Install dependencies
 npm install
-npm run dev  # http://localhost:3000
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your values
+
+# Run development server
+npm run dev
 ```
 
-### Build & Deploy
+Visit `http://localhost:3000`
+
+### Database Management
+
 ```bash
-npm run build  # Production build
-npm run start  # Production server
-npm run lint   # Check code quality
+# Push schema changes to database
+npx drizzle-kit push
+
+# Generate migration
+npx drizzle-kit generate
+
+# Open Drizzle Studio (database GUI)
+npx drizzle-kit studio
 ```
 
 ### Tech Stack
-- **Framework**: Next.js 15 (App Router)
-- **Database**: PostgreSQL with Drizzle ORM (production-ready)
-- **Storage**: Vercel Blob (photos/videos) + PostgreSQL (game data)
-- **UI**: Tailwind CSS + Lucide Icons
-- **State**: React Hooks with database persistence
-- **Deployment**: Vercel (recommended) or any Node.js host
 
-## 📱 **Mobile Optimization Features**
+- **Framework**: Next.js 15.5.4 (App Router)
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: NextAuth.js (OAuth)
+- **Storage**: Vercel Blob (photos/videos)
+- **UI**: Tailwind CSS
+- **Hosting**: Vercel (or any Node.js platform)
 
-- **Camera API**: Direct access to device camera
-- **Image Compression**: Automatic optimization before upload
-- **Offline Queue**: Store photos when connection is poor
-- **Touch Gestures**: Swipe, pinch, tap optimized
-- **Responsive Design**: Perfect on all screen sizes
-- **Progressive Web App**: Add to home screen capability
+### Project Structure
 
-## 🔒 **Security & Privacy**
+```
+app/
+├── api/              # API routes
+│   ├── auth/         # NextAuth endpoints
+│   ├── games/        # Game management
+│   ├── libraries/    # Clue libraries
+│   ├── clues/        # Clue CRUD
+│   └── submissions/  # Photo submissions
+├── games/            # Game pages
+├── libraries/        # Library pages
+├── auth/             # Auth pages
+components/           # React components
+db/                   # Database schema & config
+lib/                  # Utility functions
+public/               # Static assets
+```
 
-- **Environment Variables**: All secrets stored securely
-- **File Validation**: Only images/videos accepted, size limits enforced
-- **Input Sanitization**: All user inputs validated and sanitized
-- **Access Control**: Team isolation, admin-only functions protected
-- **Error Boundaries**: Graceful failure handling prevents crashes
+## 🔒 Security Features
 
-## 🎨 **Customization Options**
+- **OAuth Authentication**: Secure GitHub login
+- **Session Management**: JWT tokens with NextAuth
+- **Database Security**: Parameterized queries prevent SQL injection
+- **File Validation**: Type and size limits on uploads
+- **Access Control**: Role-based permissions (Game Master / Player)
+- **Input Sanitization**: All user inputs validated
+- **Environment Variables**: Secrets never committed to code
 
-### Branding
-- Change color scheme in `app/globals.css`
-- Update logo and title in components
-- Modify clue card designs in `renderClueCard()`
+## 📱 Mobile Features
 
-### Functionality
-- Add new clue types in the main component
-- Implement scoring systems
-- Add time limits and timers
-- Create leaderboards and analytics
+- **Camera Access**: Direct device camera integration
+- **Gallery Selection**: Choose existing photos
+- **Image Compression**: Auto-optimize before upload
+- **Offline Detection**: Warn when connection lost
+- **Touch Gestures**: Optimized for mobile interaction
+- **Responsive Design**: Perfect on any screen size
+- **PWA Ready**: Add to home screen capability
 
-## 🆘 **Troubleshooting**
+## 🆘 Troubleshooting
 
-### Common Issues
+### Authentication Issues
+
+**Can't sign in with GitHub?**
+- Verify GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are set
+- Check callback URL matches in GitHub OAuth app settings
+- Ensure NEXTAUTH_URL matches your deployment URL
+- Try generating new NEXTAUTH_SECRET
+
+**Session expires immediately?**
+- Verify NEXTAUTH_SECRET is set and at least 32 characters
+- Check browser allows cookies
+- Clear cookies and try again
+
+### Database Issues
+
+**Connection errors?**
+- Verify POSTGRES_URL is correct
+- Check database is accessible from Vercel
+- Ensure SSL mode is enabled (?sslmode=require)
+- Test connection with `npx drizzle-kit studio`
+
+**Schema out of sync?**
+- Run `npx drizzle-kit push` to update database
+- Check for migration errors in console
+- Verify all tables exist in database
+
+### Photo Upload Issues
 
 **Photos not uploading?**
+- Check BLOB_READ_WRITE_TOKEN is set (auto-configured on Vercel)
+- Verify file size under 10MB
 - Check internet connection
-- Verify Vercel Blob is configured
-- Try smaller file sizes (under 5MB)
+- Try smaller image resolution
 
-**Teams can't login?**
-- Verify game is started (not in 'setup' mode)
-- Check game code and team credentials
-- Ensure team was added before game start
+**Photos not displaying?**
+- Verify Vercel Blob is enabled in project
+- Check browser console for CORS errors
+- Ensure URLs are being stored in database
 
-**Admin panel not working?**
-- Verify `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable is set
-- Try the default password: `admin123`
-- Check browser console for errors
+### Game Issues
 
-**Vercel deployment failing?**
-- Ensure all environment variables are set
-- Check build logs for specific errors
-- Verify `package.json` has all required scripts
+**Teams can't join game?**
+- Verify game status is "active" not "setup"
+- Check team password is correct
+- Ensure game code is correct (case-sensitive)
+- Verify players are invited to game
 
-## 🌟 **Perfect For**
+**Clues not showing?**
+- Check clue sequence is saved
+- Verify clues are in library
+- Ensure game has started
+- Check team hasn't been removed
 
-- **Corporate Events**: Office team building, company retreats
-- **Education**: Campus orientation, field trips, class activities
-- **Community**: Neighborhood events, festival activities
-- **Family**: Reunions, birthday parties, holiday gatherings
-- **Youth Groups**: Summer camps, scout activities, youth events
-- **Conferences**: Ice breakers, networking activities
+## 🌟 Perfect For
 
-## 📞 **Support**
+- **Corporate Events**: Team building, retreats, onboarding
+- **Education**: Campus tours, field trips, orientations
+- **Museums**: Interactive exhibits, educational programs
+- **Community**: Neighborhood events, festivals
+- **Families**: Reunions, parties, vacations
+- **Youth Groups**: Camps, scout activities
+- **Conferences**: Ice breakers, networking
 
-For issues, feature requests, or questions:
-- **GitHub Issues**: [Create an issue](https://github.com/smw355/thehunt/issues)
-- **Documentation**: This README and inline code comments
-- **Community**: Share your hunt experiences and clue libraries!
+## 📞 Support & Contributing
+
+- **Issues**: [GitHub Issues](https://github.com/smw355/thehunt/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/smw355/thehunt/discussions)
+- **Pull Requests**: Contributions welcome!
+
+## 📄 License
+
+MIT License - feel free to use for personal or commercial projects!
 
 ---
 
-## 🏆 **Ready to Hunt!**
+## 🏆 Ready to Create Your Hunt!
 
-This platform provides everything needed to run professional-quality treasure hunt adventures with:
-- ✅ **Multi-Photo Challenges**: Require 1-10 specific photos per challenge
-- ✅ **Dual Mobile Upload**: Camera + gallery selection for maximum flexibility
-- ✅ **Smart Photo Validation**: Real-time feedback and exact count enforcement
-- ✅ **Admin Review System**: Beautiful photo galleries with mandatory feedback
-- ✅ **Database Persistence**: Production-ready PostgreSQL integration
-- ✅ **Comprehensive Clue System**: Waypoint, Fork, and Solo challenges
-- ✅ **Real-time Progress Tracking**: Live team status monitoring
-- ✅ **One-Click Vercel Deployment**: Professional hosting in minutes
+This platform provides everything you need for professional photo hunt adventures:
 
-**Perfect for treasure hunts, museum adventures, scavenger hunts, and photo-based challenges!**
+✅ **Multi-User Platform** - OAuth login, personal libraries, team management
+✅ **Clue Libraries** - Reusable, organized, shareable collections
+✅ **Three Clue Types** - Waypoint, Fork, Solo challenges
+✅ **Photo Requirements** - Enforce 0-10 specific photos per challenge
+✅ **Mobile Optimized** - Camera + gallery with real-time validation
+✅ **Game Master Tools** - Photo review, feedback, progress tracking
+✅ **Production Ready** - PostgreSQL database, OAuth auth, Vercel hosting
 
-**Start your hunt today!** 🏹📸🎯
+**Start building your hunt today!** 🏁📸🎯
