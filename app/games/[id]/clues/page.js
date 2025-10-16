@@ -47,9 +47,15 @@ export default function ClueSequenceEditor() {
 
       setGameData(game)
       const sequence = game.game?.clueSequence || []
+      // Flatten the clue structure - the actual clue data is nested in the 'clue' property
+      const flattenedSequence = sequence.map(item => ({
+        ...item.clue,
+        sequenceId: item.id,
+        addedAt: item.addedAt
+      }))
       console.log('Loaded clue sequence:', sequence)
-      console.log('First clue:', sequence[0])
-      setClueSequence(sequence)
+      console.log('Flattened sequence:', flattenedSequence)
+      setClueSequence(flattenedSequence)
 
       // Fetch user's libraries
       const librariesResponse = await fetch('/api/libraries')
@@ -238,10 +244,7 @@ export default function ClueSequenceEditor() {
                                 {index + 1}.
                               </span>
                               <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                {clue.title || '[No title]'}
-                              </span>
-                              <span className="text-xs text-red-600">
-                                {JSON.stringify(Object.keys(clue))}
+                                {clue.title}
                               </span>
                               <span className={`px-2 py-1 rounded text-xs font-medium ${getClueTypeClasses(clue.type)}`}>
                                 {getClueTypeDisplay(clue.type)}
@@ -319,10 +322,7 @@ export default function ClueSequenceEditor() {
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
                                 <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-                                  {clue.title || '[No title]'}
-                                  <span className="text-xs text-red-600 ml-2">
-                                    {JSON.stringify(Object.keys(clue))}
-                                  </span>
+                                  {clue.title}
                                 </p>
                                 <span className={`px-2 py-1 rounded text-xs font-medium ${getClueTypeClasses(clue.type)}`}>
                                   {getClueTypeDisplay(clue.type)}
