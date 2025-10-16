@@ -1,10 +1,10 @@
 {
-  "version": "1.0",
+  "version": "2.0",
   "exportDate": "2024-01-15T10:00:00.000Z",
   "description": "Corporate team building race for downtown office areas (2-3 hours)",
   "clues": [
     {
-      "type": "route-info",
+      "type": "waypoint",
       "title": "Coffee Quest Start",
       "content": [
         "Welcome to your Corporate Adventure Race!",
@@ -15,25 +15,25 @@
       ]
     },
     {
-      "type": "detour",
+      "type": "fork",
       "title": "Lunch Rush or Network Dash",
-      "detourOptionA": {
+      "optionA": {
         "title": "Lunch Rush",
         "description": "Visit 3 different food trucks or quick-service restaurants within a 4-block radius. Order one item from each (team's choice). Take a photo of each food item with the vendor/restaurant name visible. Get receipts with timestamps to prove you visited all three. All visits must be completed within 45 minutes."
       },
-      "detourOptionB": {
+      "optionB": {
         "title": "Network Dash",
         "description": "Find and take professional photos with 5 people who work at different companies in nearby office buildings. Each person must be wearing a visible company badge, lanyard, or branded clothing. Get their business cards or LinkedIn connections. Take a group selfie with each person and a photo of their business card."
       }
     },
     {
-      "type": "road-block",
+      "type": "solo",
       "title": "Public Speaking Challenge",
-      "roadblockQuestion": "Who's ready to address the crowd?",
-      "roadblockTask": "Go to the nearest public space with foot traffic (plaza, park, coffee shop). Give a 2-minute impromptu speech about why your company is awesome to at least 3 strangers. Get their business cards, phone numbers, or LinkedIn connections to prove they listened. Take a photo of yourself mid-speech with the audience visible, and collect evidence of your 3 connections."
+      "question": "Who's ready to address the crowd?",
+      "task": "Go to the nearest public space with foot traffic (plaza, park, coffee shop). Give a 2-minute impromptu speech about why your company is awesome to at least 3 strangers. Get their business cards, phone numbers, or LinkedIn connections to prove they listened. Take a photo of yourself mid-speech with the audience visible, and collect evidence of your 3 connections."
     },
     {
-      "type": "route-info",
+      "type": "waypoint",
       "title": "Local Business Appreciation",
       "content": [
         "Support the local business community!",
@@ -45,25 +45,25 @@
       ]
     },
     {
-      "type": "detour",
+      "type": "fork",
       "title": "Tech Hunt or Art Walk",
-      "detourOptionA": {
+      "optionA": {
         "title": "Tech Hunt",
         "description": "Find examples of 5 different types of technology being used in the public spaces around you (digital billboards, QR codes, payment terminals, security cameras, charging stations, etc.). Take photos of each technology with a team member interacting with or pointing to it. Create a short video explaining how each technology makes city life better."
       },
-      "detourOptionB": {
+      "optionB": {
         "title": "Art Walk",
         "description": "Find 5 different pieces of public art (murals, sculptures, installations, interesting architecture). Take creative team photos with each piece where you're mimicking the art style or interacting with it. Write a one-sentence description of each artwork. Take a creative group video presenting your 'art gallery tour' to the camera."
       }
     },
     {
-      "type": "road-block",
+      "type": "solo",
       "title": "Social Media Mastery",
-      "roadblockQuestion": "Who's the most social media savvy?",
-      "roadblockTask": "Create and post a professional LinkedIn post about your team building experience that includes: a team photo from today's race, mentions of at least 2 local businesses you've visited, 3 relevant hashtags, and tags your company's official LinkedIn page. The post must get at least 5 likes or comments from your network within 30 minutes. Screenshot the post and engagement metrics as proof."
+      "question": "Who's the most social media savvy?",
+      "task": "Create and post a professional LinkedIn post about your team building experience that includes: a team photo from today's race, mentions of at least 2 local businesses you've visited, 3 relevant hashtags, and tags your company's official LinkedIn page. The post must get at least 5 likes or comments from your network within 30 minutes. Screenshot the post and engagement metrics as proof."
     },
     {
-      "type": "route-info",
+      "type": "waypoint",
       "title": "Community Connection Finish",
       "content": [
         "For your final challenge, give back to the community!",
