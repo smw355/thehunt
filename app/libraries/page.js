@@ -17,6 +17,9 @@ export default function Libraries() {
   const [newLibraryDescription, setNewLibraryDescription] = useState('')
   const [newLibraryPublic, setNewLibraryPublic] = useState(false)
   const [error, setError] = useState('')
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [importData, setImportData] = useState(null)
+  const [isImporting, setIsImporting] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -45,6 +48,109 @@ export default function Libraries() {
 
     fetchLibraries()
   }, [session, showPublic])
+
+  const handleImportFileSelect = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('File too large. Maximum size is 5MB.')
+      return
+    }
+
+    try {
+      const text = await file.text()
+      const data = JSON.parse(text)
+
+      // Validate JSON structure
+      if (!data.clues || !Array.isArray(data.clues)) {
+        throw new Error('Invalid JSON format: missing "clues" array')
+      }
+
+      if (data.clues.length === 0) {
+        throw new Error('No clues found in file')
+      }
+
+      // Use library metadata from JSON if available
+      if (data.library) {
+        setNewLibraryName(data.library.name || '')
+        setNewLibraryDescription(data.library.description || '')
+        setNewLibraryPublic(data.library.isPublic || false)
+      }
+
+      setImportData(data)
+      setShowImportModal(true)
+      setError('')
+    } catch (err) {
+      setError(`Failed to read file: ${err.message}`)
+    }
+
+    // Reset file input
+    e.target.value = ''
+  }
+
+  const handleConfirmImportToNewLibrary = async () => {
+    if (!importData || !newLibraryName.trim()) return
+
+    setIsImporting(true)
+    setError('')
+
+    try {
+      // Step 1: Create the library
+      const createResponse = await fetch('/api/libraries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newLibraryName.trim(),
+          description: newLibraryDescription.trim() || null,
+          isPublic: newLibraryPublic
+        })
+      })
+
+      if (!createResponse.ok) {
+        const data = await createResponse.json()
+        throw new Error(data.error || 'Failed to create library')
+      }
+
+      const newLibrary = await createResponse.json()
+
+      // Step 2: Import clues to the new library
+      const importResponse = await fetch(`/api/libraries/${newLibrary.id}/import`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clues: importData.clues })
+      })
+
+      if (!importResponse.ok) {
+        const data = await importResponse.json()
+        throw new Error(data.error || 'Failed to import clues')
+      }
+
+      const results = await importResponse.json()
+
+      // Refresh libraries list
+      const refreshResponse = await fetch('/api/libraries')
+      if (refreshResponse.ok) {
+        const data = await refreshResponse.json()
+        setLibraries(data.libraries || [])
+      }
+
+      // Close modal and reset
+      setShowImportModal(false)
+      setImportData(null)
+      setNewLibraryName('')
+      setNewLibraryDescription('')
+      setNewLibraryPublic(false)
+
+      // Navigate to the new library
+      router.push(`/libraries/${newLibrary.id}`)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsImporting(false)
+    }
+  }
 
   const handleCreateLibrary = async (e) => {
     e.preventDefault()
@@ -154,15 +260,33 @@ export default function Libraries() {
             </button>
           </div>
 
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent shadow-lg text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all hover:shadow-xl"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            ✨ New Library
-          </button>
+          <div className="flex gap-2">
+            <input
+              type="file"
+              id="import-library-file-input"
+              accept=".json"
+              onChange={handleImportFileSelect}
+              className="hidden"
+            />
+            <button
+              onClick={() => document.getElementById('import-library-file-input').click()}
+              className="inline-flex items-center px-4 py-2 border border-purple-300 dark:border-purple-600 shadow-md text-sm font-medium rounded-lg text-purple-700 dark:text-purple-200 bg-white/70 dark:bg-gray-800/70 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-all"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              📥 Import JSON
+            </button>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="inline-flex items-center px-4 py-2 border border-transparent shadow-lg text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all hover:shadow-xl"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              ✨ New Library
+            </button>
+          </div>
         </div>
 
         {/* Libraries Grid */}
@@ -327,6 +451,104 @@ export default function Libraries() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Import to New Library Modal */}
+      {showImportModal && importData && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 dark:border-purple-900/50 max-w-md w-full">
+            <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50">
+              <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                📦 Import Library from JSON
+              </h2>
+            </div>
+
+            <div className="px-6 py-4">
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                </div>
+              )}
+
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                Found <strong>{importData.clues.length}</strong> clue{importData.clues.length !== 1 ? 's' : ''} to import
+              </p>
+
+              {/* Library name */}
+              <div className="mb-4">
+                <label htmlFor="import-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  📚 Library Name *
+                </label>
+                <input
+                  type="text"
+                  id="import-name"
+                  value={newLibraryName}
+                  onChange={(e) => setNewLibraryName(e.target.value)}
+                  className="w-full px-3 py-2 border border-purple-200 dark:border-purple-800 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700/50 dark:text-white transition-all"
+                  placeholder="My Imported Library"
+                  disabled={isImporting}
+                  required
+                />
+              </div>
+
+              {/* Library description */}
+              <div className="mb-4">
+                <label htmlFor="import-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  📝 Description (optional)
+                </label>
+                <textarea
+                  id="import-description"
+                  value={newLibraryDescription}
+                  onChange={(e) => setNewLibraryDescription(e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-purple-200 dark:border-purple-800 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700/50 dark:text-white transition-all"
+                  placeholder="Imported from JSON..."
+                  disabled={isImporting}
+                />
+              </div>
+
+              {/* Public checkbox */}
+              <div className="mb-4">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={newLibraryPublic}
+                    onChange={(e) => setNewLibraryPublic(e.target.checked)}
+                    className="rounded border-purple-300 dark:border-purple-700 text-purple-600 focus:ring-purple-500"
+                    disabled={isImporting}
+                  />
+                  <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    🌐 Make this library public
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-purple-100 dark:border-purple-900/50 flex gap-3">
+              <button
+                onClick={() => {
+                  setShowImportModal(false)
+                  setImportData(null)
+                  setNewLibraryName('')
+                  setNewLibraryDescription('')
+                  setNewLibraryPublic(false)
+                  setError('')
+                }}
+                className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+                disabled={isImporting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmImportToNewLibrary}
+                disabled={isImporting || !newLibraryName.trim()}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50"
+              >
+                {isImporting ? 'Importing... ⏳' : `Import & Create`}
+              </button>
+            </div>
           </div>
         </div>
       )}
