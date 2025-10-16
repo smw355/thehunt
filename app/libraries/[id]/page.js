@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import ClueCreationModal from '@/components/ClueCreationModal'
-import { getClueTypeDisplay, getClueTypeClasses } from '@/lib/clueTypeHelpers'
+import { getClueTypeDisplay, getClueTypeClasses, dbTypeToJson } from '@/lib/clueTypeHelpers'
 
 export default function LibraryDetail() {
   const { data: session, status } = useSession()
@@ -22,6 +22,10 @@ export default function LibraryDetail() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showClueModal, setShowClueModal] = useState(false)
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [importData, setImportData] = useState(null)
+  const [isImporting, setIsImporting] = useState(false)
+  const [importResults, setImportResults] = useState(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -135,6 +139,131 @@ export default function LibraryDetail() {
       const data = await refreshResponse.json()
       setLibraryData(data)
     }
+  }
+
+  const handleImportClick = () => {
+    // Trigger file input
+    document.getElementById('import-file-input').click()
+  }
+
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('File too large. Maximum size is 5MB.')
+      return
+    }
+
+    try {
+      const text = await file.text()
+      const data = JSON.parse(text)
+
+      // Validate JSON structure
+      if (!data.clues || !Array.isArray(data.clues)) {
+        throw new Error('Invalid JSON format: missing "clues" array')
+      }
+
+      if (data.clues.length === 0) {
+        throw new Error('No clues found in file')
+      }
+
+      setImportData(data)
+      setShowImportModal(true)
+      setError('')
+    } catch (err) {
+      setError(`Failed to read file: ${err.message}`)
+    }
+
+    // Reset file input
+    e.target.value = ''
+  }
+
+  const handleConfirmImport = async () => {
+    if (!importData) return
+
+    setIsImporting(true)
+    setError('')
+
+    try {
+      const response = await fetch(`/api/libraries/${params.id}/import`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clues: importData.clues })
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to import clues')
+      }
+
+      const results = await response.json()
+      setImportResults(results)
+
+      // If all imported successfully, refresh and close
+      if (results.failed === 0) {
+        const refreshResponse = await fetch(`/api/libraries/${params.id}`)
+        if (refreshResponse.ok) {
+          const data = await refreshResponse.json()
+          setLibraryData(data)
+        }
+
+        // Close modal after short delay to show success
+        setTimeout(() => {
+          setShowImportModal(false)
+          setImportData(null)
+          setImportResults(null)
+        }, 2000)
+      }
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsImporting(false)
+    }
+  }
+
+  const handleExportJSON = () => {
+    const exportData = {
+      version: "2.0",
+      exportDate: new Date().toISOString(),
+      library: {
+        name: library.name,
+        description: library.description || '',
+        isPublic: library.isPublic
+      },
+      clues: clues.map(({ clue }) => {
+        const baseClue = {
+          type: dbTypeToJson(clue.type),
+          title: clue.title,
+          requiredPhotos: clue.requiredPhotos || 0
+        }
+
+        // Add type-specific fields with user-friendly names
+        if (clue.type === 'route-info') {
+          baseClue.content = clue.content || []
+        } else if (clue.type === 'detour') {
+          baseClue.optionA = clue.detourOptionA || { title: '', description: '' }
+          baseClue.optionB = clue.detourOptionB || { title: '', description: '' }
+        } else if (clue.type === 'road-block') {
+          baseClue.question = clue.roadblockQuestion || ''
+          baseClue.task = clue.roadblockTask || ''
+        }
+
+        return baseClue
+      })
+    }
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    const filename = `${library.name.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.json`
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   if (status === 'loading' || isLoading) {
@@ -253,6 +382,31 @@ export default function LibraryDetail() {
                 <>
                   {isOwner && (
                     <>
+                      <input
+                        type="file"
+                        id="import-file-input"
+                        accept=".json"
+                        onChange={handleFileSelect}
+                        className="hidden"
+                      />
+                      <button
+                        onClick={handleImportClick}
+                        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                        title="Import from JSON"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={handleExportJSON}
+                        className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                        title="Export as JSON"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                      </button>
                       <button
                         onClick={() => setIsEditing(true)}
                         className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -429,6 +583,152 @@ export default function LibraryDetail() {
               >
                 {isDeleting ? 'Deleting...' : 'Delete Library'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import Preview Modal */}
+      {showImportModal && importData && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 dark:border-purple-900/50 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50 sticky top-0 bg-white/90 dark:bg-gray-800/90">
+              <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                📦 Import Clues from JSON
+              </h2>
+            </div>
+
+            <div className="px-6 py-4">
+              {!importResults ? (
+                <>
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                      Found <strong>{importData.clues.length}</strong> clue{importData.clues.length !== 1 ? 's' : ''} in file:
+                    </p>
+
+                    {/* Clue type counts */}
+                    <div className="flex gap-3 mb-4">
+                      {(() => {
+                        const counts = {
+                          waypoint: 0,
+                          fork: 0,
+                          solo: 0
+                        }
+                        importData.clues.forEach(clue => {
+                          if (counts[clue.type] !== undefined) {
+                            counts[clue.type]++
+                          }
+                        })
+                        return (
+                          <>
+                            {counts.waypoint > 0 && (
+                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+                                📍 {counts.waypoint} Waypoint{counts.waypoint !== 1 ? 's' : ''}
+                              </span>
+                            )}
+                            {counts.fork > 0 && (
+                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
+                                🔀 {counts.fork} Fork{counts.fork !== 1 ? 's' : ''}
+                              </span>
+                            )}
+                            {counts.solo > 0 && (
+                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
+                                🎯 {counts.solo} Solo{counts.solo !== 1 ? ' challenges' : ' challenge'}
+                              </span>
+                            )}
+                          </>
+                        )
+                      })()}
+                    </div>
+
+                    {/* List of clues */}
+                    <div className="bg-purple-50/50 dark:bg-purple-900/10 rounded-lg p-4 border border-purple-200 dark:border-purple-800 max-h-60 overflow-y-auto">
+                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Clues to import:</p>
+                      <ul className="space-y-1">
+                        {importData.clues.map((clue, index) => (
+                          <li key={index} className="text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                            <span className="text-purple-600 dark:text-purple-400">{index + 1}.</span>
+                            <span className="flex-1">{clue.title}</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {clue.type === 'waypoint' ? '📍' : clue.type === 'fork' ? '🔀' : '🎯'}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                    These clues will be <strong>added</strong> to "{library?.name}"
+                  </p>
+                </>
+              ) : (
+                <>
+                  {/* Import results */}
+                  {importResults.failed === 0 ? (
+                    <div className="text-center py-6">
+                      <div className="text-5xl mb-3">✅</div>
+                      <h3 className="text-lg font-semibold text-green-600 dark:text-green-400 mb-2">
+                        Success!
+                      </h3>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        Imported {importResults.imported} clue{importResults.imported !== 1 ? 's' : ''} successfully
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+                        <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300 mb-2">
+                          Partial Import: {importResults.imported} succeeded, {importResults.failed} failed
+                        </p>
+                      </div>
+
+                      {importResults.errors.length > 0 && (
+                        <div className="max-h-60 overflow-y-auto">
+                          <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Errors:</p>
+                          <ul className="space-y-2">
+                            {importResults.errors.map((err, index) => (
+                              <li key={index} className="text-xs bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-2">
+                                <span className="font-medium text-red-800 dark:text-red-300">
+                                  Clue {err.clueIndex}: {err.title}
+                                </span>
+                                <p className="text-red-600 dark:text-red-400 mt-1">{err.error}</p>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="px-6 py-4 border-t border-purple-100 dark:border-purple-900/50 flex gap-3">
+              {!importResults || importResults.failed > 0 ? (
+                <>
+                  <button
+                    onClick={() => {
+                      setShowImportModal(false)
+                      setImportData(null)
+                      setImportResults(null)
+                    }}
+                    className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+                    disabled={isImporting}
+                  >
+                    {importResults ? 'Close' : 'Cancel'}
+                  </button>
+                  {!importResults && (
+                    <button
+                      onClick={handleConfirmImport}
+                      disabled={isImporting}
+                      className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50"
+                    >
+                      {isImporting ? 'Importing... ⏳' : `Import ${importData.clues.length} Clue${importData.clues.length !== 1 ? 's' : ''}`}
+                    </button>
+                  )}
+                </>
+              ) : null}
             </div>
           </div>
         </div>
