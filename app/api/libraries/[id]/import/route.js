@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../auth/[...nextauth]/route'
 import { db } from '@/db/index.js'
 import { clueLibraries, libraryClues, clues } from '@/db/schema.js'
-import { eq } from 'drizzle-orm'
+import { eq, desc } from 'drizzle-orm'
 import { jsonTypeToDb } from '@/lib/clueTypeHelpers'
 
 export async function POST(request, { params }) {
@@ -34,6 +34,16 @@ export async function POST(request, { params }) {
     if (!Array.isArray(importClues)) {
       return Response.json({ error: 'Invalid format: clues must be an array' }, { status: 400 })
     }
+
+    // Get the current max order to append new clues at the end
+    const existingClues = await db
+      .select({ order: libraryClues.order })
+      .from(libraryClues)
+      .where(eq(libraryClues.libraryId, libraryId))
+      .orderBy(desc(libraryClues.order))
+      .limit(1)
+
+    let nextOrder = existingClues.length > 0 ? existingClues[0].order + 1 : 0
 
     const results = {
       imported: 0,
@@ -107,12 +117,13 @@ export async function POST(request, { params }) {
           })
           .returning()
 
-        // Link clue to library
+        // Link clue to library with order
         await db
           .insert(libraryClues)
           .values({
             libraryId: library.id,
             clueId: newClue.id,
+            order: nextOrder++,
             addedAt: new Date()
           })
 

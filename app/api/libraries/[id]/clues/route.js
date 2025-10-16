@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../auth/[...nextauth]/route'
 import { db } from '@/db/index.js'
 import { clueLibraries, libraryClues, clues } from '@/db/schema.js'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, desc } from 'drizzle-orm'
 
 // Add a clue to a library
 export async function POST(request, { params }) {
@@ -62,12 +62,23 @@ export async function POST(request, { params }) {
       return Response.json({ error: 'Clue already in library' }, { status: 409 })
     }
 
+    // Get the current max order to append the new clue at the end
+    const existingClues = await db
+      .select({ order: libraryClues.order })
+      .from(libraryClues)
+      .where(eq(libraryClues.libraryId, parseInt(id)))
+      .orderBy(desc(libraryClues.order))
+      .limit(1)
+
+    const nextOrder = existingClues.length > 0 ? existingClues[0].order + 1 : 0
+
     // Add clue to library
     const [newLibraryClue] = await db
       .insert(libraryClues)
       .values({
         libraryId: parseInt(id),
         clueId,
+        order: nextOrder,
         addedAt: new Date(),
       })
       .returning()

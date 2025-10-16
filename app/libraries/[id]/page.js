@@ -157,6 +157,58 @@ export default function LibraryDetail() {
     setEditingClue(clue)
   }
 
+  const handleMoveClueUp = async (index) => {
+    if (index === 0) return
+
+    const newClues = [...clues]
+    const temp = newClues[index]
+    newClues[index] = newClues[index - 1]
+    newClues[index - 1] = temp
+
+    // Update order in database
+    await updateClueOrder(newClues)
+  }
+
+  const handleMoveClueDown = async (index) => {
+    if (index === clues.length - 1) return
+
+    const newClues = [...clues]
+    const temp = newClues[index]
+    newClues[index] = newClues[index + 1]
+    newClues[index + 1] = temp
+
+    // Update order in database
+    await updateClueOrder(newClues)
+  }
+
+  const updateClueOrder = async (newClues) => {
+    try {
+      const clueOrders = newClues.map((clueItem, index) => ({
+        libraryClueId: clueItem.id,
+        order: index
+      }))
+
+      const response = await fetch(`/api/libraries/${params.id}/reorder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clueOrders })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update clue order')
+      }
+
+      // Refresh library data
+      const refreshResponse = await fetch(`/api/libraries/${params.id}`)
+      if (refreshResponse.ok) {
+        const data = await refreshResponse.json()
+        setLibraryData(data)
+      }
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
   const handleSaveClueEdit = async () => {
     if (!editingClue) return
 
@@ -546,9 +598,34 @@ export default function LibraryDetail() {
             </div>
           ) : (
             <div className="divide-y divide-purple-100 dark:divide-purple-900/30">
-              {clues.map(({ id, clue, addedAt }) => (
+              {clues.map(({ id, clue, addedAt, order }, index) => (
                 <div key={id} className="px-6 py-4 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-colors">
                   <div className="flex items-start justify-between">
+                    {isOwner && (
+                      <div className="flex flex-col mr-3">
+                        <button
+                          onClick={() => handleMoveClueUp(index)}
+                          disabled={index === 0}
+                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+                          title="Move up"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                          </svg>
+                        </button>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 text-center my-0.5">{index + 1}</span>
+                        <button
+                          onClick={() => handleMoveClueDown(index)}
+                          disabled={index === clues.length - 1}
+                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 disabled:opacity-20 disabled:cursor-not-allowed"
+                          title="Move down"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
                         <h4 className="text-sm font-medium text-gray-900 dark:text-white">

@@ -143,6 +143,7 @@ export const libraryClues = pgTable('library_clues', {
   id: serial('id').primaryKey(),
   libraryId: integer('library_id').notNull().references(() => clueLibraries.id, { onDelete: 'cascade' }),
   clueId: integer('clue_id').notNull().references(() => clues.id, { onDelete: 'cascade' }),
+  order: integer('order').notNull().default(0),
   addedAt: timestamp('added_at').defaultNow().notNull(),
 });
 

@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../auth/[...nextauth]/route'
 import { db } from '@/db/index.js'
 import { clueLibraries, libraryClues, clues } from '@/db/schema.js'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, asc } from 'drizzle-orm'
 
 // Get a specific library with its clues
 export async function GET(request, { params }) {
@@ -30,17 +30,19 @@ export async function GET(request, { params }) {
       return Response.json({ error: 'Access denied' }, { status: 403 })
     }
 
-    // Get all clues in this library
+    // Get all clues in this library, ordered by the order field
     const libraryCluesList = await db
       .select({
         id: libraryClues.id,
         clueId: libraryClues.clueId,
+        order: libraryClues.order,
         addedAt: libraryClues.addedAt,
         clue: clues,
       })
       .from(libraryClues)
       .innerJoin(clues, eq(libraryClues.clueId, clues.id))
       .where(eq(libraryClues.libraryId, parseInt(id)))
+      .orderBy(asc(libraryClues.order))
 
     return Response.json({
       library,
