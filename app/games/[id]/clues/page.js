@@ -205,7 +205,7 @@ export default function ClueSequenceEditor() {
                     {clueSequence.map((clue, index) => (
                       <div
                         key={index}
-                        className="flex items-start space-x-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+                        className="flex items-start space-x-3 p-4 bg-purple-50/80 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors border border-purple-200 dark:border-purple-800"
                       >
                         <div className="flex flex-col space-y-1">
                           <button
@@ -308,7 +308,7 @@ export default function ClueSequenceEditor() {
                         {availableClues.map(clue => (
                           <div
                             key={clue.id}
-                            className="p-3 border border-purple-100 dark:border-purple-900/50 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                            className="p-3 bg-white/90 dark:bg-gray-700/50 border border-purple-200 dark:border-purple-900/50 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
                           >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
