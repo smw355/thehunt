@@ -75,7 +75,16 @@ export default function ClueSequenceEditor() {
       const response = await fetch(`/api/libraries/${libraryId}`)
       if (!response.ok) throw new Error('Failed to load library')
       const data = await response.json()
-      setAvailableClues(data.clues || [])
+      // Check if clues have nested structure and flatten if needed
+      const clues = (data.clues || []).map(item => {
+        // If the clue has a nested 'clue' property, flatten it
+        if (item.clue) {
+          return { ...item.clue, libraryClueId: item.id }
+        }
+        return item
+      })
+      console.log('Library clues:', clues)
+      setAvailableClues(clues)
       setSelectedLibrary(libraryId)
     } catch (err) {
       setError(err.message)
