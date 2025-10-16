@@ -393,19 +393,30 @@ function GameMasterView({ gameData }) {
             </div>
           ) : (
             <div className="space-y-2">
-              {game.clueSequence.map((clue, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-2 px-3 bg-purple-50 dark:bg-purple-900/20 rounded-md hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
-                >
-                  <span className="text-sm text-gray-900 dark:text-white">
-                    {index + 1}. {clue.text || clue.title || 'Untitled Clue'}
-                  </span>
-                  <span className="text-xs text-gray-700 dark:text-gray-300">
-                    {clue.type ? getClueTypeDisplay(clue.type) : 'Standard'}
-                  </span>
-                </div>
-              ))}
+              {game.clueSequence.map((clue, index) => {
+                // Handle both formats: direct clue object or nested {clue: {...}}
+                const clueData = clue.clue || clue
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-2 px-3 bg-purple-50 dark:bg-purple-900/20 rounded-md hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <span className="text-sm text-gray-900 dark:text-white">
+                        {index + 1}. {clueData.title || 'Untitled Clue'}
+                      </span>
+                      {clueData.requiredPhotos > 0 && (
+                        <span className="ml-2 text-xs text-purple-600 dark:text-purple-400">
+                          📷 {clueData.requiredPhotos}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">
+                      {clueData.type ? getClueTypeDisplay(clueData.type) : 'Unknown'}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
