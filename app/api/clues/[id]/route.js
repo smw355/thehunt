@@ -4,6 +4,83 @@ import { db } from '@/db/index.js';
 import { clues, submissions, libraryClues, clueLibraries } from '@/db/schema.js';
 import { eq, and } from 'drizzle-orm';
 
+// Update a specific clue by ID
+export async function PATCH(request, { params }) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Fix Next.js 15 issue - await params before using
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
+
+    // Convert id to integer (database expects integer)
+    const clueId = parseInt(id, 10);
+    if (isNaN(clueId)) {
+      return Response.json({ error: 'Invalid clue ID' }, { status: 400 });
+    }
+
+    // Check if clue exists
+    const existingClue = await db.select().from(clues).where(eq(clues.id, clueId)).limit(1);
+    if (existingClue.length === 0) {
+      return Response.json({ error: 'Clue not found' }, { status: 404 });
+    }
+
+    // Check if user owns any library that contains this clue
+    const userLibraries = await db
+      .select({ libraryId: libraryClues.libraryId })
+      .from(libraryClues)
+      .innerJoin(clueLibraries, eq(libraryClues.libraryId, clueLibraries.id))
+      .where(
+        and(
+          eq(libraryClues.clueId, clueId),
+          eq(clueLibraries.userId, session.user.id)
+        )
+      )
+      .limit(1)
+
+    if (userLibraries.length === 0) {
+      return Response.json({
+        error: 'Access denied. You can only edit clues from your own libraries.'
+      }, { status: 403 })
+    }
+
+    // Get update data from request
+    const updateData = await request.json()
+
+    // Build update object with only the fields provided
+    const clueUpdate = {}
+
+    if (updateData.title !== undefined) clueUpdate.title = updateData.title
+    if (updateData.requiredPhotos !== undefined) clueUpdate.requiredPhotos = updateData.requiredPhotos
+
+    // Handle type-specific fields
+    if (updateData.type === 'route-info' && updateData.content !== undefined) {
+      clueUpdate.content = updateData.content
+    } else if (updateData.type === 'detour') {
+      if (updateData.detourOptionA !== undefined) clueUpdate.detourOptionA = updateData.detourOptionA
+      if (updateData.detourOptionB !== undefined) clueUpdate.detourOptionB = updateData.detourOptionB
+    } else if (updateData.type === 'road-block') {
+      if (updateData.roadblockQuestion !== undefined) clueUpdate.roadblockQuestion = updateData.roadblockQuestion
+      if (updateData.roadblockTask !== undefined) clueUpdate.roadblockTask = updateData.roadblockTask
+    }
+
+    // Update the clue
+    const [updatedClue] = await db
+      .update(clues)
+      .set(clueUpdate)
+      .where(eq(clues.id, clueId))
+      .returning()
+
+    return Response.json(updatedClue)
+  } catch (error) {
+    console.error('Error updating clue:', error)
+    return Response.json({ error: 'Failed to update clue' }, { status: 500 })
+  }
+}
+
 // Delete a specific clue by ID
 export async function DELETE(request, { params }) {
   try {

@@ -26,6 +26,8 @@ export default function LibraryDetail() {
   const [importData, setImportData] = useState(null)
   const [isImporting, setIsImporting] = useState(false)
   const [importResults, setImportResults] = useState(null)
+  const [expandedClues, setExpandedClues] = useState(new Set())
+  const [editingClue, setEditingClue] = useState(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -138,6 +140,48 @@ export default function LibraryDetail() {
     if (refreshResponse.ok) {
       const data = await refreshResponse.json()
       setLibraryData(data)
+    }
+  }
+
+  const toggleExpandClue = (clueId) => {
+    const newExpanded = new Set(expandedClues)
+    if (newExpanded.has(clueId)) {
+      newExpanded.delete(clueId)
+    } else {
+      newExpanded.add(clueId)
+    }
+    setExpandedClues(newExpanded)
+  }
+
+  const handleEditClue = (clue) => {
+    setEditingClue(clue)
+  }
+
+  const handleSaveClueEdit = async () => {
+    if (!editingClue) return
+
+    try {
+      const response = await fetch(`/api/clues/${editingClue.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingClue)
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to update clue')
+      }
+
+      // Refresh library data
+      const refreshResponse = await fetch(`/api/libraries/${params.id}`)
+      if (refreshResponse.ok) {
+        const data = await refreshResponse.json()
+        setLibraryData(data)
+      }
+
+      setEditingClue(null)
+    } catch (err) {
+      setError(err.message)
     }
   }
 
@@ -517,7 +561,28 @@ export default function LibraryDetail() {
                       {clue.type === 'route-info' && clue.content && (
                         <div className="text-sm text-gray-700 dark:text-gray-300">
                           {Array.isArray(clue.content) && clue.content.length > 0 && (
-                            <p className="line-clamp-2">{clue.content[0]}</p>
+                            <div>
+                              {expandedClues.has(clue.id) ? (
+                                <div className="space-y-2">
+                                  {clue.content.map((paragraph, idx) => (
+                                    <p key={idx}>{paragraph}</p>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="line-clamp-2">{clue.content[0]}</p>
+                              )}
+                              {clue.content.length > 1 && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    toggleExpandClue(clue.id)
+                                  }}
+                                  className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 mt-1"
+                                >
+                                  {expandedClues.has(clue.id) ? '▲ Show less' : `▼ Show all ${clue.content.length} paragraphs`}
+                                </button>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}
@@ -539,15 +604,26 @@ export default function LibraryDetail() {
                       )}
                     </div>
                     {isOwner && (
-                      <button
-                        onClick={() => handleRemoveClue(clue.id)}
-                        className="ml-4 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                        title="Remove from library"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                      <div className="flex items-center space-x-2 ml-4">
+                        <button
+                          onClick={() => handleEditClue(clue)}
+                          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                          title="Edit clue"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleRemoveClue(clue.id)}
+                          className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                          title="Remove from library"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -729,6 +805,193 @@ export default function LibraryDetail() {
                   )}
                 </>
               ) : null}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Clue Modal */}
+      {editingClue && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-2xl border border-purple-200 dark:border-purple-900/50 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-purple-100 dark:border-purple-900/50 sticky top-0 bg-white/90 dark:bg-gray-800/90">
+              <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                ✏️ Edit Clue
+              </h2>
+            </div>
+
+            <div className="px-6 py-4 space-y-4">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={editingClue.title}
+                  onChange={(e) => setEditingClue({ ...editingClue, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              {/* Type Display */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Type
+                </label>
+                <span className={`px-3 py-1 rounded text-sm font-medium ${getClueTypeClasses(editingClue.type)}`}>
+                  {getClueTypeDisplay(editingClue.type)}
+                </span>
+              </div>
+
+              {/* Required Photos */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Required Photos
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="10"
+                  value={editingClue.requiredPhotos || 0}
+                  onChange={(e) => setEditingClue({ ...editingClue, requiredPhotos: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              {/* Type-specific fields */}
+              {editingClue.type === 'route-info' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Content (one paragraph per line)
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={Array.isArray(editingClue.content) ? editingClue.content.join('\n') : ''}
+                    onChange={(e) => setEditingClue({
+                      ...editingClue,
+                      content: e.target.value.split('\n').filter(line => line.trim())
+                    })}
+                    className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                    placeholder="Enter each paragraph on a new line"
+                  />
+                </div>
+              )}
+
+              {editingClue.type === 'detour' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Option A - Title
+                    </label>
+                    <input
+                      type="text"
+                      value={editingClue.detourOptionA?.title || ''}
+                      onChange={(e) => setEditingClue({
+                        ...editingClue,
+                        detourOptionA: {
+                          ...editingClue.detourOptionA,
+                          title: e.target.value
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Option A - Description
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={editingClue.detourOptionA?.description || ''}
+                      onChange={(e) => setEditingClue({
+                        ...editingClue,
+                        detourOptionA: {
+                          ...editingClue.detourOptionA,
+                          description: e.target.value
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Option B - Title
+                    </label>
+                    <input
+                      type="text"
+                      value={editingClue.detourOptionB?.title || ''}
+                      onChange={(e) => setEditingClue({
+                        ...editingClue,
+                        detourOptionB: {
+                          ...editingClue.detourOptionB,
+                          title: e.target.value
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Option B - Description
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={editingClue.detourOptionB?.description || ''}
+                      onChange={(e) => setEditingClue({
+                        ...editingClue,
+                        detourOptionB: {
+                          ...editingClue.detourOptionB,
+                          description: e.target.value
+                        }
+                      })}
+                      className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                    />
+                  </div>
+                </>
+              )}
+
+              {editingClue.type === 'road-block' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Question
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={editingClue.roadblockQuestion || ''}
+                      onChange={(e) => setEditingClue({ ...editingClue, roadblockQuestion: e.target.value })}
+                      className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Task (optional)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={editingClue.roadblockTask || ''}
+                      onChange={(e) => setEditingClue({ ...editingClue, roadblockTask: e.target.value })}
+                      className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-purple-500 focus:border-purple-500"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="px-6 py-4 border-t border-purple-100 dark:border-purple-900/50 flex gap-3">
+              <button
+                onClick={() => setEditingClue(null)}
+                className="flex-1 px-4 py-2 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveClueEdit}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium"
+              >
+                Save Changes ✨
+              </button>
             </div>
           </div>
         </div>
