@@ -75,11 +75,11 @@ export default function ClueSequenceEditor() {
       const response = await fetch(`/api/libraries/${libraryId}`)
       if (!response.ok) throw new Error('Failed to load library')
       const data = await response.json()
-      // Check if clues have nested structure and flatten if needed
+      // Check if clues have nested structure and flatten if needed, preserving order
       const clues = (data.clues || []).map(item => {
         // If the clue has a nested 'clue' property, flatten it
         if (item.clue) {
-          return { ...item.clue, libraryClueId: item.id }
+          return { ...item.clue, libraryClueId: item.id, order: item.order }
         }
         return item
       })
@@ -93,6 +93,18 @@ export default function ClueSequenceEditor() {
 
   const handleAddClue = (clue) => {
     const newSequence = [...clueSequence, clue]
+    setClueSequence(newSequence)
+  }
+
+  const handleAddAllClues = () => {
+    if (availableClues.length === 0) return
+    // Sort clues by their order property if available
+    const sortedClues = [...availableClues].sort((a, b) => {
+      const orderA = a.order ?? 0
+      const orderB = b.order ?? 0
+      return orderA - orderB
+    })
+    const newSequence = [...clueSequence, ...sortedClues]
     setClueSequence(newSequence)
   }
 
@@ -314,9 +326,19 @@ export default function ClueSequenceEditor() {
                 {/* Available Clues */}
                 {selectedLibrary && (
                   <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                      Available Clues ({availableClues.length})
-                    </p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Available Clues ({availableClues.length})
+                      </p>
+                      {availableClues.length > 0 && (
+                        <button
+                          onClick={handleAddAllClues}
+                          className="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded text-xs font-medium"
+                        >
+                          ➕ Add All
+                        </button>
+                      )}
+                    </div>
                     {availableClues.length === 0 ? (
                       <p className="text-sm text-gray-700 dark:text-gray-300 text-center py-4">
                         No clues in this library
