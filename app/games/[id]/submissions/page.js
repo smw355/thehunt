@@ -261,7 +261,7 @@ function SubmissionCard({ submission, teamName, onView }) {
 
           <div className="flex items-center space-x-4 text-xs text-gray-700 dark:text-gray-300">
             <span>
-              📷 {submission.photoUrls?.length || 0} photo{submission.photoUrls?.length !== 1 ? 's' : ''}
+              📷 {submission.photoUrls?.length || 0} media file{submission.photoUrls?.length !== 1 ? 's' : ''}
             </span>
             <span>•</span>
             <span>
@@ -380,28 +380,41 @@ function SubmissionDetailModal({ submission, onClose, onApprove, onReject }) {
             </div>
           )}
 
-          {/* Photos */}
+          {/* Media (Photos/Videos) */}
           {submission.photoUrls && submission.photoUrls.length > 0 && (
             <div className="mb-6">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                📷 Photos ({submission.photoUrls.length})
+                📷 Media ({submission.photoUrls.length})
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {submission.photoUrls.map((url, index) => (
-                  <a
-                    key={index}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block aspect-square bg-purple-100 dark:bg-purple-900/20 rounded-lg overflow-hidden hover:opacity-90 transition-opacity border border-purple-200 dark:border-purple-800"
-                  >
-                    <img
-                      src={url}
-                      alt={`Photo ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </a>
-                ))}
+                {submission.photoUrls.map((url, index) => {
+                  const isVideo = url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes('video')
+
+                  return (
+                    <a
+                      key={index}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block aspect-square bg-purple-100 dark:bg-purple-900/20 rounded-lg overflow-hidden hover:opacity-90 transition-opacity border border-purple-200 dark:border-purple-800"
+                    >
+                      {isVideo ? (
+                        <video
+                          src={url}
+                          className="w-full h-full object-cover"
+                          controls
+                          preload="metadata"
+                        />
+                      ) : (
+                        <img
+                          src={url}
+                          alt={`Photo ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </a>
+                  )
+                })}
               </div>
             </div>
           )}

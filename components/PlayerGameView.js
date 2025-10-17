@@ -514,17 +514,29 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
                   {pendingSubmission.photoUrls && pendingSubmission.photoUrls.length > 0 && (
                     <div>
                       <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
-                        Photos ({pendingSubmission.photoUrls.length})
+                        Media ({pendingSubmission.photoUrls.length})
                       </p>
                       <div className="grid grid-cols-2 gap-2">
-                        {pendingSubmission.photoUrls.map((url, idx) => (
-                          <img
-                            key={idx}
-                            src={url}
-                            alt={`Submission photo ${idx + 1}`}
-                            className="rounded-md w-full h-32 object-cover border border-gray-200 dark:border-gray-700"
-                          />
-                        ))}
+                        {pendingSubmission.photoUrls.map((url, idx) => {
+                          const isVideo = url.match(/\.(mp4|webm|ogg|mov)$/i) || url.includes('video')
+
+                          return isVideo ? (
+                            <video
+                              key={idx}
+                              src={url}
+                              className="rounded-md w-full h-32 object-cover border border-gray-200 dark:border-gray-700"
+                              controls
+                              preload="metadata"
+                            />
+                          ) : (
+                            <img
+                              key={idx}
+                              src={url}
+                              alt={`Submission photo ${idx + 1}`}
+                              className="rounded-md w-full h-32 object-cover border border-gray-200 dark:border-gray-700"
+                            />
+                          )
+                        })}
                       </div>
                     </div>
                   )}
