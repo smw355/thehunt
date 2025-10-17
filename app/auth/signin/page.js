@@ -3,6 +3,7 @@
 import { signIn, getProviders } from 'next-auth/react'
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 function SignInContent() {
   const [providers, setProviders] = useState(null)
@@ -63,6 +64,12 @@ function SignInContent() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
             Choose your preferred sign-in method
+          </p>
+          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
+            Don't have an account?{' '}
+            <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
+              Sign up
+            </Link>
           </p>
         </div>
 
