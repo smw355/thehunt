@@ -21,27 +21,27 @@ export default function GameDetail() {
     }
   }, [status, router])
 
-  useEffect(() => {
-    async function fetchGameData() {
-      if (!session || !params.id) return
+  const fetchGameData = async () => {
+    if (!session || !params.id) return
 
-      try {
-        const response = await fetch(`/api/games/${params.id}`)
+    try {
+      const response = await fetch(`/api/games/${params.id}`)
 
-        if (!response.ok) {
-          const data = await response.json()
-          throw new Error(data.error || 'Failed to load game')
-        }
-
+      if (!response.ok) {
         const data = await response.json()
-        setGameData(data)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setIsLoading(false)
+        throw new Error(data.error || 'Failed to load game')
       }
-    }
 
+      const data = await response.json()
+      setGameData(data)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
     fetchGameData()
   }, [session, params.id])
 
