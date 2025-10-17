@@ -16,7 +16,7 @@ export const teams = pgTable('teams', {
   id: serial('id').primaryKey(),
   gameId: integer('game_id').notNull().references(() => games.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
-  password: varchar('password', { length: 255 }).notNull(),
+  password: varchar('password', { length: 255 }), // Nullable - no longer required in multi-user system
   currentClueIndex: integer('current_clue_index').notNull().default(0),
   completedClues: jsonb('completed_clues').notNull().default([]),
   createdAt: timestamp('created_at').defaultNow().notNull(),
