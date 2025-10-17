@@ -18,6 +18,8 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
   const [error, setError] = useState('')
   const [detourSelected, setDetourSelected] = useState(false)
   const [roadblockAssigned, setRoadblockAssigned] = useState(false)
+  const [pendingSubmission, setPendingSubmission] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
 
   const game = gameData.game
   const team = teamData
@@ -33,6 +35,9 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
   // Check if there's a pending submission
   useEffect(() => {
     checkPendingSubmission()
+    // Poll every 10 seconds to check for updates
+    const interval = setInterval(checkPendingSubmission, 10000)
+    return () => clearInterval(interval)
   }, [currentClueIndex])
 
   async function checkPendingSubmission() {
@@ -47,11 +52,107 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
         )
 
         if (pending) {
-          // There's a pending submission, show waiting state
+          setPendingSubmission(pending.submission)
+          // Populate form with pending submission data for editing
+          if (!isEditing) {
+            setSubmission({
+              textProof: pending.submission.textProof || '',
+              notes: pending.submission.notes || '',
+              photoUrls: pending.submission.photoUrls || [],
+              detourChoice: pending.submission.detourChoice,
+              roadblockPlayer: pending.submission.roadblockPlayer || ''
+            })
+            if (pending.submission.detourChoice) setDetourSelected(true)
+            if (pending.submission.roadblockPlayer) setRoadblockAssigned(true)
+          }
+        } else {
+          setPendingSubmission(null)
         }
       }
     } catch (err) {
       console.error('Error checking submissions:', err)
+    }
+  }
+
+  const handleCancelSubmission = async () => {
+    if (!confirm('Are you sure you want to cancel this submission? You will need to resubmit.')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/submissions/${pendingSubmission.id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        setPendingSubmission(null)
+        setSubmission({
+          textProof: '',
+          notes: '',
+          photoUrls: [],
+          detourChoice: null,
+          roadblockPlayer: ''
+        })
+        setDetourSelected(false)
+        setRoadblockAssigned(false)
+        setIsEditing(false)
+        onRefresh()
+      } else {
+        throw new Error('Failed to cancel submission')
+      }
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const handleUpdateSubmission = async (e) => {
+    e.preventDefault()
+    setError('')
+
+    // Same validations as initial submit
+    if (currentClue.type === 'detour' && !submission.detourChoice) {
+      setError('Please select a path (A or B)')
+      return
+    }
+
+    if (currentClue.type === 'road-block' && !submission.roadblockPlayer.trim()) {
+      setError('Please enter the player name for this solo challenge')
+      return
+    }
+
+    if (currentClue.requiredPhotos > 0 && submission.photoUrls.length !== currentClue.requiredPhotos) {
+      setError(`This clue requires exactly ${currentClue.requiredPhotos} photo${currentClue.requiredPhotos > 1 ? 's' : ''}`)
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch(`/api/submissions/${pendingSubmission.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          textProof: submission.textProof.trim(),
+          notes: submission.notes.trim(),
+          photoUrls: submission.photoUrls,
+          detourChoice: submission.detourChoice,
+          roadblockPlayer: submission.roadblockPlayer.trim()
+        }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to update submission')
+      }
+
+      setIsEditing(false)
+      await checkPendingSubmission()
+      onRefresh()
+      alert('Submission updated successfully!')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -345,9 +446,119 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
             </div>
           )}
 
-          {/* Submission Form (shown after choices made) */}
-          {(currentClue.type === 'route-info' || detourSelected || roadblockAssigned) && (
-            <form onSubmit={handleSubmit}>
+          {/* Pending Submission View */}
+          {pendingSubmission && !isEditing && (currentClue.type === 'route-info' || detourSelected || roadblockAssigned) && (
+            <div className="space-y-4">
+              <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-300 dark:border-yellow-600 rounded-lg">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center">
+                    <div className="animate-pulse flex items-center">
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                        ⏳ Awaiting Review
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                  Your submission has been sent to the game master for approval. You'll automatically advance to the next clue once it's approved.
+                </p>
+
+                <div className="space-y-3 bg-white dark:bg-gray-800 p-4 rounded-md">
+                  {pendingSubmission.detourChoice && (
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                        Selected Path
+                      </p>
+                      <p className="text-sm text-gray-900 dark:text-white">
+                        {pendingSubmission.detourChoice === 'a' ? '🅰️ Path A' : '🅱️ Path B'}: {
+                          pendingSubmission.detourChoice === 'a'
+                            ? currentClue.detourOptionA?.title
+                            : currentClue.detourOptionB?.title
+                        }
+                      </p>
+                    </div>
+                  )}
+
+                  {pendingSubmission.roadblockPlayer && (
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                        Assigned Player
+                      </p>
+                      <p className="text-sm text-gray-900 dark:text-white">
+                        {pendingSubmission.roadblockPlayer}
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      Your Answer
+                    </p>
+                    <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
+                      {pendingSubmission.textProof}
+                    </p>
+                  </div>
+
+                  {pendingSubmission.notes && (
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                        Additional Notes
+                      </p>
+                      <p className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
+                        {pendingSubmission.notes}
+                      </p>
+                    </div>
+                  )}
+
+                  {pendingSubmission.photoUrls && pendingSubmission.photoUrls.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                        Photos ({pendingSubmission.photoUrls.length})
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {pendingSubmission.photoUrls.map((url, idx) => (
+                          <img
+                            key={idx}
+                            src={url}
+                            alt={`Submission photo ${idx + 1}`}
+                            className="rounded-md w-full h-32 object-cover border border-gray-200 dark:border-gray-700"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
+                  >
+                    ✏️ Edit Submission
+                  </button>
+                  <button
+                    onClick={handleCancelSubmission}
+                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md text-sm font-medium transition-colors"
+                  >
+                    🗑️ Cancel Submission
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Submission Form (shown after choices made OR when editing) */}
+          {(!pendingSubmission || isEditing) && (currentClue.type === 'route-info' || detourSelected || roadblockAssigned) && (
+            <form onSubmit={pendingSubmission && isEditing ? handleUpdateSubmission : handleSubmit}>
+              {isEditing && (
+                <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+                  <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">
+                    ✏️ Editing your submission
+                  </p>
+                </div>
+              )}
+
               {error && (
                 <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
                   <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
@@ -392,13 +603,27 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
                 disabled={isSubmitting}
               />
 
-              <button
-                type="submit"
-                disabled={isSubmitting || !submission.textProof.trim()}
-                className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? '⏳ Submitting...' : '✅ Submit for Review'}
-              </button>
+              <div className="flex gap-2">
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsEditing(false)
+                      checkPendingSubmission()
+                    }}
+                    className="flex-1 px-4 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-md text-lg font-medium"
+                  >
+                    Cancel
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !submission.textProof.trim()}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? '⏳ Submitting...' : isEditing ? '💾 Update Submission' : '✅ Submit for Review'}
+                </button>
+              </div>
             </form>
           )}
         </div>
