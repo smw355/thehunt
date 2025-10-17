@@ -164,6 +164,28 @@ function GameMasterView({ gameData }) {
 
   return (
     <div className="space-y-6">
+      {/* Submission Review - Always visible for active games */}
+      {game.status === 'active' && (
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                📝 Submission Review
+              </h2>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                Review and approve team submissions as they complete clues
+              </p>
+            </div>
+            <Link
+              href={`/games/${game.id}/submissions`}
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium"
+            >
+              📝 Review Submissions
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Game Controls */}
       {game.status === 'setup' && (
         <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6">
@@ -173,7 +195,7 @@ function GameMasterView({ gameData }) {
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
             Your game is in setup mode. Add clues, create teams, and assign players before starting.
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link
               href={`/games/${game.id}/clues`}
               className="px-4 py-2 bg-white dark:bg-gray-700 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
