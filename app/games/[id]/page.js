@@ -137,6 +137,7 @@ export default function GameDetail() {
 function GameMasterView({ gameData }) {
   const { game, members, teams } = gameData
   const [isStarting, setIsStarting] = useState(false)
+  const [advancingTeam, setAdvancingTeam] = useState(null)
   const router = useRouter()
 
   const handleStartGame = async () => {
@@ -155,6 +156,40 @@ function GameMasterView({ gameData }) {
       console.error('Error starting game:', error)
     } finally {
       setIsStarting(false)
+    }
+  }
+
+  const handleAdvanceTeam = async (team) => {
+    if (!confirm(`Advance ${team.name} to the next clue? This will mark their current clue as completed.`)) {
+      return
+    }
+
+    setAdvancingTeam(team.id)
+    try {
+      const currentClueIndex = team.currentClueIndex || 0
+      const nextClueIndex = currentClueIndex + 1
+      const currentClueId = game.clueSequence[currentClueIndex]?.id || currentClueIndex
+      const newCompletedClues = [...(team.completedClues || []), currentClueId]
+
+      const response = await fetch('/api/teams', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: team.id,
+          gameId: game.id,
+          currentClueIndex: nextClueIndex,
+          completedClues: newCompletedClues
+        }),
+      })
+
+      if (response.ok) {
+        router.refresh()
+      }
+    } catch (error) {
+      console.error('Error advancing team:', error)
+      alert('Failed to advance team')
+    } finally {
+      setAdvancingTeam(null)
     }
   }
 
@@ -257,21 +292,54 @@ function GameMasterView({ gameData }) {
               <div className="space-y-3">
                 {teams.map(team => {
                   const teamMembers = members.filter(m => m.teamId === team.id)
+                  const currentClueIndex = team.currentClueIndex || 0
+                  const totalClues = game.clueSequence?.length || 0
+                  const isComplete = currentClueIndex >= totalClues
+                  const canAdvance = game.status === 'active' && !isComplete
+
                   return (
                     <div
                       key={team.id}
                       className="border border-purple-100 dark:border-purple-900/50 rounded-lg p-4 hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-colors"
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900 dark:text-white">
-                          {team.name}
-                        </h4>
-                        <span className="text-xs text-gray-700 dark:text-gray-300">
-                          {teamMembers.length} {teamMembers.length === 1 ? 'player' : 'players'}
-                        </span>
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <h4 className="font-medium text-gray-900 dark:text-white">
+                              {team.name}
+                            </h4>
+                            {isComplete && (
+                              <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs rounded-full">
+                                ✓ Complete
+                              </span>
+                            )}
+                          </div>
+                          {game.status === 'active' && (
+                            <p className="text-xs text-gray-700 dark:text-gray-300">
+                              Progress: {currentClueIndex} / {totalClues} clues
+                              {!isComplete && ` • On clue #${currentClueIndex + 1}`}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-700 dark:text-gray-300 mt-1">
+                            {teamMembers.length} {teamMembers.length === 1 ? 'player' : 'players'}
+                          </p>
+                        </div>
+                        {canAdvance && (
+                          <button
+                            onClick={() => handleAdvanceTeam(team)}
+                            disabled={advancingTeam === team.id}
+                            className="ml-3 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-md text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
+                            title="Manually advance team to next clue"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>{advancingTeam === team.id ? 'Advancing...' : 'Advance'}</span>
+                          </button>
+                        )}
                       </div>
                       {teamMembers.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 mt-2">
                           {teamMembers.map(member => (
                             <div
                               key={member.id}
