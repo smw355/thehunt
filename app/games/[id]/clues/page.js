@@ -47,12 +47,19 @@ export default function ClueSequenceEditor() {
 
       setGameData(game)
       const sequence = game.game?.clueSequence || []
-      // Flatten the clue structure - the actual clue data is nested in the 'clue' property
-      const flattenedSequence = sequence.map(item => ({
-        ...item.clue,
-        sequenceId: item.id,
-        addedAt: item.addedAt
-      }))
+      // Flatten the clue structure - handle both nested and flat structures
+      const flattenedSequence = sequence.map(item => {
+        // If the item has a nested 'clue' property, flatten it
+        if (item.clue) {
+          return {
+            ...item.clue,
+            sequenceId: item.id,
+            addedAt: item.addedAt
+          }
+        }
+        // Otherwise, the item is already flat (direct clue data)
+        return item
+      })
       console.log('Loaded clue sequence:', sequence)
       console.log('Flattened sequence:', flattenedSequence)
       setClueSequence(flattenedSequence)
