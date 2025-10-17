@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import PhotoUpload from './PhotoUpload'
 import { getClueTypeDisplay, getClueTypeClasses } from '@/lib/clueTypeHelpers'
+import VictoryPage from './VictoryPage'
 
 export default function PlayerGameView({ gameData, teamData, onRefresh }) {
   const [currentClue, setCurrentClue] = useState(null)
@@ -145,19 +146,27 @@ export default function PlayerGameView({ gameData, teamData, onRefresh }) {
 
   // Game completed
   if (currentClueIndex >= clueSequence.length) {
+    // Calculate team's place
+    const allTeams = gameData.teams || []
+    const completedTeams = allTeams
+      .filter(t => (t.currentClueIndex || 0) >= clueSequence.length)
+      .sort((a, b) => {
+        // Earliest completion (lowest clueIndex update time) wins
+        // For now, we'll use the order they appear in the array
+        // In a real implementation, you'd want to track completion timestamps
+        return allTeams.indexOf(a) - allTeams.indexOf(b)
+      })
+
+    const teamPlace = completedTeams.findIndex(t => t.id === team.id) + 1
+    const totalCompletedTeams = completedTeams.length
+
     return (
-      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-8 text-center">
-        <div className="text-6xl mb-4">🏆</div>
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-          Congratulations!
-        </h2>
-        <p className="text-gray-700 dark:text-gray-300 mb-2">
-          Your team has completed all clues!
-        </p>
-        <p className="text-sm text-gray-700 dark:text-gray-300">
-          Total clues completed: {clueSequence.length}
-        </p>
-      </div>
+      <VictoryPage
+        teamName={team.name}
+        place={teamPlace}
+        totalTeams={totalCompletedTeams}
+        victorySettings={game.victoryPageSettings}
+      />
     )
   }
 

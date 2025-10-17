@@ -243,6 +243,12 @@ function GameMasterView({ gameData }) {
             >
               👥 Manage Teams
             </Link>
+            <Link
+              href={`/games/${game.id}/victory-settings`}
+              className="px-4 py-2 bg-white dark:bg-gray-700 border border-purple-300 dark:border-purple-600 rounded-md text-sm font-medium text-purple-700 dark:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+            >
+              🏆 Victory Page
+            </Link>
             <button
               onClick={handleStartGame}
               disabled={isStarting || players.length === 0 || teams.length === 0}

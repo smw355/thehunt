@@ -104,12 +104,13 @@ export async function PATCH(request, { params }) {
       return Response.json({ error: 'Access denied. Only game masters can update games.' }, { status: 403 })
     }
 
-    const { status, name, clueSequence } = await request.json()
+    const { status, name, clueSequence, victoryPageSettings } = await request.json()
 
     const updateData = {}
     if (status) updateData.status = status
     if (name) updateData.name = name
     if (clueSequence !== undefined) updateData.clueSequence = clueSequence
+    if (victoryPageSettings !== undefined) updateData.victoryPageSettings = victoryPageSettings
     updateData.updatedAt = new Date()
 
     const [updatedGame] = await db

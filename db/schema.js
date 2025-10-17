@@ -7,6 +7,7 @@ export const games = pgTable('games', {
   code: varchar('code', { length: 6 }).notNull().unique(),
   clueSequence: jsonb('clue_sequence').notNull().default([]),
   status: varchar('status', { length: 50 }).notNull().default('setup'), // setup, active, completed
+  victoryPageSettings: jsonb('victory_page_settings'), // Customizable victory page content
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
