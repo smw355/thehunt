@@ -61,15 +61,14 @@ export default function TeamManagement() {
     }
   }
 
-  const handleCreateTeam = async (name, password) => {
+  const handleCreateTeam = async (name) => {
     try {
       const response = await fetch('/api/teams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           gameId: params.id,
-          name,
-          password
+          name
         }),
       })
 
@@ -85,7 +84,7 @@ export default function TeamManagement() {
     }
   }
 
-  const handleUpdateTeam = async (teamId, name, password) => {
+  const handleUpdateTeam = async (teamId, name) => {
     try {
       const response = await fetch('/api/teams', {
         method: 'PATCH',
@@ -93,8 +92,7 @@ export default function TeamManagement() {
         body: JSON.stringify({
           id: teamId,
           gameId: params.id,
-          name,
-          password
+          name
         }),
       })
 
@@ -133,12 +131,15 @@ export default function TeamManagement() {
 
   const handleAssignPlayer = async (memberId, teamId) => {
     try {
+      // Convert teamId to number if it's a string, or null if empty
+      const parsedTeamId = teamId ? parseInt(teamId) : null
+
       const response = await fetch(`/api/game-members/${memberId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           gameId: params.id,
-          teamId: teamId || null
+          teamId: parsedTeamId
         }),
       })
 
@@ -317,11 +318,11 @@ export default function TeamManagement() {
             setShowCreateModal(false)
             setEditingTeam(null)
           }}
-          onSave={(name, password) => {
+          onSave={(name) => {
             if (editingTeam) {
-              handleUpdateTeam(editingTeam.id, name, password)
+              handleUpdateTeam(editingTeam.id, name)
             } else {
-              handleCreateTeam(name, password)
+              handleCreateTeam(name)
             }
           }}
         />
@@ -338,11 +339,6 @@ function TeamCard({ team, members, onEdit, onDelete, onUnassignPlayer }) {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             {team.name}
           </h3>
-          {team.password && (
-            <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-              🔒 Password: <span className="font-mono">{team.password}</span>
-            </p>
-          )}
         </div>
         <div className="flex items-center space-x-2">
           <button
@@ -402,12 +398,11 @@ function TeamCard({ team, members, onEdit, onDelete, onUnassignPlayer }) {
 
 function TeamModal({ team, onClose, onSave }) {
   const [name, setName] = useState(team?.name || '')
-  const [password, setPassword] = useState(team?.password || '')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!name.trim()) return
-    onSave(name, password)
+    onSave(name)
   }
 
   return (
@@ -428,7 +423,7 @@ function TeamModal({ team, onClose, onSave }) {
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-4">
-          <div className="mb-4">
+          <div className="mb-6">
             <label htmlFor="teamName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Team Name *
             </label>
@@ -441,23 +436,6 @@ function TeamModal({ team, onClose, onSave }) {
               placeholder="Enter team name"
               required
             />
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="teamPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Team Password (Optional)
-            </label>
-            <input
-              type="text"
-              id="teamPassword"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Leave blank for no password"
-            />
-            <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
-              🔒 Players will need this password to join the team in legacy mode
-            </p>
           </div>
 
           <div className="flex gap-3">

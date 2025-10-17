@@ -49,7 +49,7 @@ export async function POST(request) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { gameId, name, password } = await request.json();
+    const { gameId, name } = await request.json();
 
     if (!name || !name.trim()) {
       return Response.json({ error: 'Team name is required' }, { status: 400 })
@@ -73,7 +73,7 @@ export async function POST(request) {
     const [newTeam] = await db.insert(teams).values({
       gameId: parseInt(gameId),
       name: name.trim(),
-      password: password?.trim() || null,
+      password: null,
       currentClueIndex: 0,
       completedClues: []
     }).returning();
@@ -93,7 +93,7 @@ export async function PATCH(request) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id, gameId, name, password, currentClueIndex, completedClues } = await request.json();
+    const { id, gameId, name, currentClueIndex, completedClues } = await request.json();
 
     // Verify user is a game master for this game
     const [membership] = await db
@@ -112,7 +112,6 @@ export async function PATCH(request) {
 
     const updateData = {};
     if (name !== undefined) updateData.name = name.trim();
-    if (password !== undefined) updateData.password = password?.trim() || null;
     if (currentClueIndex !== undefined) updateData.currentClueIndex = currentClueIndex;
     if (completedClues !== undefined) updateData.completedClues = completedClues;
 
