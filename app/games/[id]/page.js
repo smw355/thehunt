@@ -138,7 +138,35 @@ function GameMasterView({ gameData }) {
   const { game, members, teams } = gameData
   const [isStarting, setIsStarting] = useState(false)
   const [advancingTeam, setAdvancingTeam] = useState(null)
+  const [pendingSubmissions, setPendingSubmissions] = useState({})
   const router = useRouter()
+
+  // Fetch pending submissions for each team
+  useEffect(() => {
+    async function fetchPendingSubmissions() {
+      if (game.status !== 'active') return
+
+      try {
+        const response = await fetch(`/api/submissions?gameId=${game.id}&status=pending`)
+        if (response.ok) {
+          const submissions = await response.json()
+          // Count submissions by team
+          const counts = {}
+          submissions.forEach(({ submission }) => {
+            counts[submission.teamId] = (counts[submission.teamId] || 0) + 1
+          })
+          setPendingSubmissions(counts)
+        }
+      } catch (error) {
+        console.error('Error fetching submissions:', error)
+      }
+    }
+
+    fetchPendingSubmissions()
+    // Poll every 30 seconds for updates
+    const interval = setInterval(fetchPendingSubmissions, 30000)
+    return () => clearInterval(interval)
+  }, [game.id, game.status])
 
   const handleStartGame = async () => {
     setIsStarting(true)
@@ -302,6 +330,7 @@ function GameMasterView({ gameData }) {
                   const totalClues = game.clueSequence?.length || 0
                   const isComplete = currentClueIndex >= totalClues
                   const canAdvance = game.status === 'active' && !isComplete
+                  const pendingCount = pendingSubmissions[team.id] || 0
 
                   return (
                     <div
@@ -314,6 +343,11 @@ function GameMasterView({ gameData }) {
                             <h4 className="font-medium text-gray-900 dark:text-white">
                               {team.name}
                             </h4>
+                            {pendingCount > 0 && (
+                              <span className="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 text-xs rounded-full animate-pulse">
+                                📝 {pendingCount} pending
+                              </span>
+                            )}
                             {isComplete && (
                               <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs rounded-full">
                                 ✓ Complete
