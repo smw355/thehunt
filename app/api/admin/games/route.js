@@ -23,7 +23,7 @@ export async function GET(request) {
         name: games.name,
         code: games.code,
         status: games.status,
-        clueCount: sql`json_array_length(${games.clueSequence})`,
+        clueSequence: games.clueSequence,
         createdAt: games.createdAt,
         updatedAt: games.updatedAt,
       })
@@ -59,8 +59,15 @@ export async function GET(request) {
             sql`${gameMembers.gameId} = ${game.id} AND ${gameMembers.role} = 'game_master'`
           )
 
+        // Calculate clue count from the clueSequence array
+        const clueCount = Array.isArray(game.clueSequence) ? game.clueSequence.length : 0
+
+        // Remove clueSequence from response (not needed in admin list)
+        const { clueSequence, ...gameWithoutSequence } = game
+
         return {
-          ...game,
+          ...gameWithoutSequence,
+          clueCount,
           memberCount: parseInt(memberCount.count),
           gameMasterCount: parseInt(gameMasterCount.count),
         }
