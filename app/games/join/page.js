@@ -2,11 +2,12 @@
 
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function JoinGame() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [gameCode, setGameCode] = useState('')
   const [isSearching, setIsSearching] = useState(false)
   const [isJoining, setIsJoining] = useState(false)
@@ -19,12 +20,20 @@ export default function JoinGame() {
     }
   }, [status, router])
 
-  const handleSearchGame = async (e) => {
-    e.preventDefault()
+  // Auto-search if code is in URL parameters
+  useEffect(() => {
+    const codeParam = searchParams.get('code')
+    if (codeParam && session && !gameDetails && !isSearching) {
+      setGameCode(codeParam.toUpperCase())
+      searchGameByCode(codeParam.toUpperCase())
+    }
+  }, [searchParams, session, gameDetails, isSearching])
+
+  const searchGameByCode = async (code) => {
     setError('')
     setGameDetails(null)
 
-    if (!gameCode.trim() || gameCode.length !== 6) {
+    if (!code.trim() || code.length !== 6) {
       setError('Please enter a valid 6-character game code')
       return
     }
@@ -32,7 +41,7 @@ export default function JoinGame() {
     setIsSearching(true)
 
     try {
-      const response = await fetch(`/api/games?code=${gameCode.toUpperCase()}`)
+      const response = await fetch(`/api/games?code=${code.toUpperCase()}`)
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -48,6 +57,11 @@ export default function JoinGame() {
     } finally {
       setIsSearching(false)
     }
+  }
+
+  const handleSearchGame = async (e) => {
+    e.preventDefault()
+    searchGameByCode(gameCode)
   }
 
   const handleJoinGame = async () => {

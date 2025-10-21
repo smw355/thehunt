@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { getClueTypeDisplay } from '@/lib/clueTypeHelpers'
 import PlayerGameView from '@/components/PlayerGameView'
+import JSZip from 'jszip'
 
 export default function GameDetail() {
   const { data: session, status } = useSession()
@@ -139,6 +140,9 @@ function GameMasterView({ gameData }) {
   const [isStarting, setIsStarting] = useState(false)
   const [advancingTeam, setAdvancingTeam] = useState(null)
   const [pendingSubmissions, setPendingSubmissions] = useState({})
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [downloadError, setDownloadError] = useState('')
+  const [inviteLinkCopied, setInviteLinkCopied] = useState(false)
   const router = useRouter()
 
   // Fetch pending submissions for each team
@@ -221,12 +225,176 @@ function GameMasterView({ gameData }) {
     }
   }
 
+  const handleDownloadAllPhotos = async () => {
+    setIsDownloading(true)
+    setDownloadError('')
+
+    try {
+      // Fetch all approved submissions
+      const response = await fetch(`/api/submissions?gameId=${game.id}&status=approved`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch submissions')
+      }
+
+      const approvedSubmissions = await response.json()
+
+      // Collect all photo URLs from approved submissions
+      const allPhotos = []
+      approvedSubmissions.forEach(({ submission, teamName }) => {
+        if (submission.photoUrls && submission.photoUrls.length > 0) {
+          submission.photoUrls.forEach((url, index) => {
+            allPhotos.push({
+              url,
+              teamName: teamName || 'Unknown Team',
+              clueTitle: submission.clueTitle || 'Untitled',
+              clueIndex: submission.clueIndex,
+              photoIndex: index
+            })
+          })
+        }
+      })
+
+      if (allPhotos.length === 0) {
+        setDownloadError('No photos found in approved submissions')
+        setIsDownloading(false)
+        return
+      }
+
+      // Create zip file
+      const zip = new JSZip()
+
+      // Download each photo and add to zip
+      for (const photo of allPhotos) {
+        try {
+          const response = await fetch(photo.url)
+          const blob = await response.blob()
+
+          // Extract file extension from URL
+          const urlParts = photo.url.split('.')
+          const extension = urlParts[urlParts.length - 1].split('?')[0] || 'jpg'
+
+          // Create filename: TeamName_Clue#_Photo#.ext
+          const filename = `${photo.teamName.replace(/[^a-z0-9]/gi, '_')}_Clue${photo.clueIndex + 1}_${photo.clueTitle.replace(/[^a-z0-9]/gi, '_')}_${photo.photoIndex + 1}.${extension}`
+
+          zip.file(filename, blob)
+        } catch (err) {
+          console.error(`Failed to download photo: ${photo.url}`, err)
+        }
+      }
+
+      // Generate zip file and trigger download
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const downloadUrl = URL.createObjectURL(zipBlob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = `${game.name.replace(/[^a-z0-9]/gi, '_')}_Photos.zip`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(downloadUrl)
+
+    } catch (err) {
+      setDownloadError(err.message || 'Failed to download photos')
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
+  const handleCopyInviteLink = () => {
+    const inviteUrl = `${window.location.origin}/games/join?code=${game.code}`
+    navigator.clipboard.writeText(inviteUrl)
+    setInviteLinkCopied(true)
+    setTimeout(() => setInviteLinkCopied(false), 2000)
+  }
+
   const gameMasters = members.filter(m => m.role === 'game_master')
   const players = members.filter(m => m.role === 'player')
   const unassignedPlayers = players.filter(p => !p.teamId)
 
   return (
     <div className="space-y-6">
+      {/* Game Master Tools */}
+      <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6">
+        <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+          🎯 Game Master Tools
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Invite Link */}
+          <div className="border border-purple-100 dark:border-purple-800 rounded-lg p-4 bg-purple-50/50 dark:bg-purple-900/10">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+              🔗 Invite Link
+            </h3>
+            <p className="text-xs text-gray-700 dark:text-gray-300 mb-3">
+              Share this link with players to join directly
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/games/join?code=${game.code}`}
+                readOnly
+                className="flex-1 px-3 py-2 bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-700 rounded-md text-sm font-mono text-gray-900 dark:text-white"
+              />
+              <button
+                onClick={handleCopyInviteLink}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium transition-all flex items-center gap-2"
+              >
+                {inviteLinkCopied ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span>Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Download Photos */}
+          <div className="border border-purple-100 dark:border-purple-800 rounded-lg p-4 bg-green-50/50 dark:bg-green-900/10">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+              📷 Download All Photos
+            </h3>
+            <p className="text-xs text-gray-700 dark:text-gray-300 mb-3">
+              Download all approved submission photos as a ZIP file
+            </p>
+            <button
+              onClick={handleDownloadAllPhotos}
+              disabled={isDownloading}
+              className="w-full px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2"
+            >
+              {isDownloading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Downloading...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  <span>Download Photos</span>
+                </>
+              )}
+            </button>
+            {downloadError && (
+              <p className="mt-2 text-xs text-red-600 dark:text-red-400">{downloadError}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Submission Review - Always visible for active games */}
       {game.status === 'active' && (
         <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg border border-purple-100 dark:border-purple-900/50 p-6">
