@@ -13,28 +13,44 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "The Hunt",
-  description: "An interactive treasure hunt challenge application with clues, team management, and photo submissions.",
-  keywords: ["hunt", "treasure hunt", "challenge", "game", "team", "competition"],
+  title: "The Hunt - Create Amazing Photo Hunt Competitions",
+  description: "Turn any event into an unforgettable photo hunt adventure. Create competitive racing challenges with photo proof, team tracking, and real-time feedback in minutes. Perfect for corporate events, education, and community adventures.",
+  keywords: ["treasure hunt", "photo challenge", "team building", "scavenger hunt", "corporate events", "team competition", "photo race", "amazing race", "team activities", "event platform"],
   authors: [{ name: "The Hunt Team" }],
   creator: "The Hunt Team",
-  metadataBase: new URL('https://therace-pnq3klvtb-shannon-5385s-projects.vercel.app'),
+  metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://therace-xi.vercel.app'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://therace-pnq3klvtb-shannon-5385s-projects.vercel.app',
+    url: process.env.NEXTAUTH_URL || 'https://therace-xi.vercel.app',
     siteName: 'The Hunt',
-    title: 'The Hunt',
-    description: 'An interactive treasure hunt challenge application with clues, team management, and photo submissions.',
+    title: '🏹 The Hunt - Photo-Based Racing Competitions',
+    description: 'Create competitive racing challenges with photo proof, team tracking, and real-time feedback in minutes. No apps to download. Works on any phone. Launch races in minutes!',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'The Hunt - Turn any event into an unforgettable adventure',
+      }
+    ],
   },
   twitter: {
-    card: 'summary',
-    title: 'The Hunt',
-    description: 'An interactive treasure hunt challenge application with clues, team management, and photo submissions.',
+    card: 'summary_large_image',
+    title: '🏹 The Hunt - Create Amazing Photo Hunts',
+    description: 'Photo-based racing competitions for teams, families, and communities. Launch in minutes, no apps required!',
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  alternates: {
+    canonical: process.env.NEXTAUTH_URL || 'https://therace-xi.vercel.app',
   },
 };
 
