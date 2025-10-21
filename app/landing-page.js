@@ -66,7 +66,7 @@ export default function LandingPage() {
         <div className="text-center mb-20">
           <div className="inline-block mb-4 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full border border-blue-200 dark:border-blue-800">
             <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-              🎉 Now available: Amazing Race-style competitions for any group
+              🎉 Now available: Photo-based racing competitions for any group
             </span>
           </div>
 
@@ -78,7 +78,7 @@ export default function LandingPage() {
           </h2>
 
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-4 max-w-4xl mx-auto leading-relaxed">
-            Create Amazing Race-style competitions with photo challenges, team tracking,
+            Create competitive racing challenges with photo proof, team tracking,
             and real-time feedback in minutes.
           </p>
 
@@ -330,7 +330,7 @@ export default function LandingPage() {
                 🏹 The Hunt
               </h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                Turn any event into an unforgettable Amazing Race-style adventure. Perfect for teams, families, and communities.
+                Turn any event into an unforgettable photo hunt adventure. Perfect for teams, families, and communities.
               </p>
             </div>
 
