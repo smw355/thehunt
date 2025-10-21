@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { getClueTypeDisplay, getClueTypeClasses } from '@/lib/clueTypeHelpers'
+import JSZip from 'jszip'
 
 export default function SubmissionReview() {
   const { data: session, status } = useSession()
@@ -16,6 +17,7 @@ export default function SubmissionReview() {
   const [selectedSubmission, setSelectedSubmission] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isDownloading, setIsDownloading] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -112,6 +114,81 @@ export default function SubmissionReview() {
     }
   }
 
+  const handleDownloadAllPhotos = async () => {
+    setIsDownloading(true)
+    setError('')
+
+    try {
+      // Fetch all approved submissions
+      const response = await fetch(`/api/submissions?gameId=${params.id}&status=approved`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch submissions')
+      }
+
+      const approvedSubmissions = await response.json()
+
+      // Collect all photo URLs from approved submissions
+      const allPhotos = []
+      approvedSubmissions.forEach(({ submission, teamName }) => {
+        if (submission.photoUrls && submission.photoUrls.length > 0) {
+          submission.photoUrls.forEach((url, index) => {
+            allPhotos.push({
+              url,
+              teamName: teamName || 'Unknown Team',
+              clueTitle: submission.clueTitle || 'Untitled',
+              clueIndex: submission.clueIndex,
+              photoIndex: index
+            })
+          })
+        }
+      })
+
+      if (allPhotos.length === 0) {
+        setError('No photos found in approved submissions')
+        setIsDownloading(false)
+        return
+      }
+
+      // Create zip file
+      const zip = new JSZip()
+
+      // Download each photo and add to zip
+      for (const photo of allPhotos) {
+        try {
+          const response = await fetch(photo.url)
+          const blob = await response.blob()
+
+          // Extract file extension from URL
+          const urlParts = photo.url.split('.')
+          const extension = urlParts[urlParts.length - 1].split('?')[0] || 'jpg'
+
+          // Create filename: TeamName_Clue#_Photo#.ext
+          const filename = `${photo.teamName.replace(/[^a-z0-9]/gi, '_')}_Clue${photo.clueIndex + 1}_${photo.clueTitle.replace(/[^a-z0-9]/gi, '_')}_${photo.photoIndex + 1}.${extension}`
+
+          zip.file(filename, blob)
+        } catch (err) {
+          console.error(`Failed to download photo: ${photo.url}`, err)
+        }
+      }
+
+      // Generate zip file and trigger download
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const downloadUrl = URL.createObjectURL(zipBlob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = `${gameData.game?.name.replace(/[^a-z0-9]/gi, '_')}_Photos.zip`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(downloadUrl)
+
+    } catch (err) {
+      setError(err.message || 'Failed to download photos')
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center">
@@ -131,7 +208,7 @@ export default function SubmissionReview() {
       {/* Header */}
       <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border-b border-purple-100 dark:border-purple-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 📝 Submission Review
@@ -140,12 +217,36 @@ export default function SubmissionReview() {
                 {gameData.game?.name} • {pendingCount} pending
               </p>
             </div>
-            <Link
-              href={`/games/${params.id}`}
-              className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
-            >
-              ← Back to Game
-            </Link>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleDownloadAllPhotos}
+                disabled={isDownloading}
+                className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-400 disabled:to-gray-500 text-white rounded-md text-sm font-medium shadow-md transition-all flex items-center gap-2"
+              >
+                {isDownloading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Downloading...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>Download All Photos</span>
+                  </>
+                )}
+              </button>
+              <Link
+                href={`/games/${params.id}`}
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 text-sm font-medium"
+              >
+                ← Back to Game
+              </Link>
+            </div>
           </div>
         </div>
       </header>
