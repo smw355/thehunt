@@ -20,6 +20,12 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
   const [roadblockQuestion, setRoadblockQuestion] = useState('')
   const [roadblockTask, setRoadblockTask] = useState('')
 
+  // Snapshot fields
+  const [snapshotImage, setSnapshotImage] = useState(null)
+  const [snapshotImagePreview, setSnapshotImagePreview] = useState(null)
+  const [snapshotDescription, setSnapshotDescription] = useState('')
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
+
   const resetForm = () => {
     setClueType('route-info')
     setTitle('')
@@ -29,6 +35,9 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
     setDetourOptionB({ title: '', description: '' })
     setRoadblockQuestion('')
     setRoadblockTask('')
+    setSnapshotImage(null)
+    setSnapshotImagePreview(null)
+    setSnapshotDescription('')
     setError('')
   }
 
@@ -51,6 +60,33 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
     if (routeInfoContent.length > 1) {
       setRouteInfoContent(routeInfoContent.filter((_, i) => i !== index))
     }
+  }
+
+  const handleSnapshotImageChange = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image file too large. Maximum size is 5MB.')
+      return
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please select an image file.')
+      return
+    }
+
+    setSnapshotImage(file)
+
+    // Create preview
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setSnapshotImagePreview(reader.result)
+    }
+    reader.readAsDataURL(file)
+    setError('')
   }
 
   const handleSubmit = async (e) => {
@@ -85,9 +121,42 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
       }
     }
 
+    if (clueType === 'snapshot') {
+      if (!snapshotImage) {
+        setError('Reference image is required for Snapshot clues')
+        return
+      }
+      if (!snapshotDescription.trim()) {
+        setError('Description is required for Snapshot clues')
+        return
+      }
+    }
+
     setIsCreating(true)
 
     try {
+      let snapshotImageUrl = null
+
+      // Upload snapshot image first if present
+      if (clueType === 'snapshot' && snapshotImage) {
+        setIsUploadingImage(true)
+        const formData = new FormData()
+        formData.append('file', snapshotImage)
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload reference image')
+        }
+
+        const uploadData = await uploadResponse.json()
+        snapshotImageUrl = uploadData.url
+        setIsUploadingImage(false)
+      }
+
       const clueData = {
         type: clueType,
         title: title.trim(),
@@ -113,6 +182,11 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
       if (clueType === 'road-block') {
         clueData.roadblockQuestion = roadblockQuestion.trim()
         clueData.roadblockTask = roadblockTask.trim()
+      }
+
+      if (clueType === 'snapshot') {
+        clueData.snapshotImageUrl = snapshotImageUrl
+        clueData.snapshotDescription = snapshotDescription.trim()
       }
 
       const response = await fetch('/api/clues', {
@@ -169,7 +243,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Challenge Type 🎯
             </label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3 mb-3">
               <button
                 type="button"
                 onClick={() => setClueType('route-info')}
@@ -202,6 +276,17 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
                 }`}
               >
                 🎯 Solo
+              </button>
+              <button
+                type="button"
+                onClick={() => setClueType('snapshot')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  clueType === 'snapshot'
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg'
+                    : 'bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-700 dark:text-gray-300 border border-purple-100 dark:border-purple-900/50 hover:bg-purple-50 dark:hover:bg-purple-900/30'
+                }`}
+              >
+                📸 Snapshot
               </button>
             </div>
           </div>
@@ -338,6 +423,66 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
             </div>
           )}
 
+          {/* Snapshot Fields */}
+          {clueType === 'snapshot' && (
+            <div className="mb-4 space-y-4">
+              <div>
+                <label htmlFor="snapshotImage" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  📸 Reference Photo *
+                </label>
+                <input
+                  type="file"
+                  id="snapshotImage"
+                  accept="image/*"
+                  onChange={handleSnapshotImageChange}
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 dark:file:bg-purple-900/30 dark:file:text-purple-300"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
+                  Upload the reference image that teams must find and photograph (Max 5MB)
+                </p>
+                {snapshotImagePreview && (
+                  <div className="mt-3 relative">
+                    <img
+                      src={snapshotImagePreview}
+                      alt="Reference preview"
+                      className="max-w-full h-auto max-h-60 rounded-lg border border-purple-200 dark:border-purple-800"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSnapshotImage(null)
+                        setSnapshotImagePreview(null)
+                      }}
+                      className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label htmlFor="snapshotDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Description / Hints *
+                </label>
+                <textarea
+                  id="snapshotDescription"
+                  value={snapshotDescription}
+                  onChange={(e) => setSnapshotDescription(e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-purple-300 dark:border-purple-600 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white"
+                  placeholder="Describe what teams should look for and any hints about the location"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
+                  Provide context and clues to help teams find this object or location
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Required Photos */}
           <div className="mb-4">
             <label htmlFor="requiredPhotos" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -372,7 +517,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
             disabled={isCreating || !title.trim()}
             className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-md text-sm font-medium disabled:opacity-50"
           >
-            {isCreating ? 'Creating... ✨' : 'Create Clue ✨'}
+            {isUploadingImage ? 'Uploading Image... 📤' : isCreating ? 'Creating... ✨' : 'Create Clue ✨'}
           </button>
         </div>
       </div>

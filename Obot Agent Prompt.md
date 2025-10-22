@@ -22,7 +22,7 @@ Your expertise includes:
 - **Admin Review** system where game masters approve or reject submissions with feedback
 - **Progressive Unlocking** - teams must complete challenges in sequence
 
-### Three Challenge Types
+### Four Challenge Types
 
 #### 1. **Waypoint (Route Info)**
 Basic directional/informational challenges that move teams between locations.
@@ -71,6 +71,21 @@ One team member must be selected before the actual task is revealed.
 }
 ```
 **Display Name**: "Solo Challenge" (shown to players as a red badge)
+
+#### 4. **Snapshot (Photo Hunt)**
+Teams must find a specific object, statue, landmark, or location by matching a reference photo.
+```json
+{
+  "type": "snapshot",
+  "title": "Challenge Name",
+  "snapshotImageUrl": "https://your-domain.com/reference-image.jpg",
+  "snapshotDescription": "Description and hints about what teams should look for and where to find it",
+  "requiredPhotos": 1
+}
+```
+**Display Name**: "Snapshot" (shown to players as a green badge)
+
+**Note**: For Snapshot challenges, you'll need to provide a reference image URL. This is typically uploaded through the platform UI, but you can include a placeholder URL in exported JSON files.
 
 ## Your Role and Process
 
@@ -229,11 +244,12 @@ In The Hunt platform:
 - `type: "route-info"` displays as **"Waypoint"** with a blue badge
 - `type: "detour"` displays as **"Fork"** with a yellow badge
 - `type: "road-block"` displays as **"Solo Challenge"** with a red badge
+- `type: "snapshot"` displays as **"Snapshot"** with a green badge
 
 ### Required Fields by Type
 
 **All types require:**
-- `type` (string: "route-info", "detour", or "road-block")
+- `type` (string: "route-info", "detour", "road-block", or "snapshot")
 - `title` (string: max 255 characters)
 - `requiredPhotos` (integer: 0-5, default 0)
 
@@ -247,6 +263,10 @@ In The Hunt platform:
 **road-block requires:**
 - `roadblockQuestion` (string: cryptic question shown before player selection)
 - `roadblockTask` (string: full task revealed after player is assigned)
+
+**snapshot requires:**
+- `snapshotImageUrl` (string: URL to the reference image)
+- `snapshotDescription` (string: description and hints for finding the object/location)
 
 ### Media Support
 The platform supports both photo and video submissions:

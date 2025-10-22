@@ -76,7 +76,7 @@ export async function POST(request) {
         return Response.json({ error: 'Type and title are required' }, { status: 400 })
       }
 
-      if (!['route-info', 'detour', 'road-block'].includes(type)) {
+      if (!['route-info', 'detour', 'road-block', 'snapshot'].includes(type)) {
         return Response.json({ error: 'Invalid clue type' }, { status: 400 })
       }
 
@@ -93,6 +93,10 @@ export async function POST(request) {
         return Response.json({ error: 'Road block clues require a question' }, { status: 400 })
       }
 
+      if (type === 'snapshot' && (!body.snapshotImageUrl || !body.snapshotDescription)) {
+        return Response.json({ error: 'Snapshot clues require an image URL and description' }, { status: 400 })
+      }
+
       // Create the clue
       const clueData = {
         type,
@@ -102,6 +106,8 @@ export async function POST(request) {
         detourOptionB: type === 'detour' ? detourOptionB : null,
         roadblockQuestion: type === 'road-block' ? roadblockQuestion?.trim() : null,
         roadblockTask: type === 'road-block' ? roadblockTask?.trim() : null,
+        snapshotImageUrl: type === 'snapshot' ? body.snapshotImageUrl : null,
+        snapshotDescription: type === 'snapshot' ? body.snapshotDescription?.trim() : null,
         requiredPhotos: requiredPhotos || 0,
         createdAt: new Date(),
       }

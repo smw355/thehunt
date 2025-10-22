@@ -26,13 +26,15 @@ export const teams = pgTable('teams', {
 // Clues library table
 export const clues = pgTable('clues', {
   id: serial('id').primaryKey(),
-  type: varchar('type', { length: 50 }).notNull(), // route-info, detour, road-block
+  type: varchar('type', { length: 50 }).notNull(), // route-info, detour, road-block, snapshot
   title: varchar('title', { length: 255 }).notNull(),
   content: jsonb('content'), // Array of strings for route-info
   detourOptionA: jsonb('detour_option_a'), // {title, description}
   detourOptionB: jsonb('detour_option_b'), // {title, description}
   roadblockQuestion: text('roadblock_question'),
   roadblockTask: text('roadblock_task'),
+  snapshotImageUrl: text('snapshot_image_url'), // Reference photo URL for snapshot clues
+  snapshotDescription: text('snapshot_description'), // Description/hints for snapshot clues
   requiredPhotos: integer('required_photos').default(0), // Number of photos required for completion
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
