@@ -55,8 +55,8 @@ export async function POST(request, { params }) {
       try {
         // Validate and convert type
         const dbType = jsonTypeToDb(jsonClue.type)
-        if (!['route-info', 'detour', 'road-block'].includes(dbType)) {
-          throw new Error(`Invalid type: "${jsonClue.type}". Must be "waypoint", "fork", or "solo"`)
+        if (!['route-info', 'detour', 'road-block', 'snapshot'].includes(dbType)) {
+          throw new Error(`Invalid type: "${jsonClue.type}". Must be "waypoint", "fork", "solo", or "snapshot"`)
         }
 
         // Validate title
@@ -86,26 +86,43 @@ export async function POST(request, { params }) {
             throw new Error('Waypoint clues require at least one non-empty content line')
           }
         } else if (dbType === 'detour') {
-          if (!jsonClue.optionA || !jsonClue.optionA.title || !jsonClue.optionA.title.trim()) {
-            throw new Error('Fork clues require optionA.title')
+          // Support both field name formats: optionA/optionB (old) and detourOptionA/detourOptionB (new)
+          const optionA = jsonClue.detourOptionA || jsonClue.optionA
+          const optionB = jsonClue.detourOptionB || jsonClue.optionB
+
+          if (!optionA || !optionA.title || !optionA.title.trim()) {
+            throw new Error('Fork clues require detourOptionA.title')
           }
-          if (!jsonClue.optionB || !jsonClue.optionB.title || !jsonClue.optionB.title.trim()) {
-            throw new Error('Fork clues require optionB.title')
+          if (!optionB || !optionB.title || !optionB.title.trim()) {
+            throw new Error('Fork clues require detourOptionB.title')
           }
           clueData.detourOptionA = {
-            title: jsonClue.optionA.title.trim(),
-            description: jsonClue.optionA.description?.trim() || ''
+            title: optionA.title.trim(),
+            description: optionA.description?.trim() || ''
           }
           clueData.detourOptionB = {
-            title: jsonClue.optionB.title.trim(),
-            description: jsonClue.optionB.description?.trim() || ''
+            title: optionB.title.trim(),
+            description: optionB.description?.trim() || ''
           }
         } else if (dbType === 'road-block') {
-          if (!jsonClue.question || !jsonClue.question.trim()) {
-            throw new Error('Solo clues require a question field')
+          // Support both field name formats: question/task (old) and roadblockQuestion/roadblockTask (new)
+          const question = jsonClue.roadblockQuestion || jsonClue.question
+          const task = jsonClue.roadblockTask || jsonClue.task
+
+          if (!question || !question.trim()) {
+            throw new Error('Solo clues require a roadblockQuestion field')
           }
-          clueData.roadblockQuestion = jsonClue.question.trim()
-          clueData.roadblockTask = jsonClue.task?.trim() || ''
+          clueData.roadblockQuestion = question.trim()
+          clueData.roadblockTask = task?.trim() || ''
+        } else if (dbType === 'snapshot') {
+          if (!jsonClue.snapshotImageUrl || !jsonClue.snapshotImageUrl.trim()) {
+            throw new Error('Snapshot clues require a snapshotImageUrl field')
+          }
+          if (!jsonClue.snapshotDescription || !jsonClue.snapshotDescription.trim()) {
+            throw new Error('Snapshot clues require a snapshotDescription field')
+          }
+          clueData.snapshotImageUrl = jsonClue.snapshotImageUrl.trim()
+          clueData.snapshotDescription = jsonClue.snapshotDescription.trim()
         }
 
         // Create clue in database
