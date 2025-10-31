@@ -15,8 +15,17 @@ export async function POST(request) {
     const file = formData.get('file');
     const teamId = formData.get('teamId');
     const clueId = formData.get('clueId');
+    const uploadType = formData.get('uploadType'); // 'submission' or 'reference'
 
-    if (!file || !teamId || !clueId) {
+    if (!file) {
+      return NextResponse.json(
+        { error: 'Missing required field: file' },
+        { status: 400 }
+      );
+    }
+
+    // For team submissions, require teamId and clueId
+    if (uploadType !== 'reference' && (!teamId || !clueId)) {
       return NextResponse.json(
         { error: 'Missing required fields: file, teamId, or clueId' },
         { status: 400 }
@@ -42,7 +51,11 @@ export async function POST(request) {
     // Generate unique filename
     const fileId = uuidv4();
     const extension = file.name.split('.').pop() || 'jpg';
-    const filename = `submissions/${teamId}/${clueId}/${fileId}.${extension}`;
+
+    // Use different folder structure for reference images vs team submissions
+    const filename = uploadType === 'reference'
+      ? `reference-images/${session.user.id}/${fileId}.${extension}`
+      : `submissions/${teamId}/${clueId}/${fileId}.${extension}`;
 
     // Convert file to buffer
     const bytes = await file.arrayBuffer();

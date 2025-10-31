@@ -142,6 +142,7 @@ export default function ClueCreationModal({ isOpen, onClose, onClueCreated, libr
         setIsUploadingImage(true)
         const formData = new FormData()
         formData.append('file', snapshotImage)
+        formData.append('uploadType', 'reference')
 
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
